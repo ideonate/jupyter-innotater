@@ -1,0 +1,8 @@
+
+# js
+recursive-include jupyter_innotater/static *.*
+
+# Misc
+include requirements.txt
+include LICENSE
+global-exclude *.py[co]

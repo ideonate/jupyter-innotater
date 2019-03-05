@@ -1,0 +1,42 @@
+{
+  "name": "jupyter-innotater",
+  "version": "0.1.0",
+  "description": "An Inline Data Annotator for Jupyter",
+  "author": "danlester",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ideonate/jupyter-innotater.git"
+  },
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets"
+  ],
+  "files": [
+    "dist/*.js"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/ && rimraf ../jupyter_innotater/static/",
+    "cleanall": "npm run clean && rimraf node_modules/",
+    "prepare": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watch 'npm run prepare' lib/"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.7",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.5",
+    "rimraf": "^2.6.1",
+    "style-loader": "^0.18.2",
+    "watch": "^1.0.2",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^1.0.0",
+    "d3": "^4.10.2",
+    "lodash": "^4.17.4"
+  }
+}

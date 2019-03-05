@@ -1,0 +1,15 @@
+*{font-family:sans-serif;}
+
+.drawing-pad-settings { 
+    display: block; 
+    text-align:center
+}
+
+
+.drawing-pad-paint {
+    border: 1px solid #BACACA; 
+    background : #333333; 
+    margin-left: auto; 
+    margin-right: auto; 
+    display: block;
+}
