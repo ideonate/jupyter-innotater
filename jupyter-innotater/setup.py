@@ -37,7 +37,7 @@ packages = [module]
 version = meta_ns['__version__']
 description = 'This is a jupyter widget (or ipywidget) allowing inline data annotations.'
 long_description = 'See github repo README'
-author = 'danlester'
+author = 'ideonate'
 author_email = 'dan@ideonate.com'
 # github template
 url = 'https://github.com/{}/{}'.format(author,
@@ -48,7 +48,7 @@ download_url = 'https://github.com/{}/{}/tarball/{}'.format(author,
 keywords = ['jupyter-widget',
             'javascript',
             'innotater',
-            'jupyter-innotater',
+            'jupyter_innotater',
             ]
 license = 'MIT'
 classifiers = ['Development Status :: 4 - Beta',
@@ -64,7 +64,7 @@ data_files = [
         'jupyter_innotater/static/index.js.map',
     ]),
     ('etc/jupyter/nbconfig/notebook.d', [
-        'enable_innotater.json'
+        'enable_jupyter_innotater.json'
     ])
 
 ]

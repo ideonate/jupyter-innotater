@@ -7,7 +7,7 @@ if (window.require) {
 	window.require.config({
 		map: {
 			"*": {
-				"jupyter-drawing-pad": "nbextensions/jupyter-innotater/index",
+				"jupyter-innotater": "nbextensions/jupyter-innotater/index",
 			}
 		}
 	});
