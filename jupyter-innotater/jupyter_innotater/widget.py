@@ -1,7 +1,7 @@
 from .image import ImagePad
 import ipywidgets as widgets
-from ipywidgets import HBox, VBox, IntSlider, Checkbox, Image
-from traitlets import Unicode, List, Int, Bool, observe
+from ipywidgets import HBox, VBox, IntSlider, Checkbox, Button
+from traitlets import Int, observe
 
 @widgets.register
 class Innotater(VBox):
@@ -19,6 +19,8 @@ class Innotater(VBox):
 
     def __init__(self):
 
+        self.path = ''
+
         image_pad = ImagePad()
 
         slider = IntSlider(min=0, max=0)
@@ -29,17 +31,29 @@ class Innotater(VBox):
         self.slider = slider
         self.checkbox = checkbox
 
-        super().__init__([HBox([image_pad, checkbox]), slider])
+        self.prevbtn = Button(description='< Previous')
+        self.nextbtn = Button(description='Next >')
+
+        super().__init__([HBox([image_pad, checkbox]), HBox([self.prevbtn, slider, self.nextbtn])])
 
         jsl = widgets.jslink((slider, 'value'), (self, 'index'))
 
 
         self.checkbox.observe(self.checkbox_changed, 'value')
 
+        self.prevbtn.on_click(lambda c: self.move_slider(-1))
+        self.nextbtn.on_click(lambda c: self.move_slider(1))
+
 
     @observe('index')
     def slider_changed(self, change):
         self.update_ui()
+
+    def move_slider(self, change):
+        if change < 0 and self.index > 0:
+            self.index -= 1
+        elif change > 0 and self.index < len(self.inputs)-1:
+            self.index += 1
 
     def update_ui(self):
         i = self.index
@@ -48,6 +62,9 @@ class Innotater(VBox):
         self.image_pad.set_value_from_file(self.path+fn)
 
         self.checkbox.value = self.targets[i] == 1
+
+        self.prevbtn.disabled = self.index <= 0
+        self.nextbtn.disabled = self.index >= len(self.inputs)-1
 
     def checkbox_changed(self, change):
         i = self.index
