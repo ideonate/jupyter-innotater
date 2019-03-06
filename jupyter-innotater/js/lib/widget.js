@@ -20,10 +20,10 @@ var drawing_pad = require('./drawing-pad');
 // differ from the defaults will be specified.
 
 
-var DrawingModel = widgets.DOMWidgetModel.extend({
+var InnotaterModel = widgets.DOMWidgetModel.extend({
 	defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
-		_model_name: 'DrawingModel',
-		_view_name: 'DrawingView',
+		_model_name: 'InnotaterModel',
+		_view_name: 'InnotaterView',
 		_model_module: 'jupyter-innotater',
 		_view_module: 'jupyter-innotater',
 		_model_module_version: '0.1.0',
@@ -38,7 +38,7 @@ var DrawingModel = widgets.DOMWidgetModel.extend({
 
 
 // Custom View. Renders the widget model.
-var DrawingView = widgets.DOMWidgetView.extend({
+var InnotaterView = widgets.DOMWidgetView.extend({
 	render: function () {
 		console.log("Creating html");
 		this.sketch = document.createElement("div");
@@ -91,7 +91,7 @@ var DrawingView = widgets.DOMWidgetView.extend({
 
 
 module.exports = {
-	DrawingModel: DrawingModel,
-	DrawingView: DrawingView
+	InnotaterModel: InnotaterModel,
+	InnotaterView: InnotaterView
 };
 
