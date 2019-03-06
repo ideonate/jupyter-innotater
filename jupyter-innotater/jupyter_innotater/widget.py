@@ -1,6 +1,6 @@
 from .image import ImagePad
 import ipywidgets as widgets
-from ipywidgets import HBox, VBox, IntSlider, Checkbox, Text
+from ipywidgets import HBox, VBox, IntSlider, Checkbox, Image
 from traitlets import Unicode, List, Int, Bool, observe
 
 @widgets.register
@@ -19,7 +19,7 @@ class Innotater(VBox):
 
     def __init__(self):
 
-        image_pad = Text('Default Text') #ImagePad()
+        image_pad = ImagePad()
 
         slider = IntSlider(min=0, max=0)
 
@@ -28,9 +28,6 @@ class Innotater(VBox):
         self.image_pad = image_pad
         self.slider = slider
         self.checkbox = checkbox
-
-        image_pad.value = "Test"
-
 
         super().__init__([HBox([image_pad, checkbox]), slider])
 
@@ -48,7 +45,7 @@ class Innotater(VBox):
         i = self.index
         fn = self.inputs[i]
 
-        self.image_pad.value = fn
+        self.image_pad.set_value_from_file(self.path+fn)
 
         self.checkbox.value = self.targets[i] == 1
 
