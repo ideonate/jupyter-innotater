@@ -23,7 +23,8 @@ module.exports = [
 			filename: 'extension.js',
 			path: path.resolve(__dirname, '..', 'jupyter_innotater', 'static'),
 			libraryTarget: 'amd'
-		}
+		},
+		devtool: 'source-map'
 	},
 	{// Bundle for the notebook containing the custom widget views and models
 		//

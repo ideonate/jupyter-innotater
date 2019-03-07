@@ -53,8 +53,8 @@ class ImageDataWrapper(DataWrapper):
 
         super().__init__(*args, **kwargs)
 
-        self.width = kwargs.get('width', None)
-        self.height = kwargs.get('height', None)
+        self.width = kwargs.get('width', '')
+        self.height = kwargs.get('height', '')
 
     def _create_widget(self):
         return ImagePad(width=self.width, height=self.height)

@@ -1,6 +1,11 @@
 var widgets = require('@jupyter-widgets/base');
+
+var controls = require('@jupyter-widgets/controls');
+
 var _ = require('lodash');
 var $ = require('jquery');
+
+
 //var drawing_pad = require('./drawing-pad');
 
 
@@ -21,77 +26,112 @@ var $ = require('jquery');
 // differ from the defaults will be specified.
 
 
-var InnotaterModel = widgets.DOMWidgetModel.extend({
-	defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
-		_model_name: 'InnotaterModel',
-		_view_name: 'InnotaterView',
+var InnotaterImagePadModel = controls.ImageModel.extend({
+	defaults: _.extend(controls.ImageModel.prototype.defaults(), {
+		_model_name: 'InnotaterImagePadModel',
+		_view_name: 'InnotaterImagePadView',
 		_model_module: 'jupyter-innotater',
 		_view_module: 'jupyter-innotater',
 		_model_module_version: '0.1.0',
-		_view_module_version: '0.1.0',
-
-		inputs : [],
-		targets : [],
-		path: '',
-		index: 0
-
+		_view_module_version: '0.1.0'
 	})
 });
 
 
 // Custom View. Renders the widget model.
-var InnotaterView = widgets.DOMWidgetView.extend({
+var InnotaterImagePadView = widgets.DOMWidgetView.extend({
+
+	InnotaterImagePadView: function() {
+		InnotaterImagePadView.__super__.apply(this, arguments);
+	},
+
 	render: function () {
-		InnotaterView.__super__.render.apply(this, arguments);
-		//this._index_changed();
-		//this.listenTo(this.model, 'change:index', this._index_changed, this);
-		//this.listenTo(this.model, 'change:checkbox_value', this._checkbox_value_changed, this);
-		//this.listenTo(this.model, 'change:inputs', this._index_changed, this);
-		//this.listenTo(this.model, 'change:targets', this._index_changed, this);
+		/**
+		 * Called when view is rendered.
+		 */
+		//_super.prototype.render.call(this);
+		InnotaterImagePadView.__super__.render.apply(this, arguments);
+		this.pWidget.addClass('jupyter-widgets');
+		this.pWidget.addClass('widget-image');
+
+		this.imgel = $('<img></img>')[0];
+
+		this.$el.append($('<span></span>').append(document.createTextNode('Test'))).append(this.imgel);
+
+		this.update(); // Set defaults.
 	},
 
-	_index_changed: function () {
-		/*var old_value = this.model.previous('index');
-		var index = this.model.get('index');
-		var path = this.model.get('path');
-		var inputs = this.model.get('inputs');
-		var targets = this.model.get('targets').slice();
-
-		var domcontainer = $('<div></div>');
-		var domimage = $('<img></img>', {'src': path+inputs[index], 'width': '150', 'height': '100'});
-		var domtext = $('<div></div>').append(String(index));
-
-		var cur_value = targets[index];
-
-		this.model.set('checkbox_value', !!cur_value);
-		this.model.save_changes();
-
-		domcontainer.append(domimage).append(domtext);
-
-		$(this.el).empty().append(domcontainer); */
-	},
-
-	_checkbox_value_changed: function() {
-		var index = this.model.get('index');
-		var targets = this.model.get('targets').slice();
-
-		var cur_value = !!targets[index];
-		var new_value = this.model.get('checkbox_value');
-
-		if (new_value != cur_value) {
-			targets[index] = Number(new_value); // Need 0/1 not false/true
-			console.log(targets);
-			this.model.set({'targets': targets});
-			console.log(this.model.get('targets'));
-			this.model.save_changes();
-			console.log(this.model.get('targets'));
+	update: function () {
+		/**
+		 * Update the contents of this view
+		 *
+		 * Called when the model is changed.  The model may have been
+		 * changed by another view or by a state update from the back-end.
+		 */
+		var url;
+		var format = this.model.get('format');
+		var value = this.model.get('value');
+		if (format !== 'url') {
+			var blob = new Blob([value], { type: "image/" + this.model.get('format') });
+			url = URL.createObjectURL(blob);
 		}
+		else {
+			url = (new TextDecoder('utf-8')).decode(value.buffer);
+		}
+		// Clean up the old objectURL
+		var oldurl = this.imgel.src;
+		this.imgel.src = url;
+		if (oldurl && typeof oldurl !== 'string') {
+			URL.revokeObjectURL(oldurl);
+		}
+		var width = this.model.get('width');
+		if (width !== undefined && width.length > 0) {
+			this.imgel.setAttribute('width', width);
+		}
+		else {
+			this.imgel.removeAttribute('width');
+		}
+		var height = this.model.get('height');
+		if (height !== undefined && height.length > 0) {
+			this.imgel.setAttribute('height', height);
+		}
+		else {
+			this.imgel.removeAttribute('height');
+		}
+		//return _super.prototype.update.call(this);
+		return InnotaterImagePadView.__super__.update.apply(this, arguments);
+	},
+
+	remove: function() {
+		if (this.imgel.src) {
+			URL.revokeObjectURL(this.imgel.src);
+		}
+		//_super.prototype.remove.call(this);
+		InnotaterImagePadView.__super__.remove.apply(this, arguments);
 	}
 });
 
+Object.defineProperty(InnotaterImagePadView.prototype, "tagName", {
+	/**
+	 * The default tag name.
+	 *
+	 * #### Notes
+	 * This is a read-only attribute.
+	 */
+	get: function () {
+		// We can't make this an attribute with a default value
+		// since it would be set after it is needed in the
+		// constructor.
+		return 'div';
+	},
+	enumerable: true,
+	configurable: true
+});
 
 module.exports = {
-	InnotaterModel: InnotaterModel,
-	InnotaterView: InnotaterView
+    InnotaterImagePadModel: InnotaterImagePadModel,
+    InnotaterImagePadView: InnotaterImagePadView
 };
+
+
 
