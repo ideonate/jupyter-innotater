@@ -21,7 +21,7 @@ class Innotater(VBox):
 
         self.path = ''
 
-        self.load(inputs, targets)
+        self.datamanager = DataManager(inputs, targets)
 
         slider = IntSlider(min=0, max=0)
 
@@ -37,11 +37,11 @@ class Innotater(VBox):
 
         jsl = widgets.jslink((slider, 'value'), (self, 'index'))
 
-        #self.checkbox.observe(self.checkbox_changed, 'value')
-
         for dw in self.datamanager.get_targets():
             dw.get_widget().observe(self.update_data, names='value')
 
+        for dw in self.datamanager.get_all():
+            dw.post_widget_create(self.datamanager)
 
         self.prevbtn.on_click(lambda c: self.move_slider(-1))
         self.nextbtn.on_click(lambda c: self.move_slider(1))
@@ -79,15 +79,3 @@ class Innotater(VBox):
     def update_data(self, change):
         for dw in self.datamanager.get_targets():
             dw.update_data(self.index)
-
-    def checkbox_changed(self, change):
-        i = self.index
-        if self.targets[i] != change['new']:
-            self.targets[i] = change['new'] and 1 or 0
-
-    def load(self, inputs, targets):
-
-        self.datamanager = DataManager(inputs, targets)
-
-
-

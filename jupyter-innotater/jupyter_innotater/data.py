@@ -32,6 +32,9 @@ class DataWrapper:
     def post_register(self, datamanager):
         pass
 
+    def post_widget_create(self, datamanager):
+        pass
+
     def __len__(self):
         return len(self.data)
 
@@ -71,6 +74,9 @@ class ImageDataWrapper(DataWrapper):
             # Actual raw image data
             self.get_widget().value = self.data[index]
 
+    def setRect(self, x,y,w,h):
+        self.get_widget().setRect(x,y,w,h)
+
 
 class BoundingBoxDataWrapper(DataWrapper):
 
@@ -89,16 +95,30 @@ class BoundingBoxDataWrapper(DataWrapper):
         self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
         super().post_register(datamanager)
 
+    def post_widget_create(self, datamanager):
+        if self.sourcedw is not None:
+            self.sourcedw.get_widget().observe(self.rectChanged, names='rect')
+
     def _create_widget(self):
         return Text()
 
     def update_ui(self, index):
         self.get_widget().value = str(self.data[index])
+        if self.sourcedw is not None:
+            (x,y,w,h) = self.data[index][:4]
+            self.sourcedw.setRect(x,y,w,h)
 
     def update_data(self, index):
         newval = self.get_widget().value
-        #if newval != self.data[index]:
-        #    self.data[index] = newval
+        if newval != str(self.data[index]):
+            self.data[index] = [int(n) for n in newval[1:-1].split(', ')]
+
+    def rectChanged(self, change):
+        if self.sourcedw is not None:
+            r = self.sourcedw.get_widget().rect
+            print('Observing'+str(r))
+            self.get_widget().value = str(r)
+
 
 
 class BinaryClassificationDataWrapper(DataWrapper):

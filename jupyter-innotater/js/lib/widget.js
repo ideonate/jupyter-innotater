@@ -33,7 +33,8 @@ var InnotaterImagePadModel = controls.ImageModel.extend({
 		_model_module: 'jupyter-innotater',
 		_view_module: 'jupyter-innotater',
 		_model_module_version: '0.1.0',
-		_view_module_version: '0.1.0'
+		_view_module_version: '0.1.0',
+		rect: [0,0,0,0]
 	})
 });
 
@@ -74,12 +75,22 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 			self.rectX = e.pageX - p.left;
 			self.rectY = e.pageY - p.top;
 		}).on('mousemove', function(e) {
-	
+
 		}).on('mouseup', function(e) {
 			var p = $canvas.offset();
-			self.rectW = e.pageX - p.left - self.rectX;
-			self.rectH = e.pageY - p.top - self.rectY;
-			self.update();
+			self.rectW = Math.round(e.pageX - p.left - self.rectX);
+			self.rectH = Math.round(e.pageY - p.top - self.rectY);
+
+			self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
+			self.rectY = Math.round(self.rectY);
+
+			console.log(self.rectX,self.rectY,self.rectW,self.rectH);
+
+			self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
+			self.model.save_changes();
+			console.log(self.model.get('rect'));
+
+			self.update(); //- this should happen automatically because model has changed
 		});
 
 		this.update();
@@ -125,6 +136,13 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 			this.imgel.removeAttribute('height');
 		}
 
+		// Get bounding box from model
+
+		var r = this.model.get('rect');
+		this.rectX = r[0];
+		this.rectY = r[1];
+		this.rectW = r[2];
+		this.rectH = r[3];
 
 		var self = this;
 		this.imgel.onload = function() {
