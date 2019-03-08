@@ -42,6 +42,7 @@ var InnotaterImagePadModel = controls.ImageModel.extend({
 var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 	InnotaterImagePadView: function() {
+		this.imageLoaded = false;
 		InnotaterImagePadView.__super__.apply(this, arguments);
 	},
 
@@ -54,11 +55,34 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		this.pWidget.addClass('jupyter-widgets');
 		this.pWidget.addClass('widget-image');
 
-		this.imgel = $('<img></img>')[0];
+		this.imgel = new Image(); //$('<img></img>')[0];
 
-		this.$el.append($('<span></span>').append(document.createTextNode('Test'))).append(this.imgel);
+		this.canvas = $('<canvas></canvas>')[0];
 
-		this.update(); // Set defaults.
+		this.$el.append($('<div></div>').append(this.canvas));
+
+		var self = this;
+
+		self.rectX = 0;
+		self.rectY = 0;
+		self.rectW = 0;
+		self.rectH = 0;
+
+		var $canvas = $(self.canvas);
+		$(this.canvas).on('mousedown', function(e) {
+			var p = $canvas.offset();
+			self.rectX = e.pageX - p.left;
+			self.rectY = e.pageY - p.top;
+		}).on('mousemove', function(e) {
+	
+		}).on('mouseup', function(e) {
+			var p = $canvas.offset();
+			self.rectW = e.pageX - p.left - self.rectX;
+			self.rectH = e.pageY - p.top - self.rectY;
+			self.update();
+		});
+
+		this.update();
 	},
 
 	update: function () {
@@ -68,6 +92,8 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		 * Called when the model is changed.  The model may have been
 		 * changed by another view or by a state update from the back-end.
 		 */
+		this.imageLoaded = false;
+
 		var url;
 		var format = this.model.get('format');
 		var value = this.model.get('value');
@@ -98,8 +124,27 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		else {
 			this.imgel.removeAttribute('height');
 		}
+
+
+		var self = this;
+		this.imgel.onload = function() {
+			self.canvas.setAttribute('width', self.imgel.width);
+			self.canvas.setAttribute('height', self.imgel.height);
+
+			this.imageLoaded = true;
+
+			self.drawCanvas();
+		}
+
 		//return _super.prototype.update.call(this);
 		return InnotaterImagePadView.__super__.update.apply(this, arguments);
+	},
+
+	drawCanvas: function() {
+		var ctx = this.canvas.getContext('2d');
+		ctx.drawImage(this.imgel, 0, 0);
+		ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+		ctx.stroke();
 	},
 
 	remove: function() {
