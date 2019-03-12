@@ -1,9 +1,11 @@
+from .data import DataWrapper
+
 class DataManager:
 
     def __init__(self, inputs, targets):
 
-        self.inputs = inputs
-        self.targets = targets
+        self.inputs = [inputs] if isinstance(inputs, DataWrapper) else inputs
+        self.targets = [targets] if isinstance(targets, DataWrapper) else targets
 
         self.alldws = {}
 

@@ -13,9 +13,6 @@ class Innotater(VBox):
     #_model_module_version = Unicode('~0.1.0').tag(sync=True)
 
     index = Int().tag(sync=True)
-#    inputs = List().tag(sync=True)
-#    path = Unicode('').tag(sync=True)
-#    targets = List([]).tag(sync=True)
 
     def __init__(self, inputs, targets):
 

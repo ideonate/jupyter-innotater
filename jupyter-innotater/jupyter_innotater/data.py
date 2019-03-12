@@ -1,6 +1,8 @@
 from .image import ImagePad
 from ipywidgets import Checkbox, Select, Text
 import re
+from pathlib import Path
+
 
 class DataWrapper:
 
@@ -60,13 +62,18 @@ class ImageDataWrapper(DataWrapper):
         self.width = kwargs.get('width', '')
         self.height = kwargs.get('height', '')
 
+        self.path = kwargs.get('path', '')
+
     def _create_widget(self):
         return ImagePad(width=self.width, height=self.height)
 
     def update_ui(self, index):
         if hasattr(self.data[index], '__fspath__') or isinstance(self.data[index], str):
             # Path-like
-            self.get_widget().set_value_from_file(self.data[index])
+            p = Path(self.data[index])
+            if self.path != '':
+                p = Path(self.path) / p
+            self.get_widget().set_value_from_file(p)
         elif 'numpy' in str(type(self.data[index])):
             import cv2
 
@@ -144,6 +151,71 @@ class BoundingBoxDataWrapper(DataWrapper):
             self.get_widget().value = self._value_to_str(r)
 
 
+class MultiClassificationDataWrapper(DataWrapper):
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        # Just a 1-dim array with values corresponding to class numbers e.g. 0-5
+        self.datadepth = 'simple'
+
+        self.dims = 1
+        if hasattr(self.data[0], '__len__'):
+            self.dims = 2
+
+        if self.dims > 1:
+            if len(self.data[0]) == 1:
+                self.datadepth = 'colvector' # A column vector corresponding to class numbers directly
+            else:
+                self.datadepth = 'onehot' # One-hot encoding
+                #a = np.unique(np.array(self.data))
+                #if len(a) > 2:
+                #    raise Exception('data looks like onehot but does not just contain 0s and 1s')
+
+        if 'classes' in kwargs:
+            self.classes = kwargs['classes']
+        else:
+            # Guess the range of classes
+            self._guess_classes()
+
+    def _guess_classes(self):
+        if self.datadepth == 'onehot':
+            m = self.data.shape[1]
+        else:
+            m = self.data.max()
+
+        self.classes = [str(i) for i in range(m+1)]
+
+    def _create_widget(self):
+        return Select(options=self.classes)
+
+    def _calc_class_index(self, index):
+        if self.datadepth == 'onehot':
+            return max(range(len(self.data[index])), key=lambda x: self.data[index][x], default=0)
+        if self.datadepth == 'simple':
+            return self.data[index]
+        # colvector
+        return self.data[index,0]
+
+    def update_ui(self, index):
+        self.get_widget().value = self.classes[self._calc_class_index(index)]
+
+    def update_data(self, index):
+        newval = self.get_widget().value
+        if newval != self.classes[self._calc_class_index(index)]:
+            class_index = self.classes.index(newval)
+            if self.datadepth == 'onehot':
+                old_class_index = self._calc_class_index(index)
+                self.data[index][old_class_index] = 0
+                self.data[index][class_index] = 1
+            elif self.datadepth == 'simple':
+                self.data[index] = class_index
+            else:
+                # colvector
+                self.data[index][0] = class_index
+
+
 class BinaryClassificationDataWrapper(DataWrapper):
 
     def __init__(self, *args, **kwargs):
@@ -165,26 +237,3 @@ class BinaryClassificationDataWrapper(DataWrapper):
         newval = self.get_widget().value and 1 or 0
         if newval != self.data[index]:
             self.data[index] = newval
-
-
-class MultiClassificationDataWrapper(DataWrapper):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        if 'classes' in kwargs:
-            self.classes = kwargs['classes']
-        else:
-            self.classes = [str(i) for i in range(5)] # TODO Calc from data
-
-    def _create_widget(self):
-        return Select(options=self.classes)
-
-    def update_ui(self, index):
-        self.get_widget().value = self.classes[self.data[index]]
-
-    def update_data(self, index):
-        newval = self.get_widget().value
-        if newval != self.classes[self.data[index]]:
-            self.data[index] = self.classes.index(newval)
