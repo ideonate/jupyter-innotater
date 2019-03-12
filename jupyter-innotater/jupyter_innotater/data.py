@@ -1,5 +1,6 @@
 from .image import ImagePad
 from ipywidgets import Checkbox, Select, Text
+import re
 
 class DataWrapper:
 
@@ -84,15 +85,25 @@ class BoundingBoxDataWrapper(DataWrapper):
 
         super().__init__(*args, **kwargs)
 
-        if 'source' in kwargs:
-            self.source = kwargs['source']
-        else:
-            raise Exception('No source attribute found')
-
+        self.source = kwargs.get('source', None)
         self.sourcedw = None
 
     def post_register(self, datamanager):
-        self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
+        if self.source is not None:
+            self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
+
+            if self.sourcedw is None:
+                raise Exception(f'ImageDataWrapper named {self.source} not found but specified as source attribute for BoundingBoxDataWrapper')
+
+        else:
+            # Find by type
+            dws = datamanager.get_data_wrappers_by_type(ImageDataWrapper)
+            if len(dws) != 1:
+                # Raises exception if 0 or >1 of these is found
+                raise Exception(f'ImageDataWrapper not found uniquely')
+
+            self.sourcedw = dws[0]
+
         super().post_register(datamanager)
 
     def post_widget_create(self, datamanager):
@@ -103,22 +114,30 @@ class BoundingBoxDataWrapper(DataWrapper):
         return Text()
 
     def update_ui(self, index):
-        self.get_widget().value = str(self.data[index])
+        self.get_widget().value = self._value_to_str(self.data[index])
+        self._sync_to_image(index)
+
+    def _sync_to_image(self, index):
         if self.sourcedw is not None:
             (x,y,w,h) = self.data[index][:4]
             self.sourcedw.setRect(x,y,w,h)
 
+    def _value_to_str(self, r):
+        return ', '.join([str(a) for a in r])
+
     def update_data(self, index):
         newval = self.get_widget().value
-        if newval != str(self.data[index]):
-            self.data[index] = [int(n) for n in newval[1:-1].split(', ')]
+        if newval != self._value_to_str(self.data[index]):
+            try:
+                self.data[index] = [int(s) for s in re.split('[ ,]+', newval)]
+                self._sync_to_image(index)
+            except ValueError:
+                pass
 
     def rectChanged(self, change):
         if self.sourcedw is not None:
             r = self.sourcedw.get_widget().rect
-            print('Observing'+str(r))
-            self.get_widget().value = str(r)
-
+            self.get_widget().value = self._value_to_str(r)
 
 
 class BinaryClassificationDataWrapper(DataWrapper):

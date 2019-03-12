@@ -1,6 +1,7 @@
 var widgets = require('@jupyter-widgets/base');
-
 var controls = require('@jupyter-widgets/controls');
+
+require("./style.css")
 
 var _ = require('lodash');
 var $ = require('jquery');
@@ -58,7 +59,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		this.imgel = new Image(); //$('<img></img>')[0];
 
-		this.canvas = $('<canvas></canvas>')[0];
+		this.canvas = $('<canvas></canvas>', {'class': 'jupyter-innotater-imagepad'})[0];
 
 		this.$el.append($('<div></div>').append(this.canvas));
 
@@ -68,29 +69,37 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		self.rectY = 0;
 		self.rectW = 0;
 		self.rectH = 0;
+		self.isSelecting = false;
 
 		var $canvas = $(self.canvas);
 		$(this.canvas).on('mousedown', function(e) {
-			var p = $canvas.offset();
-			self.rectX = e.pageX - p.left;
-			self.rectY = e.pageY - p.top;
+			self.p = $canvas.offset();
+			self.rectX = e.pageX - self.p.left;
+			self.rectY = e.pageY - self.p.top;
+			self.isSelecting = true;
+			self.rectW = 0;
+			self.rectH = 0;
 		}).on('mousemove', function(e) {
-
+			if (self.isSelecting) {
+				self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
+				self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
+				self.drawCanvas();
+			}
 		}).on('mouseup', function(e) {
-			var p = $canvas.offset();
-			self.rectW = Math.round(e.pageX - p.left - self.rectX);
-			self.rectH = Math.round(e.pageY - p.top - self.rectY);
+			self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
+			self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
 
 			self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
 			self.rectY = Math.round(self.rectY);
 
-			console.log(self.rectX,self.rectY,self.rectW,self.rectH);
+			if (self.rectW < 0) { self.rectX += self.rectW; self.rectW = -self.rectW; }
+			if (self.rectH < 0) { self.rectY += self.rectH; self.rectH = -self.rectH; }
 
 			self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
 			self.model.save_changes();
-			console.log(self.model.get('rect'));
+			self.isSelecting = false;
 
-			self.update(); //- this should happen automatically because model has changed
+			//self.update will be called automatically because model was changed
 		});
 
 		this.update();
@@ -146,8 +155,8 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		var self = this;
 		this.imgel.onload = function() {
-			self.canvas.setAttribute('width', self.imgel.width);
-			self.canvas.setAttribute('height', self.imgel.height);
+			self.canvas.setAttribute('width', self.imgel.width.toString());
+			self.canvas.setAttribute('height', self.imgel.height.toString());
 
 			this.imageLoaded = true;
 
@@ -160,9 +169,24 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 	drawCanvas: function() {
 		var ctx = this.canvas.getContext('2d');
+
 		ctx.drawImage(this.imgel, 0, 0);
+
+		ctx.save();
+		ctx.globalAlpha = 0.9;
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#FFFFFF";
 		ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
 		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#000000";
+		ctx.setLineDash([5]);
+		ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+		ctx.stroke();
+
+		ctx.restore();
 	},
 
 	remove: function() {

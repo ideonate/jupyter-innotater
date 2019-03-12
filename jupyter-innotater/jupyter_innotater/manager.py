@@ -5,9 +5,6 @@ class DataManager:
         self.inputs = inputs
         self.targets = targets
 
-
-        # TODO if inputs/targets are regular arrays, guess DataWrappers to use and initialise
-
         self.alldws = {}
 
         for dw in self.inputs+self.targets:
@@ -23,7 +20,10 @@ class DataManager:
     def get_data_wrapper_by_name(self, name):
         if name in self.alldws:
             return self.alldws[name]
-        raise Exception(f'DataWrapper not found: {name}')
+        return None
+
+    def get_data_wrappers_by_type(self, klass):
+        return [dw for dw in self.alldws.values() if isinstance(dw, klass)]
 
     def get_data_len(self):
         return len(self.inputs[0])
