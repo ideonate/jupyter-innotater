@@ -1,5 +1,6 @@
 var path = require('path');
 var version = require('./package.json').version;
+var WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 
 // Custom webpack rules are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
@@ -42,7 +43,14 @@ module.exports = [
 		module: {
 			rules: rules
 		},
-		externals: ['@jupyter-widgets/base']
+		externals: ['@jupyter-widgets/base'],
+		plugins: [
+			new WebpackBuildNotifierPlugin({
+				title: "Webpack notebook build of Innotater",
+				sound: 'Basso',
+				successSound: 'Ping'
+			})
+		]
 	},
 	{// Embeddable widget-innotater bundle
 		//

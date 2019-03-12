@@ -32,7 +32,8 @@
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
     "watch": "^1.0.2",
-    "webpack": "^3.5.5"
+    "webpack": "^3.5.5",
+    "webpack-build-notifier": "^0.1.30"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^1.0.0",

@@ -1,7 +1,7 @@
 var widgets = require('@jupyter-widgets/base');
 var controls = require('@jupyter-widgets/controls');
 
-require("./style.css")
+require("./style.css");
 
 var _ = require('lodash');
 var $ = require('jquery');
