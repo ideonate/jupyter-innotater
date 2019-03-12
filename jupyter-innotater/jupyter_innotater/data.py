@@ -95,6 +95,9 @@ class BoundingBoxDataWrapper(DataWrapper):
             if self.sourcedw is None:
                 raise Exception(f'ImageDataWrapper named {self.source} not found but specified as source attribute for BoundingBoxDataWrapper')
 
+            if not isinstance(self.sourcedw, ImageDataWrapper):
+                raise Exception(f'DataWrapper named {self.source} is not an ImageDataWrapper but is specified as source attribute for BoundingBoxDataWrapper')
+
         else:
             # Find by type
             dws = datamanager.get_data_wrappers_by_type(ImageDataWrapper)
@@ -108,6 +111,7 @@ class BoundingBoxDataWrapper(DataWrapper):
 
     def post_widget_create(self, datamanager):
         if self.sourcedw is not None:
+            self.sourcedw.get_widget().is_bb_source = True
             self.sourcedw.get_widget().observe(self.rectChanged, names='rect')
 
     def _create_widget(self):

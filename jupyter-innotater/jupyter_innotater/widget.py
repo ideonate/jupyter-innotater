@@ -77,5 +77,8 @@ class Innotater(VBox):
         self.nextbtn.disabled = self.index >= self.datamanager.get_data_len()-1
 
     def update_data(self, change):
+        # Find the DataWrapper that contains the widget that observed the change
+        widg = change['owner']
         for dw in self.datamanager.get_targets():
-            dw.update_data(self.index)
+            if widg == dw.get_widget():
+                dw.update_data(self.index)

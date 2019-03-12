@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from traitlets import Unicode, Int, List
+from traitlets import Unicode, Int, List, Bool
 
 @widgets.register
 class ImagePad(widgets.Image):
@@ -12,11 +12,7 @@ class ImagePad(widgets.Image):
 
     rect = List(trait=Int).tag(sync=True)
 
-    #value = Unicode('Hello World!!!!!!!!!!!!!!!!').tag(sync=True)
-    # data_x = List([]).tag(sync=True)
-    # data_y = List([]).tag(sync=True)
-    # time = List([]).tag(sync=True)
-    #data = List([[],[],[]]).tag(sync=True)
+    is_bb_source = Bool(False).tag(sync=True)
 
     def setRect(self,x,y,w,h):
-        self.rect = [x,y,w,h]
+        self.rect = [int(x),int(y),int(w),int(h)]

@@ -35,7 +35,8 @@ var InnotaterImagePadModel = controls.ImageModel.extend({
 		_view_module: 'jupyter-innotater',
 		_model_module_version: '0.1.0',
 		_view_module_version: '0.1.0',
-		rect: [0,0,0,0]
+		rect: [0,0,0,0],
+		is_bb_source: false
 	})
 });
 
@@ -53,17 +54,17 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		 * Called when view is rendered.
 		 */
 		//_super.prototype.render.call(this);
+		var self = this;
+
 		InnotaterImagePadView.__super__.render.apply(this, arguments);
 		this.pWidget.addClass('jupyter-widgets');
 		this.pWidget.addClass('widget-image');
 
-		this.imgel = new Image(); //$('<img></img>')[0];
+		this.imgel = new Image();
 
 		this.canvas = $('<canvas></canvas>', {'class': 'jupyter-innotater-imagepad'})[0];
 
 		this.$el.append($('<div></div>').append(this.canvas));
-
-		var self = this;
 
 		self.rectX = 0;
 		self.rectY = 0;
@@ -73,12 +74,14 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		var $canvas = $(self.canvas);
 		$(this.canvas).on('mousedown', function(e) {
-			self.p = $canvas.offset();
-			self.rectX = e.pageX - self.p.left;
-			self.rectY = e.pageY - self.p.top;
-			self.isSelecting = true;
-			self.rectW = 0;
-			self.rectH = 0;
+			if (self.is_bb_source) {
+				self.p = $canvas.offset();
+				self.rectX = e.pageX - self.p.left;
+				self.rectY = e.pageY - self.p.top;
+				self.isSelecting = true;
+				self.rectW = 0;
+				self.rectH = 0;
+			}
 		}).on('mousemove', function(e) {
 			if (self.isSelecting) {
 				self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
@@ -86,20 +89,28 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				self.drawCanvas();
 			}
 		}).on('mouseup', function(e) {
-			self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
-			self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
+			if (self.isSelecting) {
+				self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
+				self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
 
-			self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
-			self.rectY = Math.round(self.rectY);
+				self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
+				self.rectY = Math.round(self.rectY);
 
-			if (self.rectW < 0) { self.rectX += self.rectW; self.rectW = -self.rectW; }
-			if (self.rectH < 0) { self.rectY += self.rectH; self.rectH = -self.rectH; }
+				if (self.rectW < 0) {
+					self.rectX += self.rectW;
+					self.rectW = -self.rectW;
+				}
+				if (self.rectH < 0) {
+					self.rectY += self.rectH;
+					self.rectH = -self.rectH;
+				}
 
-			self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
-			self.model.save_changes();
-			self.isSelecting = false;
+				self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
+				self.model.save_changes();
+				self.isSelecting = false;
 
-			//self.update will be called automatically because model was changed
+				//self.update will be called automatically because model was changed
+			}
 		});
 
 		this.update();
@@ -113,6 +124,18 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		 * changed by another view or by a state update from the back-end.
 		 */
 		this.imageLoaded = false;
+
+		var new_is_bb_source = this.model.get('is_bb_source');
+
+		if (new_is_bb_source != this.is_bb_source) {
+			if (new_is_bb_source) {
+				$(this.canvas).addClass('is_bb_source');
+			}
+			else {
+				$(this.canvas).removeClass('is_bb_source');
+			}
+			this.is_bb_source = new_is_bb_source;
+		}
 
 		var url;
 		var format = this.model.get('format');
@@ -158,7 +181,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 			self.canvas.setAttribute('width', self.imgel.width.toString());
 			self.canvas.setAttribute('height', self.imgel.height.toString());
 
-			this.imageLoaded = true;
+			self.imageLoaded = true;
 
 			self.drawCanvas();
 		}
@@ -168,25 +191,29 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 	},
 
 	drawCanvas: function() {
+		var self = this;
 		var ctx = this.canvas.getContext('2d');
 
 		ctx.drawImage(this.imgel, 0, 0);
 
-		ctx.save();
-		ctx.globalAlpha = 0.9;
+		if (self.is_bb_source) {
 
-		ctx.beginPath();
-		ctx.strokeStyle = "#FFFFFF";
-		ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
-		ctx.stroke();
+			ctx.save();
+			ctx.globalAlpha = 0.9;
 
-		ctx.beginPath();
-		ctx.strokeStyle = "#000000";
-		ctx.setLineDash([5]);
-		ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
-		ctx.stroke();
+			ctx.beginPath();
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+			ctx.stroke();
 
-		ctx.restore();
+			ctx.beginPath();
+			ctx.strokeStyle = "#000000";
+			ctx.setLineDash([5]);
+			ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+			ctx.stroke();
+
+			ctx.restore();
+		}
 	},
 
 	remove: function() {

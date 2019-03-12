@@ -3,5 +3,9 @@ canvas.jupyter-innotater-imagepad {
     margin-left: auto; 
     margin-right: auto; 
     display: block;
+    cursor: default;
+}
+
+canvas.jupyter-innotater-imagepad.is_bb_source {
     cursor: crosshair;
 }
