@@ -63,12 +63,7 @@ class Innotater(VBox):
         i = self.index
 
         for dw in self.datamanager.get_all():
-            #print("Updating {}".format(dw))
             dw.update_ui(i)
-
-        #fn = self.inputs[i]
-        #self.image_pad.set_value_from_file(self.path+fn)
-        #self.checkbox.value = self.targets[i] == 1
 
         self.prevbtn.disabled = self.index <= 0
         self.nextbtn.disabled = self.index >= self.datamanager.get_data_len()-1

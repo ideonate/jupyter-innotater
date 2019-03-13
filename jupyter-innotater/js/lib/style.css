@@ -4,6 +4,7 @@ canvas.jupyter-innotater-imagepad {
     margin-right: auto; 
     display: block;
     cursor: default;
+    border: 1px solid black;
 }
 
 canvas.jupyter-innotater-imagepad.is_bb_source {

@@ -9,12 +9,22 @@ class DataManager:
 
         self.alldws = {}
 
+        l = -1
+
         for dw in self.inputs+self.targets:
             name = dw.get_name()
             if name in self.alldws:
                 raise Exception(f'Duplicate DataWrapper {name}')
 
             self.alldws[name] = dw
+
+            # Check number of rows is the same and not zero
+            if l == -1:
+                l = len(dw)
+                if l == 0:
+                    raise Exception(f'DataWrapper {name} has 0 data rows')
+            elif l != len(dw):
+                raise Exception(f'DataWrappers must all have same number of rows: {name} has a different number of data rows than previous DataWrappers')
 
         for dw in self.alldws.values():
             dw.post_register(self)

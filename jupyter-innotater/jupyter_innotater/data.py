@@ -181,9 +181,14 @@ class MultiClassificationDataWrapper(DataWrapper):
 
     def _guess_classes(self):
         if self.datadepth == 'onehot':
-            m = self.data.shape[1]
-        else:
-            m = self.data.max()
+            m = len(self.data[0])-1
+        elif self.datadepth == 'simple':
+            m = max(self.data)
+        else: # colvector
+            m = max(self.data)[0]
+
+        if m == 0:
+            raise Exception(f'MultiClassificationDataWrapper {self.name} only has one class value in use so cannot infer class count - please specify a classes array')
 
         self.classes = [str(i) for i in range(m+1)]
 
@@ -192,11 +197,11 @@ class MultiClassificationDataWrapper(DataWrapper):
 
     def _calc_class_index(self, index):
         if self.datadepth == 'onehot':
-            return max(range(len(self.data[index])), key=lambda x: self.data[index][x], default=0)
+            return int(max(range(len(self.data[index])), key=lambda x: self.data[index][x], default=0))
         if self.datadepth == 'simple':
-            return self.data[index]
+            return int(self.data[index])
         # colvector
-        return self.data[index,0]
+        return int(self.data[index][0])
 
     def update_ui(self, index):
         self.get_widget().value = self.classes[self._calc_class_index(index)]

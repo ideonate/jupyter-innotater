@@ -14,6 +14,8 @@ The Innotater widget is designed with a flexible API making it quick and easy to
 
 The widget is currently in ALPHA development phase, and I appreciate all feedback on any problems including details on how the current code works or fails to work for the structure of your particular projects.
 
+![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesFull.png)
+
 ## 2 - Examples
 
 ### Images and Bounding Boxes
@@ -34,7 +36,7 @@ targets = np.zeros((len(foodfns), 4)) # Initialise bounding boxes as x,y = 0,0, 
 Innotater( ImageDataWrapper(images, path='./foods), BoundingBoxDataWrapper(targets) )
 ```
 
-(Screenshot needed)
+![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesInnotater.png)
 
 The widget allows you to interactively draw bounding boxes for any of the images, and the `targets` variable is always kept in sync with your changes.
 
@@ -45,6 +47,72 @@ df.to_csv('./bounding_boxes.csv', index=False)
 ```
 
 The above saves your work - the bounding boxes you've drawn - as a CSV file. Without saving, your numbers will be lost if the kernel restarts.
+
+### Multi-Classification of Images
+
+Load some images from filenames in an array, initialise empty targets.
+
+Then set up Innotater to display the images so you can mark the classes.
+
+```
+from jupyter_innotater import Innotater
+from jupyter_innotater.data import ImageDataWrapper, MultiClassificationDataWrapper
+
+import numpy as np, os, cv2
+
+classes = ['vegetable', 'biscuit', 'fruit']
+foods = [cv2.imread('./foods/'+f) for f in os.listdir('./foods/')]
+targets = [0] * len(foods)
+
+Innotater( ImageDataWrapper(foods), MultiClassificationDataWrapper(targets, classes=classes) )
+```
+
+![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndMultiClassifier.png)
+
+The widget allows you to interactively step through the images selecting the classification, and the `targets` variable is always kept in sync with your changes.
+
+### Binary-Classification with Bounding Boxes for Images
+
+Set up Innotater to display the images so you can mark whether it is the object you are trying to detect, and draw bounding boxes if so.
+
+```
+from jupyter_innotater import Innotater
+from jupyter_innotater.data import ImageDataWrapper, BoundingBoxDataWrapper, BinaryClassificationDataWrapper
+
+import numpy as np, os
+
+images = os.listdir('./foods/')
+bboxes = np.zeros((len(images),4), dtype='int')
+isfruits = np.ones((len(images),1), dtype='int')
+
+Innotater(
+        ImageDataWrapper(images, name='Food', path='./foods'), 
+        [ BinaryClassificationDataWrapper(isfruits, name='Is Fruit'),
+          BoundingBoxDataWrapper(bboxes, name='bbs', source='Food', desc='Food Type') ]
+)
+
+```
+
+![Screenshot of Innotater widget in Jupyter](./screenshots/MultiClassifierAndBBoxes.png)
+
+The widget allows you to interactively step through the images selecting the classification, and both `isfruits` and `bboxes` are always kept in sync with your changes.
+
+```
+result = np.concatenate([isfruits,bboxes], axis=-1); result
+```
+
+Output:
+
+```
+array([[  1, 173,  41, 135, 144],
+       [  1, 138, 130,  79,  75],
+       [  0,   0,   0,   0,   0],
+       [  0,   0,   0,   0,   0],
+       [  0,   0,   0,   0,   0],
+       [  1, 205, 108,  62,  47],
+       [  1, 117, 129, 158, 131],
+       [  0,   0,   0,   0,   0]])
+```
 
 ## 3 - Usage Reference
 
@@ -90,7 +158,7 @@ Extra optional parameters:
 
 `width` and/or `height` to specify the maximum size of image to display. Currently just truncates the image - in the future some way to zoom to make large images manageable will be added. 
 
-### BoundingBoxDataWrapper
+#### BoundingBoxDataWrapper
 
 data is expected to be a 2-dimensional array with four columns corresponding to x,y,w,h - the top-left co-ordinates of the bounding boxes and width/height.
 
@@ -108,7 +176,7 @@ Innotater( [ ImageDataWrapper(foodimages, name='food'), ImageDataWrapper(maskima
 
 In this example, the first image (with `name='food'`) will allow the user to draw a bounding box on it, and this will update the co-ordinates in the BoundingBoxDataWrapper (which has `source='food'`)
 
-### MultiClassificationDataWrapper
+#### MultiClassificationDataWrapper
 
 data is expected to be one of:
 
@@ -120,11 +188,9 @@ Displays a list selection box so the user can choose one highlighted option. Cur
 
 Extra optional parameters:
 
-`classes` - an array of two string values containing text to display in place of 'False' and 'True'. 
+`classes` - an array of string values containing text to display in place of the numerical class indices. 
 
-
-
-### BinaryClassificationDataWrapper
+#### BinaryClassificationDataWrapper
 
 data is expected to be an array of True/False values.
 
