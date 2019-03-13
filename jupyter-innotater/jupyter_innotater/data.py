@@ -134,13 +134,13 @@ class BoundingBoxDataWrapper(DataWrapper):
             self.sourcedw.setRect(x,y,w,h)
 
     def _value_to_str(self, r):
-        return ', '.join([str(a) for a in r])
+        return ', '.join([str(int(a)) for a in r])
 
     def update_data(self, index):
         newval = self.get_widget().value
         if newval != self._value_to_str(self.data[index]):
             try:
-                self.data[index] = [int(s) for s in re.split('[ ,]+', newval)]
+                self.data[index] = [int(float(s)) for s in re.split('[ ,]+', newval)]
                 self._sync_to_image(index)
             except ValueError:
                 pass
@@ -201,12 +201,15 @@ class MultiClassificationDataWrapper(DataWrapper):
     def update_ui(self, index):
         self.get_widget().value = self.classes[self._calc_class_index(index)]
 
+    def _get_widget_value(self):
+        return self.get_widget().value
+
     def update_data(self, index):
-        newval = self.get_widget().value
-        if newval != self.classes[self._calc_class_index(index)]:
+        newval = self._get_widget_value()
+        old_class_index = self._calc_class_index(index)
+        if newval != self.classes[old_class_index]:
             class_index = self.classes.index(newval)
             if self.datadepth == 'onehot':
-                old_class_index = self._calc_class_index(index)
                 self.data[index][old_class_index] = 0
                 self.data[index][class_index] = 1
             elif self.datadepth == 'simple':
@@ -216,24 +219,16 @@ class MultiClassificationDataWrapper(DataWrapper):
                 self.data[index][0] = class_index
 
 
-class BinaryClassificationDataWrapper(DataWrapper):
+class BinaryClassificationDataWrapper(MultiClassificationDataWrapper):
 
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        if 'classes' in kwargs:
-            self.classes = kwargs['classes']
-        else:
-            self.classes = ['False', 'True']
+    def _guess_classes(self):
+        self.classes = ['False', 'True']
 
     def _create_widget(self):
         return Checkbox(description=self.desc)
 
     def update_ui(self, index):
-        self.get_widget().value = self.data[index] == 1
+        self.get_widget().value = bool(self._calc_class_index(index) == 1)
 
-    def update_data(self, index):
-        newval = self.get_widget().value and 1 or 0
-        if newval != self.data[index]:
-            self.data[index] = newval
+    def _get_widget_value(self):
+        return self.classes[self.get_widget().value and 1 or 0]
