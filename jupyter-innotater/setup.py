@@ -1,5 +1,4 @@
 # necessary to push to PyPI
-# cf. http://peterdowns.com/posts/first-time-with-pypi.html
 # cf. https://tom-christie.github.io/articles/pypi/
 # cf. https://pythonhosted.org/setuptools/setuptools.html
 
@@ -35,8 +34,8 @@ name_url = name.replace('_', '-')
 
 packages = [module]
 version = meta_ns['__version__']
-description = 'This is a jupyter widget (or ipywidget) allowing inline data annotations.'
-long_description = 'See github repo README'
+description = 'Jupyter widget to edit data annotations inline.'
+long_description = 'Annotate data including image bounding boxes inline within your Jupyter notebook in python.'
 author = 'ideonate'
 author_email = 'dan@ideonate.com'
 # github template
