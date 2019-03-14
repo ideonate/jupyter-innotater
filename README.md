@@ -31,7 +31,7 @@ from jupyter_innotater.data import ImageDataWrapper, BoundingBoxDataWrapper
 import numpy as np, os
 
 images = os.listdir('./foods/')
-targets = np.zeros((len(foodfns), 4)) # Initialise bounding boxes as x,y = 0,0, width,height = 0,0
+targets = np.zeros((len(images), 4)) # Initialise bounding boxes as x,y = 0,0, width,height = 0,0
 
 Innotater( ImageDataWrapper(images, path='./foods'), BoundingBoxDataWrapper(targets) )
 ```
@@ -112,6 +112,16 @@ array([[  1, 173,  41, 135, 144],
        [  1, 205, 108,  62,  47],
        [  1, 117, 129, 158, 131],
        [  0,   0,   0,   0,   0]])
+```
+
+#### Jupyter Notebook Example
+
+The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook.
+
+For the full effect, you may need to install opencv2 and pandas packages (or just ignore those parts of the notebook):
+```
+pip install opencv-python
+pip install pandas
 ```
 
 ## 3 - Usage Reference
@@ -203,7 +213,13 @@ Extra optional parameters:
 
 ## 3 - Installation
 
-Development install (currently only option until released on PyPi and/or Anaconda):
+### Install from PyPi (recommended)
+
+```
+pip install jupyter_innotater
+```
+
+### Development install
 
 ```
 git clone https://github.com/ideonate/innotater
