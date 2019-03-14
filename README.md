@@ -114,7 +114,7 @@ array([[  1, 173,  41, 135, 144],
        [  0,   0,   0,   0,   0]])
 ```
 
-#### Jupyter Notebook Example
+### Jupyter Notebook Example
 
 The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook.
 
