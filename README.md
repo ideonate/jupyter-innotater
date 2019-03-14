@@ -33,7 +33,7 @@ import numpy as np, os
 images = os.listdir('./foods/')
 targets = np.zeros((len(foodfns), 4)) # Initialise bounding boxes as x,y = 0,0, width,height = 0,0
 
-Innotater( ImageDataWrapper(images, path='./foods), BoundingBoxDataWrapper(targets) )
+Innotater( ImageDataWrapper(images, path='./foods'), BoundingBoxDataWrapper(targets) )
 ```
 
 ![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesInnotater.png)
