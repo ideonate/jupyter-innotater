@@ -1,4 +1,3 @@
-from .image import *
 from .widget import *
 
 from .__meta__ import __version__
