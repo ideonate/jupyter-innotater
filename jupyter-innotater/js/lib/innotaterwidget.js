@@ -36,6 +36,13 @@ var InnotaterView = controls.VBoxView.extend({
 
     InnotaterView: function() {
         InnotaterView.__super__.apply(this, arguments);
+    },
+
+    render: function () {
+        InnotaterView.__super__.render.apply(this, arguments);
+        if (window.location.hostname == "www.kaggleusercontent.com") {
+            this.el.classList.add('innotater-kaggle');
+        }
     }
 
 });

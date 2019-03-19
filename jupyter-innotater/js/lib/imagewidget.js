@@ -51,7 +51,6 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		/**
 		 * Called when view is rendered.
 		 */
-		//_super.prototype.render.call(this);
 		var self = this;
 
 		InnotaterImagePadView.__super__.render.apply(this, arguments);
@@ -72,10 +71,10 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		var $canvas = $(self.canvas);
 		$(this.canvas).on('mousedown', function(e) {
-			if (self.is_bb_source) {
+			if (self.is_bb_source && e.which == 1) {
 				self.p = $canvas.offset();
-				self.rectX = (e.pageX - self.p.left) / self.zoom;;
-				self.rectY = (e.pageY - self.p.top) / self.zoom;;
+				self.rectX = (e.pageX - self.p.left) / self.zoom;
+				self.rectY = (e.pageY - self.p.top) / self.zoom;
 				self.isSelecting = true;
 				self.rectW = 0;
 				self.rectH = 0;
@@ -86,7 +85,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				self.rectH = (e.pageY - self.p.top) / self.zoom - self.rectY;
 				self.drawCanvas();
 			}
-		}).on('mouseup', function(e) {
+		}).on('mouseup mouseleave', function(e) {
 			if (self.isSelecting) {
 				self.rectW = Math.round((e.pageX - self.p.left) / self.zoom  - self.rectX);
 				self.rectH = Math.round((e.pageY - self.p.top) / self.zoom - self.rectY);
@@ -94,6 +93,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
 				self.rectY = Math.round(self.rectY);
 
+				// Check bounds and adjust
 				if (self.rectW < 0) {
 					self.rectX += self.rectW;
 					self.rectW = -self.rectW;
@@ -103,6 +103,12 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 					self.rectH = -self.rectH;
 				}
 
+				if (self.rectX < 0) { self.rectX = 0; }
+				if (self.rectY < 0) { self.rectY = 0; }
+				if (self.rectX + self.rectW > self.imgel.width) { self.rectW = self.imgel.width - self.rectX; }
+				if (self.rectY + self.rectH > self.imgel.height) { self.rectH = self.imgel.height - self.rectY; }
+
+				// Sync to backend
 				self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
 				self.model.save_changes();
 				self.isSelecting = false;
@@ -151,20 +157,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		if (oldurl && typeof oldurl !== 'string') {
 			URL.revokeObjectURL(oldurl);
 		}
-		/*var width = this.model.get('width');
-		if (width !== undefined && width.length > 0) {
-			this.imgel.setAttribute('width', width);
-		}
-		else {
-			this.imgel.removeAttribute('width');
-		}
-		var height = this.model.get('height');
-		if (height !== undefined && height.length > 0) {
-			this.imgel.setAttribute('height', height);
-		}
-		else {
-			this.imgel.removeAttribute('height');
-		}*/
+
 
 		// Get bounding box from model
 
@@ -231,7 +224,6 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 			self.drawCanvas();
 		}
 
-		//return _super.prototype.update.call(this);
 		return InnotaterImagePadView.__super__.update.apply(this, arguments);
 	},
 
@@ -245,8 +237,6 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		ctx.drawImage(this.imgel, 0, 0, self.usewidth, self.useheight);
 
 		if (self.is_bb_source) {
-			console.log(self.zoom);
-
 			ctx.save();
 			ctx.globalAlpha = 0.9;
 
@@ -269,7 +259,6 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		if (this.imgel.src) {
 			URL.revokeObjectURL(this.imgel.src);
 		}
-		//_super.prototype.remove.call(this);
 		InnotaterImagePadView.__super__.remove.apply(this, arguments);
 	}
 });

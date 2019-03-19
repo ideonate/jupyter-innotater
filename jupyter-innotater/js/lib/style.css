@@ -13,11 +13,11 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
 
 /* Kaggle Overrides */
 
-.innotater-base .widget-hbox {
+.innotater-kaggle .widget-hbox {
     width: 90% !important;
     display: flex !important;
 }
 
-.innotater-base .widget-inline-hbox {
+.innotater-kaggle .widget-inline-hbox {
     display: flex !important;
 }
