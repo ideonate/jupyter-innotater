@@ -71,7 +71,7 @@ class Innotater(VBox):
 
     def update_data(self, change):
         uindex = self.datamanager.get_underlying_index(self.index)
-        # Find the DataWrapper that contains the widget that observed the change
+        # Find the Innotation that contains the widget that observed the change
         widg = change['owner']
         for dw in self.datamanager.get_targets():
             if widg == dw.get_widget():

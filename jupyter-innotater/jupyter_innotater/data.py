@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 
-class DataWrapper:
+class Innotation:
 
     anonindex = 1
 
@@ -13,8 +13,8 @@ class DataWrapper:
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
-            self.name = 'data{}'.format(DataWrapper.anonindex)
-            DataWrapper.anonindex += 1
+            self.name = 'data{}'.format(Innotation.anonindex)
+            Innotation.anonindex += 1
 
         self.desc = kwargs.get('desc', self.name)
 
@@ -53,7 +53,7 @@ class DataWrapper:
         raise Exception('Do not call update_data on an input-only class')
 
 
-class ImageDataWrapper(DataWrapper):
+class ImageInnotation(Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -86,7 +86,7 @@ class ImageDataWrapper(DataWrapper):
         self.get_widget().setRect(x,y,w,h)
 
 
-class BoundingBoxDataWrapper(DataWrapper):
+class BoundingBoxInnotation(Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -100,17 +100,17 @@ class BoundingBoxDataWrapper(DataWrapper):
             self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
 
             if self.sourcedw is None:
-                raise Exception(f'ImageDataWrapper named {self.source} not found but specified as source attribute for BoundingBoxDataWrapper')
+                raise Exception(f'ImageInnotation named {self.source} not found but specified as source attribute for BoundingBoxInnotation')
 
-            if not isinstance(self.sourcedw, ImageDataWrapper):
-                raise Exception(f'DataWrapper named {self.source} is not an ImageDataWrapper but is specified as source attribute for BoundingBoxDataWrapper')
+            if not isinstance(self.sourcedw, ImageInnotation):
+                raise Exception(f'Innotation named {self.source} is not an ImageInnotation but is specified as source attribute for BoundingBoxInnotation')
 
         else:
             # Find by type
-            dws = datamanager.get_data_wrappers_by_type(ImageDataWrapper)
+            dws = datamanager.get_data_wrappers_by_type(ImageInnotation)
             if len(dws) != 1:
                 # Raises exception if 0 or >1 of these is found
-                raise Exception(f'ImageDataWrapper not found uniquely')
+                raise Exception(f'ImageInnotation not found uniquely')
 
             self.sourcedw = dws[0]
 
@@ -151,7 +151,7 @@ class BoundingBoxDataWrapper(DataWrapper):
             self.get_widget().value = self._value_to_str(r)
 
 
-class MultiClassificationDataWrapper(DataWrapper):
+class MultiClassInnotation(Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -188,7 +188,7 @@ class MultiClassificationDataWrapper(DataWrapper):
             m = max(self.data)[0]
 
         if m == 0:
-            raise Exception(f'MultiClassificationDataWrapper {self.name} only has one class value in use so cannot infer class count - please specify a classes array')
+            raise Exception(f'MultiClassInnotation {self.name} only has one class value in use so cannot infer class count - please specify a classes array')
 
         self.classes = [str(i) for i in range(m+1)]
 
@@ -224,7 +224,7 @@ class MultiClassificationDataWrapper(DataWrapper):
                 self.data[uindex][0] = class_index
 
 
-class BinaryClassificationDataWrapper(MultiClassificationDataWrapper):
+class BinaryClassInnotation(MultiClassInnotation):
 
     def _guess_classes(self):
         self.classes = ['False', 'True']

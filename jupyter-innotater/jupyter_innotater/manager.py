@@ -1,15 +1,11 @@
-from .data import DataWrapper
+from .data import Innotation
 
 class DataManager:
 
     def __init__(self, inputs, targets, indexes=None):
 
-        self.inputs = [inputs] if isinstance(inputs, DataWrapper) else inputs
-        self.targets = [targets] if isinstance(targets, DataWrapper) else targets
-
-        if indexes is not None and len(indexes) == 0:
-            raise Exception("indexes must be a non-empty array-like containing integers")
-        self.indexes = indexes
+        self.inputs = [inputs] if isinstance(inputs, Innotation) else inputs
+        self.targets = [targets] if isinstance(targets, Innotation) else targets
 
         self.alldws = {}
 
@@ -18,7 +14,7 @@ class DataManager:
         for dw in self.inputs+self.targets:
             name = dw.get_name()
             if name in self.alldws:
-                raise Exception(f'Duplicate DataWrapper {name}')
+                raise Exception(f'Duplicate Innotation {name}')
 
             self.alldws[name] = dw
 
@@ -26,9 +22,22 @@ class DataManager:
             if l == -1:
                 l = len(dw)
                 if l == 0:
-                    raise Exception(f'DataWrapper {name} has 0 data rows')
+                    raise Exception(f'Innotation {name} has 0 data rows')
             elif l != len(dw):
-                raise Exception(f'DataWrappers must all have same number of rows: {name} has a different number of data rows than previous DataWrappers')
+                raise Exception(f'Innotations must all have same number of rows: {name} has a different number of data rows than previous Innotations')
+
+        self.indexes = indexes
+        if indexes is not None:
+            if len(indexes) == 0:
+                raise Exception("indexes must be a non-empty array-like containing integers or booleans")
+
+            # boolean or numpy.bool_ - and might be a col vector
+            if 'bool' in str(type(indexes[0])) or hasattr(indexes[0], '__len__') and len(indexes[0]) == 1 and 'bool' in str(type(indexes[0][0])):
+                if len(indexes) != len(self.inputs[0]):
+                    raise Exception("indexes as a boolean mask must have same len as the inputs")
+                self.indexes = [int(i) for i in range(len(indexes)) if hasattr(indexes[i], '__len__') and indexes[i][0] or indexes[i] == True]
+                if len(self.indexes) == 0:
+                    raise Exception("indexes as a boolean mask must have some True values")
 
         for dw in self.alldws.values():
             dw.post_register(self)

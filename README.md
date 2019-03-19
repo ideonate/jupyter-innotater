@@ -26,14 +26,14 @@ Then set up Innotater to display the images so you can draw updated bounding box
 
 ```
 from jupyter_innotater import Innotater
-from jupyter_innotater.data import ImageDataWrapper, BoundingBoxDataWrapper
+from jupyter_innotater.data import ImageInnotation, BoundingBoxInnotation
 
 import numpy as np, os
 
 images = os.listdir('./foods/')
 targets = np.zeros((len(images), 4)) # Initialise bounding boxes as x,y = 0,0, width,height = 0,0
 
-Innotater( ImageDataWrapper(images, path='./foods'), BoundingBoxDataWrapper(targets) )
+Innotater( ImageInnotation(images, path='./foods'), BoundingBoxInnotation(targets) )
 ```
 
 ![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesInnotater.png)
@@ -56,7 +56,7 @@ Then set up Innotater to display the images so you can mark the classes.
 
 ```
 from jupyter_innotater import Innotater
-from jupyter_innotater.data import ImageDataWrapper, MultiClassificationDataWrapper
+from jupyter_innotater.data import ImageInnotation, MultiClassInnotation
 
 import numpy as np, os, cv2
 
@@ -64,7 +64,7 @@ classes = ['vegetable', 'biscuit', 'fruit']
 foods = [cv2.imread('./foods/'+f) for f in os.listdir('./foods/')]
 targets = [0] * len(foods)
 
-Innotater( ImageDataWrapper(foods), MultiClassificationDataWrapper(targets, classes=classes) )
+Innotater( ImageInnotation(foods), MultiClassInnotation(targets, classes=classes) )
 ```
 
 ![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndMultiClassifier.png)
@@ -77,7 +77,7 @@ Set up Innotater to display the images so you can mark whether it is the object 
 
 ```
 from jupyter_innotater import Innotater
-from jupyter_innotater.data import ImageDataWrapper, BoundingBoxDataWrapper, BinaryClassificationDataWrapper
+from jupyter_innotater.data import ImageInnotation, BoundingBoxInnotation, BinaryClassInnotation
 
 import numpy as np, os
 
@@ -86,9 +86,9 @@ bboxes = np.zeros((len(images),4), dtype='int')
 isfruits = np.ones((len(images),1), dtype='int')
 
 Innotater(
-        ImageDataWrapper(images, name='Food', path='./foods'), 
-        [ BinaryClassificationDataWrapper(isfruits, name='Is Fruit'),
-          BoundingBoxDataWrapper(bboxes, name='bbs', source='Food', desc='Food Type') ]
+        ImageInnotation(images, name='Food', path='./foods'), 
+        [ BinaryClassInnotation(isfruits, name='Is Fruit'),
+          BoundingBoxInnotation(bboxes, name='bbs', source='Food', desc='Food Type') ]
 )
 
 ```
@@ -132,9 +132,9 @@ pip install pandas
 Innotater( inputs, targets )
 ```
 
-Instantiates the Jupyter widget. Each of `inputs` and `targets` is a DataWrapper subclass or array of DataWrapper subclasses.
+Instantiates the Jupyter widget. Each of `inputs` and `targets` is a Innotation subclass or array of Innotation subclasses.
 
-The DataWrapper subclasses allow display and interaction with different types of input/target data. Typically, inputs contains one or more data source that is fixed in your project (e.g. images of dogs) and targets contains data that is intended to be modified through the widget.
+The Innotation subclasses allow display and interaction with different types of input/target data. Typically, inputs contains one or more data source that is fixed in your project (e.g. images of dogs) and targets contains data that is intended to be modified through the widget.
 
 To display the widget explicitly:
 ```
@@ -142,23 +142,23 @@ w = Innotater( inputs, targets )
 display(w)
 ```
 
-### DataWrapper subclasses
+### Innotation subclasses
 
 This is the base class (not to be instantiated directly).
 
 The general constructor format for subclasses is:
 
 ```
-DataWrapper( <array_like> data, [name=<string>,] [desc=<string>,])
+Innotation( <array_like> data, [name=<string>,] [desc=<string>,])
 ```
 
 Optionally, data can be specified as a `data=` keyword argument, in which case the positional data argument should be omitted.
 
-`name` is optional unless required so that the DataWrapper can be specified as the source for another DataWrapper (e.g. to link the Bounding Box data with the image to which it applies).
+`name` is optional unless required so that the Innotation can be specified as the source for another Innotation (e.g. to link the Bounding Box data with the image to which it applies).
 
 `desc` is also optional, and defaults to the same value as `name`. It may be displayed as a text label next to the data in the widget. 
 
-#### ImageDataWrapper
+#### ImageInnotation
 
 data is expected to be an array of filenames, blobs, or numpy arrays containing image data directly (RGB format).
 
@@ -168,25 +168,25 @@ Extra optional parameters:
 
 `width` and/or `height` to specify the maximum size of image to display. Currently just truncates the image - in the future some way to zoom to make large images manageable will be added. 
 
-#### BoundingBoxDataWrapper
+#### BoundingBoxInnotation
 
 data is expected to be a 2-dimensional array with four columns corresponding to x,y,w,h - the top-left co-ordinates of the bounding boxes and width/height.
 
-Displays a text box containing x,y,w,h as a string which can be edited directly or by drawing a bounding box on the corresponding ImageDataWrapper.
+Displays a text box containing x,y,w,h as a string which can be edited directly or by drawing a bounding box on the corresponding ImageInnotation.
 
-If there is only one ImageDataWrapper in the Innotater instance, that will be assumed to be the source image for this BoundingBoxDataWrapper. If there are multiple images, the source parameter will be needed (see below).
+If there is only one ImageInnotation in the Innotater instance, that will be assumed to be the source image for this BoundingBoxInnotation. If there are multiple images, the source parameter will be needed (see below).
 
 Extra parameters:
 
-`source` - the `name` attribute of the corresponding ImageDataWrapper (required if there is ambiguity). Example:
+`source` - the `name` attribute of the corresponding ImageInnotation (required if there is ambiguity). Example:
 
 ```
-Innotater( [ ImageDataWrapper(foodimages, name='food'), ImageDataWrapper(maskimages, name='mask'),], BoundingBoxDataWrapper(targets, source='food') )
+Innotater( [ ImageInnotation(foodimages, name='food'), ImageInnotation(maskimages, name='mask'),], BoundingBoxInnotation(targets, source='food') )
 ```
 
-In this example, the first image (with `name='food'`) will allow the user to draw a bounding box on it, and this will update the co-ordinates in the BoundingBoxDataWrapper (which has `source='food'`)
+In this example, the first image (with `name='food'`) will allow the user to draw a bounding box on it, and this will update the co-ordinates in the BoundingBoxInnotation (which has `source='food'`)
 
-#### MultiClassificationDataWrapper
+#### MultiClassInnotation
 
 data is expected to be one of:
 
@@ -200,7 +200,7 @@ Extra optional parameters:
 
 `classes` - an array of string values containing text to display in place of the numerical class indices. 
 
-#### BinaryClassificationDataWrapper
+#### BinaryClassInnotation
 
 data is expected to be an array of True/False values.
 
