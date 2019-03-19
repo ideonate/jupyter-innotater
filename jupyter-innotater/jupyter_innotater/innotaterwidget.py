@@ -14,11 +14,11 @@ class Innotater(VBox):
 
     index = Int().tag(sync=True)
 
-    def __init__(self, inputs, targets):
+    def __init__(self, inputs, targets, indexes=None):
 
         self.path = ''
 
-        self.datamanager = DataManager(inputs, targets)
+        self.datamanager = DataManager(inputs, targets, indexes)
 
         slider = IntSlider(min=0, max=0)
 
@@ -45,11 +45,10 @@ class Innotater(VBox):
         self.prevbtn.on_click(lambda c: self.move_slider(-1))
         self.nextbtn.on_click(lambda c: self.move_slider(1))
 
-
         self.slider.max = self.datamanager.get_data_len()-1
+
         self.index = 0
         self.update_ui()
-
 
     @observe('index')
     def slider_changed(self, change):
@@ -62,17 +61,18 @@ class Innotater(VBox):
             self.index += 1
 
     def update_ui(self):
-        i = self.index
+        uindex = self.datamanager.get_underlying_index(self.index)
 
         for dw in self.datamanager.get_all():
-            dw.update_ui(i)
+            dw.update_ui(uindex)
 
         self.prevbtn.disabled = self.index <= 0
         self.nextbtn.disabled = self.index >= self.datamanager.get_data_len()-1
 
     def update_data(self, change):
+        uindex = self.datamanager.get_underlying_index(self.index)
         # Find the DataWrapper that contains the widget that observed the change
         widg = change['owner']
         for dw in self.datamanager.get_targets():
             if widg == dw.get_widget():
-                dw.update_data(self.index)
+                dw.update_data(uindex)

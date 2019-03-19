@@ -46,10 +46,10 @@ class DataWrapper:
             self.widget = self._create_widget() # on derived class
         return self.widget
 
-    def update_ui(self, index):
+    def update_ui(self, uindex):
         raise Exception('Do not call update_ui on base class')
 
-    def update_data(self, index):
+    def update_data(self, uindex):
         raise Exception('Do not call update_data on an input-only class')
 
 
@@ -67,20 +67,20 @@ class ImageDataWrapper(DataWrapper):
     def _create_widget(self):
         return ImagePad(width=self.width, height=self.height)
 
-    def update_ui(self, index):
-        if hasattr(self.data[index], '__fspath__') or isinstance(self.data[index], str):
+    def update_ui(self, uindex):
+        if hasattr(self.data[uindex], '__fspath__') or isinstance(self.data[uindex], str):
             # Path-like
-            p = Path(self.data[index])
+            p = Path(self.data[uindex])
             if self.path != '':
                 p = Path(self.path) / p
             self.get_widget().set_value_from_file(p)
-        elif 'numpy' in str(type(self.data[index])):
+        elif 'numpy' in str(type(self.data[uindex])):
             import cv2
 
-            self.get_widget().value = cv2.imencode('.png', self.data[index])[1].tostring()
+            self.get_widget().value = cv2.imencode('.png', self.data[uindex])[1].tostring()
         else:
             # Actual raw image data
-            self.get_widget().value = self.data[index]
+            self.get_widget().value = self.data[uindex]
 
     def setRect(self, x,y,w,h):
         self.get_widget().setRect(x,y,w,h)
@@ -124,24 +124,24 @@ class BoundingBoxDataWrapper(DataWrapper):
     def _create_widget(self):
         return Text()
 
-    def update_ui(self, index):
-        self.get_widget().value = self._value_to_str(self.data[index])
-        self._sync_to_image(index)
+    def update_ui(self, uindex):
+        self.get_widget().value = self._value_to_str(self.data[uindex])
+        self._sync_to_image(uindex)
 
-    def _sync_to_image(self, index):
+    def _sync_to_image(self, uindex):
         if self.sourcedw is not None:
-            (x,y,w,h) = self.data[index][:4]
+            (x,y,w,h) = self.data[uindex][:4]
             self.sourcedw.setRect(x,y,w,h)
 
     def _value_to_str(self, r):
         return ', '.join([str(int(a)) for a in r])
 
-    def update_data(self, index):
+    def update_data(self, uindex):
         newval = self.get_widget().value
-        if newval != self._value_to_str(self.data[index]):
+        if newval != self._value_to_str(self.data[uindex]):
             try:
-                self.data[index] = [int(float(s)) for s in re.split('[ ,]+', newval)]
-                self._sync_to_image(index)
+                self.data[uindex] = [int(float(s)) for s in re.split('[ ,]+', newval)]
+                self._sync_to_image(uindex)
             except ValueError:
                 pass
 
@@ -195,33 +195,33 @@ class MultiClassificationDataWrapper(DataWrapper):
     def _create_widget(self):
         return Select(options=self.classes)
 
-    def _calc_class_index(self, index):
+    def _calc_class_index(self, uindex):
         if self.datadepth == 'onehot':
-            return int(max(range(len(self.data[index])), key=lambda x: self.data[index][x], default=0))
+            return int(max(range(len(self.data[uindex])), key=lambda x: self.data[uindex][x], default=0))
         if self.datadepth == 'simple':
-            return int(self.data[index])
+            return int(self.data[uindex])
         # colvector
-        return int(self.data[index][0])
+        return int(self.data[uindex][0])
 
-    def update_ui(self, index):
-        self.get_widget().value = self.classes[self._calc_class_index(index)]
+    def update_ui(self, uindex):
+        self.get_widget().value = self.classes[self._calc_class_index(uindex)]
 
     def _get_widget_value(self):
         return self.get_widget().value
 
-    def update_data(self, index):
+    def update_data(self, uindex):
         newval = self._get_widget_value()
-        old_class_index = self._calc_class_index(index)
+        old_class_index = self._calc_class_index(uindex)
         if newval != self.classes[old_class_index]:
             class_index = self.classes.index(newval)
             if self.datadepth == 'onehot':
-                self.data[index][old_class_index] = 0
-                self.data[index][class_index] = 1
+                self.data[uindex][old_class_index] = 0
+                self.data[uindex][class_index] = 1
             elif self.datadepth == 'simple':
-                self.data[index] = class_index
+                self.data[uindex] = class_index
             else:
                 # colvector
-                self.data[index][0] = class_index
+                self.data[uindex][0] = class_index
 
 
 class BinaryClassificationDataWrapper(MultiClassificationDataWrapper):
@@ -232,8 +232,8 @@ class BinaryClassificationDataWrapper(MultiClassificationDataWrapper):
     def _create_widget(self):
         return Checkbox(description=self.desc)
 
-    def update_ui(self, index):
-        self.get_widget().value = bool(self._calc_class_index(index) == 1)
+    def update_ui(self, uindex):
+        self.get_widget().value = bool(self._calc_class_index(uindex) == 1)
 
     def _get_widget_value(self):
         return self.classes[self.get_widget().value and 1 or 0]

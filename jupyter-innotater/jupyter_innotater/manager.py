@@ -2,10 +2,14 @@ from .data import DataWrapper
 
 class DataManager:
 
-    def __init__(self, inputs, targets):
+    def __init__(self, inputs, targets, indexes=None):
 
         self.inputs = [inputs] if isinstance(inputs, DataWrapper) else inputs
         self.targets = [targets] if isinstance(targets, DataWrapper) else targets
+
+        if indexes is not None and len(indexes) == 0:
+            raise Exception("indexes must be a non-empty array-like containing integers")
+        self.indexes = indexes
 
         self.alldws = {}
 
@@ -38,7 +42,14 @@ class DataManager:
         return [dw for dw in self.alldws.values() if isinstance(dw, klass)]
 
     def get_data_len(self):
+        if self.indexes is not None:
+            return len(self.indexes)
         return len(self.inputs[0])
+
+    def get_underlying_index(self, index):
+        if self.indexes is None:
+            return index
+        return self.indexes[index]
 
     def get_inputs(self):
         return self.inputs

@@ -17,3 +17,7 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
     width: 90% !important;
     display: flex !important;
 }
+
+.innotater-base .widget-inline-hbox {
+    display: flex !important;
+}
