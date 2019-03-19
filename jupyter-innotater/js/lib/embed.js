@@ -4,6 +4,11 @@
 // dynamic baseURL for the static assets and may load some css that would
 // already be loaded by the notebook otherwise.
 
+// This file is currently being required by index.js entry point too
+
 // Export widget models and views, and the npm package version number.
-module.exports = require('./widget.js');
+var _ = require('lodash');
+
+module.exports = require('./innotaterwidget.js');
+_.extend( module.exports, require('./imagewidget.js') );
 module.exports['version'] = require('../package.json').version;

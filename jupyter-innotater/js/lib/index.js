@@ -8,5 +8,4 @@
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/jupyter-innotater/';
 
 // Export widget models and views, and the npm package version number.
-module.exports = require('./widget.js');
-module.exports['version'] = require('../package.json').version;
+module.exports = require('./embed.js');

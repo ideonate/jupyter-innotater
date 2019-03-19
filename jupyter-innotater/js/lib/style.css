@@ -10,3 +10,10 @@ canvas.jupyter-innotater-imagepad {
 canvas.jupyter-innotater-imagepad.is_bb_source {
     cursor: crosshair;
 }
+
+/* Kaggle Overrides */
+
+.innotater-base .widget-hbox {
+    width: 90% !important;
+    display: flex !important;
+}

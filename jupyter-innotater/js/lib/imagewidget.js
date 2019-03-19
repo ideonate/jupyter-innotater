@@ -7,8 +7,6 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 
-//var drawing_pad = require('./drawing-pad');
-
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including
@@ -29,14 +27,14 @@ var $ = require('jquery');
 
 var InnotaterImagePadModel = controls.ImageModel.extend({
 	defaults: _.extend(controls.ImageModel.prototype.defaults(), {
-		_model_name: 'InnotaterImagePadModel',
+		/*_model_name: 'InnotaterImagePadModel',
 		_view_name: 'InnotaterImagePadView',
 		_model_module: 'jupyter-innotater',
 		_view_module: 'jupyter-innotater',
 		_model_module_version: '0.1.0',
-		_view_module_version: '0.1.0',
-		rect: [0,0,0,0],
-		is_bb_source: false
+		_view_module_version: '0.1.0', */
+		/*rect: [0,0,0,0],
+		is_bb_source: false */
 	})
 });
 

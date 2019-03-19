@@ -1,16 +1,16 @@
 import ipywidgets as widgets
-from ipywidgets import HBox, VBox, IntSlider, Checkbox, Button
-from traitlets import Int, observe
+from ipywidgets import HBox, VBox, IntSlider, Button
+from traitlets import Int, observe, Unicode
 from .manager import DataManager
 
 @widgets.register
 class Innotater(VBox):
-    #_view_name = Unicode('InnotaterView').tag(sync=True)
-    #_model_name = Unicode('InnotaterModel').tag(sync=True)
-    #_view_module = Unicode('jupyter-innotater').tag(sync=True)
-    #_model_module = Unicode('jupyter-innotater').tag(sync=True)
-    #_view_module_version = Unicode('~0.1.0').tag(sync=True)
-    #_model_module_version = Unicode('~0.1.0').tag(sync=True)
+    _view_name = Unicode('InnotaterView').tag(sync=True)
+    _model_name = Unicode('InnotaterModel').tag(sync=True)
+    _view_module = Unicode('jupyter-innotater').tag(sync=True)
+    _model_module = Unicode('jupyter-innotater').tag(sync=True)
+    _view_module_version = Unicode('~0.1.0').tag(sync=True)
+    _model_module_version = Unicode('~0.1.0').tag(sync=True)
 
     index = Int().tag(sync=True)
 
@@ -29,6 +29,8 @@ class Innotater(VBox):
 
         self.input_widgets = [dw.get_widget() for dw in self.datamanager.get_inputs()]
         self.target_widgets = [dw.get_widget() for dw in self.datamanager.get_targets()]
+
+        self.add_class('innotater-base');
 
         super().__init__([HBox([VBox(self.input_widgets), VBox(self.target_widgets)]), HBox([self.prevbtn, slider, self.nextbtn])])
 

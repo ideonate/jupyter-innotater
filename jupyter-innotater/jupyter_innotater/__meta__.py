@@ -10,7 +10,8 @@ def _get_version(version_info):
     return version
 
 
-# meta data
+# meta data - change dev to final for release
+# also change in package.json
 
-version_info = (0, 1, 0, 'final', 0)
+version_info = (0, 1, 1, 'dev', 0)
 __version__ = _get_version(version_info)

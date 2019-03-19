@@ -1,4 +1,4 @@
-from .widget import *
+from .innotaterwidget import *
 
 from .__meta__ import __version__
 

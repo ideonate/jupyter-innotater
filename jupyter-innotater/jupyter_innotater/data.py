@@ -1,4 +1,4 @@
-from .image import ImagePad
+from .imagewidget import ImagePad
 from ipywidgets import Checkbox, Select, Text
 import re
 from pathlib import Path
