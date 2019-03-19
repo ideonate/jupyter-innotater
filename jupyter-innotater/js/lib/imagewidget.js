@@ -74,22 +74,22 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		$(this.canvas).on('mousedown', function(e) {
 			if (self.is_bb_source) {
 				self.p = $canvas.offset();
-				self.rectX = e.pageX - self.p.left;
-				self.rectY = e.pageY - self.p.top;
+				self.rectX = (e.pageX - self.p.left) / self.zoom;;
+				self.rectY = (e.pageY - self.p.top) / self.zoom;;
 				self.isSelecting = true;
 				self.rectW = 0;
 				self.rectH = 0;
 			}
 		}).on('mousemove', function(e) {
 			if (self.isSelecting) {
-				self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
-				self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
+				self.rectW = (e.pageX - self.p.left) / self.zoom  - self.rectX;
+				self.rectH = (e.pageY - self.p.top) / self.zoom - self.rectY;
 				self.drawCanvas();
 			}
 		}).on('mouseup', function(e) {
 			if (self.isSelecting) {
-				self.rectW = Math.round(e.pageX - self.p.left - self.rectX);
-				self.rectH = Math.round(e.pageY - self.p.top - self.rectY);
+				self.rectW = Math.round((e.pageX - self.p.left) / self.zoom  - self.rectX);
+				self.rectH = Math.round((e.pageY - self.p.top) / self.zoom - self.rectY);
 
 				self.rectX = Math.round(self.rectX); // Wait until rectW/H calculated to avoid rounding the difference twice
 				self.rectY = Math.round(self.rectY);
@@ -151,7 +151,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		if (oldurl && typeof oldurl !== 'string') {
 			URL.revokeObjectURL(oldurl);
 		}
-		var width = this.model.get('width');
+		/*var width = this.model.get('width');
 		if (width !== undefined && width.length > 0) {
 			this.imgel.setAttribute('width', width);
 		}
@@ -164,7 +164,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		}
 		else {
 			this.imgel.removeAttribute('height');
-		}
+		}*/
 
 		// Get bounding box from model
 
@@ -174,10 +174,57 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		this.rectW = r[2];
 		this.rectH = r[3];
 
+		this.usewidth = 0;
+		this.useheight = 0;
+		this.zoom = 1.0;
+
 		var self = this;
 		this.imgel.onload = function() {
-			self.canvas.setAttribute('width', self.imgel.width.toString());
-			self.canvas.setAttribute('height', self.imgel.height.toString());
+
+
+			var wantwidth = self.model.get('wantwidth');
+			var wantheight = self.model.get('wantheight');
+
+			self.usewidth = 0;
+			self.useheight = 0;
+
+			if (wantwidth !== undefined && wantwidth > 0) {
+				self.usewidth = wantwidth;
+				self.canvas.setAttribute('width', wantwidth.toString());
+
+				if (wantwidth > self.imgel.width) {
+					self.usewidth = self.imgel.width;
+					self.zoom = 1.0;
+				}
+				else {
+					self.usewidth = wantwidth;
+					self.zoom = wantwidth / self.imgel.width;
+				}
+			}
+			else {
+				self.usewidth = self.imgel.width;
+				self.zoom = 1.0;
+				self.canvas.setAttribute('width', self.imgel.width.toString());
+			}
+
+			self.useheight = self.imgel.height * self.zoom;
+			if (wantheight !== undefined && wantheight > 0) {
+				// Take wantheight as a max height, zoom further if needed
+				self.canvas.setAttribute('height', wantheight.toString());
+
+				if (self.useheight > wantheight) {
+					self.useheight = wantheight;
+					self.zoom = wantheight / self.imgel.height;
+					self.usewidth = self.imgel.width * self.zoom;
+					if (wantwidth == undefined || wantwidth <= 0) {
+						// wantwidth wasn't specified, so cut width further
+						self.canvas.setAttribute('width', self.usewidth.toString());
+					}
+				}
+			}
+			else {
+				self.canvas.setAttribute('height', self.useheight.toString());
+			}
 
 			self.imageLoaded = true;
 
@@ -192,22 +239,26 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		var self = this;
 		var ctx = this.canvas.getContext('2d');
 
-		ctx.drawImage(this.imgel, 0, 0);
+		ctx.fillStyle = 'lightGrey';
+		ctx.fillRect(0,0,self.canvas.width,self.canvas.height);
+
+		ctx.drawImage(this.imgel, 0, 0, self.usewidth, self.useheight);
 
 		if (self.is_bb_source) {
+			console.log(self.zoom);
 
 			ctx.save();
 			ctx.globalAlpha = 0.9;
 
 			ctx.beginPath();
 			ctx.strokeStyle = "#FFFFFF";
-			ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+			ctx.rect(this.rectX*this.zoom, this.rectY*this.zoom, this.rectW*this.zoom, this.rectH*this.zoom);
 			ctx.stroke();
 
 			ctx.beginPath();
 			ctx.strokeStyle = "#000000";
 			ctx.setLineDash([5]);
-			ctx.rect(this.rectX, this.rectY, this.rectW, this.rectH);
+			ctx.rect(this.rectX*this.zoom, this.rectY*this.zoom, this.rectW*this.zoom, this.rectH*this.zoom);
 			ctx.stroke();
 
 			ctx.restore();

@@ -59,13 +59,13 @@ class ImageDataWrapper(DataWrapper):
 
         super().__init__(*args, **kwargs)
 
-        self.width = kwargs.get('width', '')
-        self.height = kwargs.get('height', '')
+        self.width = kwargs.get('width', 0)
+        self.height = kwargs.get('height', 0)
 
         self.path = kwargs.get('path', '')
 
     def _create_widget(self):
-        return ImagePad(width=self.width, height=self.height)
+        return ImagePad(wantwidth=self.width, wantheight=self.height)
 
     def update_ui(self, uindex):
         if hasattr(self.data[uindex], '__fspath__') or isinstance(self.data[uindex], str):

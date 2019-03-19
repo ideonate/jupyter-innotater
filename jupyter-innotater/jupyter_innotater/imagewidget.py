@@ -12,6 +12,9 @@ class ImagePad(widgets.Image):
 
     rect = List(trait=Int).tag(sync=True)
 
+    wantwidth = Int(0).tag(sync=True)
+    wantheight = Int(0).tag(sync=True)
+
     is_bb_source = Bool(False).tag(sync=True)
 
     def setRect(self,x,y,w,h):
