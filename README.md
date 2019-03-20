@@ -129,10 +129,10 @@ pip install pandas
 ### Innotater
 
 ```
-Innotater( inputs, targets )
+Innotater( inputs, targets, indexes=None )
 ```
 
-Instantiates the Jupyter widget. Each of `inputs` and `targets` is a Innotation subclass or array of Innotation subclasses.
+Instantiates the Jupyter widget. Each of `inputs` and `targets` is an Innotation subclass or array of Innotation subclasses.
 
 The Innotation subclasses allow display and interaction with different types of input/target data. Typically, inputs contains one or more data source that is fixed in your project (e.g. images of dogs) and targets contains data that is intended to be modified through the widget.
 
@@ -141,6 +141,10 @@ To display the widget explicitly:
 w = Innotater( inputs, targets )
 display(w)
 ```
+
+`indexes` is an optional array containing either integers or booleans instructing the widget to display only a subset of the inputs and targets, allowing you to focus on interesting items only. 
+If `indexes` is an integer array it must contain index values. For example, if inputs/targets has 10 data samples, then indexes=[0,3,5] would cause the widget to show only 3 possible data samples - the 1st, 4th, and 6th of the original data source. 
+If `indexes` is a boolean mask array it must have the same length as the original data source, and the widget will only show those data samples corresponding to True in the indexes array. 
 
 ### Innotation subclasses
 
@@ -166,7 +170,10 @@ Extra optional parameters:
 
 `path` - a path to be prefixed to all filenames provided in data.
 
-`width` and/or `height` to specify the maximum size of image to display. Currently just truncates the image - in the future some way to zoom to make large images manageable will be added. 
+`width` and/or `height` to specify the maximum size of image to display as an integer number of pixels. 
+For example, if you specify only width=300 then images will be scaled down to a width of 300 pixels if the image is larger, or will display at their original size if their width is <300 pixels. 
+Similarly, `height` can be specified alone, or `width` and `height` specified together to fix the shape of the image display precisely, with the image scaled proportionally to fit if required. 
+Any bounding box co-ordinates recorded will always be relative to the original image dimensions.   
 
 #### BoundingBoxInnotation
 
