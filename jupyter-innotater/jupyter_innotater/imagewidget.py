@@ -1,6 +1,7 @@
 import ipywidgets as widgets
 from traitlets import Unicode, Int, List, Bool
 
+
 @widgets.register
 class ImagePad(widgets.Image):
     _view_name = Unicode('InnotaterImagePadView').tag(sync=True)

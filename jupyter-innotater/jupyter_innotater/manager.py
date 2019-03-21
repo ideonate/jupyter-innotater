@@ -22,9 +22,9 @@ class DataManager:
             if l == -1:
                 l = len(dw)
                 if l == 0:
-                    raise Exception(f'Innotation {name} has 0 data rows')
+                    raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
             elif l != len(dw):
-                raise Exception(f'Innotations must all have same number of rows: {name} has a different number of data rows than previous Innotations')
+                raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
 
         self.indexes = indexes
         if indexes is not None:

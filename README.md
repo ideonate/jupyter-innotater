@@ -173,7 +173,9 @@ Extra optional parameters:
 `width` and/or `height` to specify the maximum size of image to display as an integer number of pixels. 
 For example, if you specify only width=300 then images will be scaled down to a width of 300 pixels if the image is larger, or will display at their original size if their width is <300 pixels. 
 Similarly, `height` can be specified alone, or `width` and `height` specified together to fix the shape of the image display precisely, with the image scaled proportionally to fit if required. 
-Any bounding box co-ordinates recorded will always be relative to the original image dimensions.   
+Any bounding box co-ordinates recorded will always be relative to the original image dimensions.
+
+`transform` is any function to be applied to each image entry in data before it is processed to be displayed on the screen. For example, you might set `transform` to a denormalization function because all images in data have been normalized for training purposes.     
 
 #### BoundingBoxInnotation
 

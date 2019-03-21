@@ -61,26 +61,38 @@ class ImageInnotation(Innotation):
 
         self.width = kwargs.get('width', 0)
         self.height = kwargs.get('height', 0)
-
         self.path = kwargs.get('path', '')
+
+        self.transform = kwargs.get('transform', None)
 
     def _create_widget(self):
         return ImagePad(wantwidth=self.width, wantheight=self.height)
 
     def update_ui(self, uindex):
+        if self.transform is None:
+            it = self.data[uindex]
+        else:
+            it = self.transform(self.data[uindex])
+
         if hasattr(self.data[uindex], '__fspath__') or isinstance(self.data[uindex], str):
             # Path-like
-            p = Path(self.data[uindex])
+            p = Path(it)
             if self.path != '':
                 p = Path(self.path) / p
             self.get_widget().set_value_from_file(p)
-        elif 'numpy' in str(type(self.data[uindex])):
-            import cv2
-
-            self.get_widget().value = cv2.imencode('.png', self.data[uindex])[1].tostring()
+        elif 'numpy' in str(type(it)) or 'Tensor' in str(type(it)):
+            import cv2, numpy as np # Required to manipulate numpy or pytorch image matrix
+            npim = it.numpy() if hasattr(it, 'numpy') else it
+            if len(npim.shape) == 3 and npim.shape[2] not in (1,3,4):
+                # Channels dim needs to be moved to back
+                npim = npim.transpose((1,2,0))
+            if not np.issubdtype(npim.dtype, np.integer):
+                # Float so scale
+                npim = (npim * 255).astype('int')
+            self.get_widget().value = cv2.imencode('.png', npim)[1].tostring()
         else:
             # Actual raw image data
-            self.get_widget().value = self.data[uindex]
+            self.get_widget().value = it
 
     def setRect(self, x,y,w,h):
         self.get_widget().setRect(x,y,w,h)
