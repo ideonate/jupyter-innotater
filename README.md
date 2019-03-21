@@ -153,14 +153,16 @@ This is the base class (not to be instantiated directly).
 The general constructor format for subclasses is:
 
 ```
-Innotation( <array_like> data, [name=<string>,] [desc=<string>,])
+Innotation( <array_like> data, [name=<string>,] [desc=<string>,] [layout=<dict>,])
 ```
 
 Optionally, data can be specified as a `data=` keyword argument, in which case the positional data argument should be omitted.
 
 `name` is optional unless required so that the Innotation can be specified as the source for another Innotation (e.g. to link the Bounding Box data with the image to which it applies).
 
-`desc` is also optional, and defaults to the same value as `name`. It may be displayed as a text label next to the data in the widget. 
+`desc` is also optional, and defaults to the same value as `name`. It may be displayed as a text label next to the data in the widget.
+
+`layout` is an optional dictionary of CSS styles to pass on to the underlying widget, for example layout={'width':'100px'} 
 
 #### ImageInnotation
 
@@ -207,7 +209,9 @@ Displays a list selection box so the user can choose one highlighted option. Cur
 
 Extra optional parameters:
 
-`classes` - an array of string values containing text to display in place of the numerical class indices. 
+`classes` - an array of string values containing text to display in place of the numerical class indices. Will try to infer from data if omitted.
+
+`dropdown` - boolean to indicate if the widget should be shown as a Dropdown list (True) or the default value of a larger always-open list (False)
 
 #### BinaryClassInnotation
 

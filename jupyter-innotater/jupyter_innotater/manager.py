@@ -68,3 +68,6 @@ class DataManager:
 
     def get_all(self):
         return self.alldws.values()
+
+    def is_input(self, dw):
+        return dw in self.inputs

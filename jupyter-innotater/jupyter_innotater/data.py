@@ -1,5 +1,5 @@
 from .imagewidget import ImagePad
-from ipywidgets import Checkbox, Select, Text
+from ipywidgets import Checkbox, Select, Text, Dropdown
 import re
 from pathlib import Path
 
@@ -29,11 +29,16 @@ class Innotation:
 
         self.widget = None
 
+        self.layout = kwargs.get('layout', {})
+
+        self.disabled = False
+
     def get_name(self):
         return self.name
 
     def post_register(self, datamanager):
-        pass
+        if datamanager.is_input(self):
+            self.disabled = True
 
     def post_widget_create(self, datamanager):
         pass
@@ -45,6 +50,9 @@ class Innotation:
         if self.widget is None:
             self.widget = self._create_widget() # on derived class
         return self.widget
+
+    def _get_widget_value(self):
+        return self.get_widget().value
 
     def update_ui(self, uindex):
         raise Exception('Do not call update_ui on base class')
@@ -66,7 +74,7 @@ class ImageInnotation(Innotation):
         self.transform = kwargs.get('transform', None)
 
     def _create_widget(self):
-        return ImagePad(wantwidth=self.width, wantheight=self.height)
+        return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         if self.transform is None:
@@ -134,7 +142,7 @@ class BoundingBoxInnotation(Innotation):
             self.sourcedw.get_widget().observe(self.rectChanged, names='rect')
 
     def _create_widget(self):
-        return Text()
+        return Text(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         self.get_widget().value = self._value_to_str(self.data[uindex])
@@ -191,6 +199,8 @@ class MultiClassInnotation(Innotation):
             # Guess the range of classes
             self._guess_classes()
 
+        self.dropdown = kwargs.get('dropdown', False)
+
     def _guess_classes(self):
         if self.datadepth == 'onehot':
             m = len(self.data[0])-1
@@ -205,7 +215,9 @@ class MultiClassInnotation(Innotation):
         self.classes = [str(i) for i in range(m+1)]
 
     def _create_widget(self):
-        return Select(options=self.classes)
+        if self.dropdown:
+            return Dropdown(options=self.classes, layout=self.layout, disabled=self.disabled)
+        return Select(options=self.classes, layout=self.layout, disabled=self.disabled)
 
     def _calc_class_index(self, uindex):
         if self.datadepth == 'onehot':
@@ -217,9 +229,6 @@ class MultiClassInnotation(Innotation):
 
     def update_ui(self, uindex):
         self.get_widget().value = self.classes[self._calc_class_index(uindex)]
-
-    def _get_widget_value(self):
-        return self.get_widget().value
 
     def update_data(self, uindex):
         newval = self._get_widget_value()
@@ -242,10 +251,47 @@ class BinaryClassInnotation(MultiClassInnotation):
         self.classes = ['False', 'True']
 
     def _create_widget(self):
-        return Checkbox(description=self.desc)
+        return Checkbox(description=self.desc, layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         self.get_widget().value = bool(self._calc_class_index(uindex) == 1)
 
     def _get_widget_value(self):
         return self.classes[self.get_widget().value and 1 or 0]
+
+
+class TextInnotation(Innotation):
+
+    def _create_widget(self):
+        return Text(layout=self.layout, disabled=self.disabled)
+
+    def update_ui(self, uindex):
+        self.get_widget().value = str(self.data[uindex])
+
+    def update_data(self, uindex):
+        newval = str(self._get_widget_value())
+        if newval != str(self.data[uindex]):
+            self.data[uindex] = newval
+
+
+class _WidgetInnotation(Innotation):
+    """
+    Allow embeding of an arbitrary widget object, e.g. for text display
+    Must still have a data attribute of correct len, even if dummy values
+    """
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        if 'widget' not in kwargs:
+            raise Exception(f'{self.__class__} requires a widget argument')
+        self.widget = kwargs['widget']
+
+    def _create_widget(self):
+        return self.widget
+
+    def update_ui(self, uindex):
+        pass
+
+    def update_data(self, uindex):
+        pass
