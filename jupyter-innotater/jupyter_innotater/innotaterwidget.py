@@ -1,7 +1,8 @@
 import ipywidgets as widgets
-from ipywidgets import HBox, VBox, IntSlider, Button
-from traitlets import Int, observe, Unicode
+from ipywidgets import HBox, VBox, IntSlider, Button, Checkbox
+from traitlets import Int, observe, Unicode, Bool
 from .manager import DataManager
+
 
 @widgets.register
 class Innotater(VBox):
@@ -13,8 +14,9 @@ class Innotater(VBox):
     _model_module_version = Unicode('~0.1.0').tag(sync=True)
 
     index = Int().tag(sync=True)
+    keyboard_shortcuts = Bool(True).tag(sync=True)
 
-    def __init__(self, inputs, targets, indexes=None):
+    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=False):
 
         self.path = ''
 
@@ -30,9 +32,16 @@ class Innotater(VBox):
         self.input_widgets = [dw.get_widget() for dw in self.datamanager.get_inputs()]
         self.target_widgets = [dw.get_widget() for dw in self.datamanager.get_targets()]
 
-        self.add_class('innotater-base');
+        self.add_class('innotater-base')
 
-        super().__init__([HBox([VBox(self.input_widgets), VBox(self.target_widgets)]), HBox([self.prevbtn, slider, self.nextbtn])])
+        vbox_ar = [HBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
+                   HBox([self.prevbtn, slider, self.nextbtn])]
+
+        if keyboard_shortcuts:
+            self.keyboardcontrol = Checkbox(True, description='Listen for Keyboard Shortcuts (Experimental)')
+            vbox_ar.append(self.keyboardcontrol)
+
+        super().__init__(vbox_ar)
 
         jsl = widgets.jslink((slider, 'value'), (self, 'index'))
 
@@ -48,6 +57,10 @@ class Innotater(VBox):
         self.slider.max = self.datamanager.get_data_len()-1
 
         self.index = 0
+
+        if keyboard_shortcuts:
+            ksl = widgets.jslink((self.keyboardcontrol, 'value'), (self, 'keyboard_shortcuts'))
+
         self.update_ui()
 
     @observe('index')

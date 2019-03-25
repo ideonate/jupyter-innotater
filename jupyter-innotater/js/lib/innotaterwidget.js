@@ -4,6 +4,7 @@ var controls = require('@jupyter-widgets/controls');
 require("./style.css");
 
 var _ = require('lodash');
+var $ = require('jquery');
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including
@@ -39,11 +40,29 @@ var InnotaterView = controls.VBoxView.extend({
     },
 
     render: function () {
+        var self = this;
         InnotaterView.__super__.render.apply(this, arguments);
         if (window.location.hostname == "www.kaggleusercontent.com") {
             this.el.classList.add('innotater-kaggle');
         }
-    }
+
+        // Keyboard shortcuts still need a lot of work - should be bound correctly to InnotaterView
+        if (self.model.get('keyboard_shortcuts')) {
+            $(document).on('keypress', function (e) {
+                if (self.model.get('keyboard_shortcuts')) {
+                    if (_.includes([78, 110], e.which)) { // N or n
+                        // Next
+                        self.model.set({'index': self.model.get('index') + 1});
+                        self.model.save_changes();
+                    }
+                }
+            });
+        }
+    },
+
+    remove: function () {
+        //$(document).off('keypress', this.keyboard_shortcut_handler);
+    },
 
 });
 

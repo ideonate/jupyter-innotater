@@ -4,8 +4,8 @@ var controls = require('@jupyter-widgets/controls');
 require("./style.css");
 
 var _ = require('lodash');
-var $ = require('jquery');
 
+var $ = require('jquery');
 
 
 // Custom Model. Custom widgets models must at least provide default values
