@@ -14,7 +14,7 @@ class Innotater(VBox):
     _model_module_version = Unicode('~0.1.0').tag(sync=True)
 
     index = Int().tag(sync=True)
-    keyboard_shortcuts = Bool(True).tag(sync=True)
+    keyboard_shortcuts = Bool(False).tag(sync=True)
 
     def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=False):
 
@@ -38,7 +38,7 @@ class Innotater(VBox):
                    HBox([self.prevbtn, slider, self.nextbtn])]
 
         if keyboard_shortcuts:
-            self.keyboardcontrol = Checkbox(True, description='Listen for Keyboard Shortcuts (Experimental)')
+            self.keyboardcontrol = Checkbox(True, description='Keyboard Shortcuts (Experimental)')
             vbox_ar.append(self.keyboardcontrol)
 
         super().__init__(vbox_ar)
