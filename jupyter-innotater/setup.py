@@ -60,6 +60,7 @@ include_package_data = True
 data_files = [
     ('share/jupyter/nbextensions/jupyter-innotater', [
         'jupyter_innotater/static/extension.js',
+        'jupyter_innotater/static/extension.js.map',
         'jupyter_innotater/static/index.js',
         'jupyter_innotater/static/index.js.map',
     ]),
