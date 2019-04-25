@@ -118,10 +118,11 @@ array([[  1, 173,  41, 135, 144],
 
 ### Jupyter Notebook Example
 
-The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook. You can try it out for free in a [Binder](https://mybinder.org/) environment by clicking here: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb)
+The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook. You can try it out for free in a [Binder](https://mybinder.org/) environment by clicking here: [Examples.ipynb on Binder](https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb)
 
-For the full effect, you may need to install opencv2 and pandas packages (or just ignore those parts of the notebook):
+For the full effect in your own environment, you may need to install opencv2 and pandas packages (or just ignore those parts of the notebook):
 ```
+pip install jupyter_innotater
 pip install opencv-python
 pip install pandas
 ```
