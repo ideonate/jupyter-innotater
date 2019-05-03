@@ -2,6 +2,8 @@
 
 Annotate data including image bounding boxes inline within your [Jupyter notebook](https://jupyter.org/) in python.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb)
+
 ## 1 - Overview
 
 In a data science or machine learning project, you may prepare and study images or other data within a Jupyter notebook then need to annotate the data to augment the training or fix errors in your source data. You may need to check classifications are correct (cats/dogs correctly specified) or add bounding boxes around the pertinent parts of your images. For example, to build a dog breed classified you might first build a model that learns how to identify the bounding box of a dog within the image, then your final model zooms in on that box in order to train/evaluate the breed classifier.
@@ -140,10 +142,11 @@ The widget allows you to interactively step through the reviews selecting the cl
 
 ### Jupyter Notebook Example
 
-The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook.
+The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook. You can try it out for free in a [Binder](https://mybinder.org/) environment by clicking here: [Examples.ipynb on Binder](https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb)
 
-For the full effect, you may need to install opencv2 and pandas packages (or just ignore those parts of the notebook):
+For the full effect in your own environment, you may need to install opencv2 and pandas packages (or just ignore those parts of the notebook):
 ```
+pip install jupyter_innotater
 pip install opencv-python
 pip install pandas
 ```
