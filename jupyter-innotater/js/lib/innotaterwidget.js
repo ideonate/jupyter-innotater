@@ -35,6 +35,10 @@ var InnotaterModel = controls.VBoxModel.extend({
 // Custom View. Renders the widget model.
 var InnotaterView = controls.VBoxView.extend({
 
+    initialize: function() {
+        InnotaterView.__super__.initialize.apply(this, arguments);
+    },
+
     InnotaterView: function() {
         InnotaterView.__super__.apply(this, arguments);
     },
@@ -42,26 +46,26 @@ var InnotaterView = controls.VBoxView.extend({
     render: function () {
         var self = this;
         InnotaterView.__super__.render.apply(this, arguments);
+
+        self.el.setAttribute('tabindex', '0');
+
         if (window.location.hostname == "www.kaggleusercontent.com") {
             this.el.classList.add('innotater-kaggle');
         }
 
         // Keyboard shortcuts still need a lot of work - should be bound correctly to InnotaterView
         if (self.model.get('keyboard_shortcuts')) {
-            $(document).on('keypress', function (e) {
-                if (self.model.get('keyboard_shortcuts')) {
-                    if (_.includes([78, 110], e.which)) { // N or n
-                        // Next
-                        self.model.set({'index': self.model.get('index') + 1});
-                        self.model.save_changes();
-                    }
-                }
+            self.el.addEventListener('keypress', function(e) {
+                 self.handle_keypress(e);
             });
         }
     },
 
-    remove: function () {
-        //$(document).off('keypress', this.keyboard_shortcut_handler);
+    handle_keypress: function(event) {
+        this.send({
+            event: 'keypress',
+            code: event.which
+        });
     },
 
 });

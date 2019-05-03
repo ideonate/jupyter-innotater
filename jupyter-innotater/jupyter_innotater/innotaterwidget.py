@@ -16,7 +16,7 @@ class Innotater(VBox):
     index = Int().tag(sync=True)
     keyboard_shortcuts = Bool(False).tag(sync=True)
 
-    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=False):
+    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True):
 
         self.path = ''
 
@@ -34,16 +34,13 @@ class Innotater(VBox):
 
         self.add_class('innotater-base')
 
-        vbox_ar = [HBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
-                   HBox([self.prevbtn, slider, self.nextbtn])]
+        controlbar_widget = HBox([self.prevbtn, slider, self.nextbtn])
+        controlbar_widget.add_class('innotater-controlbar')
 
-        if keyboard_shortcuts:
-            self.keyboardcontrol = Checkbox(True, description='Keyboard Shortcuts (Experimental)')
-            vbox_ar.append(self.keyboardcontrol)
+        super().__init__([HBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
+                          controlbar_widget])
 
-        super().__init__(vbox_ar)
-
-        jsl = widgets.jslink((slider, 'value'), (self, 'index'))
+        widgets.jslink((slider, 'value'), (self, 'index'))
 
         for dw in self.datamanager.get_targets():
             dw.get_widget().observe(self.update_data, names='value')
@@ -57,9 +54,9 @@ class Innotater(VBox):
         self.slider.max = self.datamanager.get_data_len()-1
 
         self.index = 0
+        self.keyboard_shortcuts = keyboard_shortcuts
 
-        if keyboard_shortcuts:
-            ksl = widgets.jslink((self.keyboardcontrol, 'value'), (self, 'keyboard_shortcuts'))
+        self.on_msg(self.handle_message)
 
         self.update_ui()
 
@@ -72,6 +69,17 @@ class Innotater(VBox):
             self.index -= 1
         elif change > 0 and self.index < self.datamanager.get_data_len()-1:
             self.index += 1
+
+    def handle_message(self, _, content, buffers):
+        if content['event'] == 'keypress':
+            code = content['code']
+            self.handle_keypress(code)
+
+    def handle_keypress(self, code):
+        if code == 110: # n
+            self.move_slider(1)
+        elif code == 112: # p
+            self.move_slider(-1)
 
     def update_ui(self):
         uindex = self.datamanager.get_underlying_index(self.index)

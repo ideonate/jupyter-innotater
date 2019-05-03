@@ -4,6 +4,9 @@ class DataManager:
 
     def __init__(self, inputs, targets, indexes=None):
 
+        if inputs is None: inputs = []
+        if targets is None: targets = []
+
         self.inputs = [inputs] if isinstance(inputs, Innotation) else inputs
         self.targets = [targets] if isinstance(targets, Innotation) else targets
 
@@ -53,7 +56,9 @@ class DataManager:
     def get_data_len(self):
         if self.indexes is not None:
             return len(self.indexes)
-        return len(self.inputs[0])
+        if len(self.inputs):
+            return len(self.inputs[0])
+        return len(self.targets[0])
 
     def get_underlying_index(self, index):
         if self.indexes is None:

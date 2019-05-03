@@ -40,6 +40,8 @@ Innotater( ImageInnotation(images, path='./foods'), BoundingBoxInnotation(target
 
 The widget allows you to interactively draw bounding boxes for any of the images, and the `targets` variable is always kept in sync with your changes.
 
+Advance to the next image by clicking 'Next' or pressing 'n' on the keyboard (provided the Innotater has focus).
+
 ```
 import pandas as pd
 df = pd.DataFrame(targets, columns=['x','y','w','h'])
@@ -114,6 +116,28 @@ array([[  1, 173,  41, 135, 144],
        [  0,   0,   0,   0,   0]])
 ```
 
+### Multi-Classification of Text Strings
+
+Load some text strings e.g. of movie reviews
+
+Set up Innotater to display the reviews so you can mark their sentiment as positive, negative, or neutral.
+
+```
+from jupyter_innotater import Innotater
+from jupyter_innotater.data import TextInnotation, MultiClassInnotation
+
+reviews = ['I really liked this movie', 'It was OK', 'Do not watch!']
+sentiments = [1] * len(reviews)
+sentiment_classes = ['0 - Positive', '1 - Neutral', '2 - Negative']
+
+Innotater(TextInnotation(reviews), MultiClassInnotation(sentiments, classes=sentiment_classes))
+```
+
+![Screenshot of Innotater widget in Jupyter](./screenshots/TextAndMultiClassifier.png)
+
+The widget allows you to interactively step through the reviews selecting the classification, and the `sentiments` variable is always kept in sync.
+
+
 ### Jupyter Notebook Example
 
 The file Example/Examples.ipynb contains many examples you can run directly in Jupyter notebook.
@@ -129,7 +153,7 @@ pip install pandas
 ### Innotater
 
 ```
-Innotater( inputs, targets, indexes=None )
+Innotater( inputs, targets, indexes=None, keyboard_shortcuts=True )
 ```
 
 Instantiates the Jupyter widget. Each of `inputs` and `targets` is an Innotation subclass or array of Innotation subclasses.
@@ -145,6 +169,7 @@ display(w)
 `indexes` is an optional array containing either integers or booleans instructing the widget to display only a subset of the inputs and targets, allowing you to focus on interesting items only. 
 If `indexes` is an integer array it must contain index values. For example, if inputs/targets has 10 data samples, then indexes=[0,3,5] would cause the widget to show only 3 possible data samples - the 1st, 4th, and 6th of the original data source. 
 If `indexes` is a boolean mask array it must have the same length as the original data source, and the widget will only show those data samples corresponding to True in the indexes array. 
+The flag `keyboard_shortcuts` can be set to False to disable keyboard shortcuts - namely 'n' and 'p' for next/previous.
 
 ### Innotation subclasses
 
@@ -222,6 +247,12 @@ Displays a checkbox.
 Extra optional parameters:
 
 `classes` - an array of two string values containing text to display in place of 'False' and 'True'. 
+
+#### TextInnotation
+
+data is expected to be an array of text strings.
+
+Displays a textarea showing the text.
 
 
 ## 3 - Installation

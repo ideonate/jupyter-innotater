@@ -1,5 +1,5 @@
 from .imagewidget import ImagePad
-from ipywidgets import Checkbox, Select, Text, Dropdown
+from ipywidgets import Checkbox, Select, Text, Textarea, Dropdown
 import re
 from pathlib import Path
 
@@ -31,14 +31,15 @@ class Innotation:
 
         self.layout = kwargs.get('layout', {})
 
-        self.disabled = False
+        if 'disabled' in kwargs:
+            self.disabled = kwargs['disabled']
 
     def get_name(self):
         return self.name
 
     def post_register(self, datamanager):
-        if datamanager.is_input(self):
-            self.disabled = True
+        if not hasattr(self, 'disabled'):
+            self.disabled = datamanager.is_input(self)
 
     def post_widget_create(self, datamanager):
         pass
@@ -263,7 +264,7 @@ class BinaryClassInnotation(MultiClassInnotation):
 class TextInnotation(Innotation):
 
     def _create_widget(self):
-        return Text(layout=self.layout, disabled=self.disabled)
+        return Textarea(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         self.get_widget().value = str(self.data[uindex])

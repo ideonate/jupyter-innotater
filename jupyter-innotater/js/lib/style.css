@@ -11,6 +11,18 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
     cursor: crosshair;
 }
 
+.innotater-base {
+    outline: none;
+}
+
+.innotater-controlbar .widget-slider .widget-readout{
+    border: 1px solid lightgray;
+}
+
+.innotater-base .widget-textarea textarea {
+    opacity: 1.0; /* Disabled TextInnotations still want to be highly readable */
+}
+
 /* Kaggle Overrides */
 
 .innotater-kaggle .widget-hbox {
