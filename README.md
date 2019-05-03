@@ -151,6 +151,10 @@ pip install opencv-python
 pip install pandas
 ```
 
+### Full Tutorial of an example project
+
+An example machine learning project for butterfly species classification using bounding boxes to improve the model by zooming in: [Clean Up your own Model Data without leaving Jupyter](https://towardsdatascience.com/clean-up-your-own-model-data-without-leaving-jupyter-bdbcc9001734)
+
 ## 3 - Usage Reference
 
 ### Innotater

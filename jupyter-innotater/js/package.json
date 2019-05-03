@@ -1,6 +1,6 @@
 {
   "name": "jupyter-innotater",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "An Inline Data Annotator for Jupyter",
   "author": "danlester",
   "license": "MIT",
@@ -40,5 +40,8 @@
     "@jupyter-widgets/controls": "^1.0.0",
     "d3": "^4.10.2",
     "lodash": "^4.17.4"
+  },
+  "jupyterlab": {
+    "extension": "lib/labplugin"
   }
 }
