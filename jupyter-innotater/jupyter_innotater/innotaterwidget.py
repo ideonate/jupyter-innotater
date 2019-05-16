@@ -43,7 +43,7 @@ class Innotater(VBox):
         widgets.jslink((slider, 'value'), (self, 'index'))
 
         for dw in self.datamanager.get_targets():
-            dw.get_widget().observe(self.update_data, names='value')
+            dw.widget_observe(self.update_data, names='value')
 
         for dw in self.datamanager.get_all():
             dw.post_widget_create(self.datamanager)
@@ -58,6 +58,7 @@ class Innotater(VBox):
 
         self.on_msg(self.handle_message)
 
+        self.suspend_observed_changes = False
         self.update_ui()
 
     @observe('index')
@@ -76,6 +77,8 @@ class Innotater(VBox):
             self.handle_keypress(code)
 
     def handle_keypress(self, code):
+        if self.suspend_observed_changes:
+            return
         if code == 110: # n
             self.move_slider(1)
         elif code == 112: # p
@@ -84,16 +87,23 @@ class Innotater(VBox):
     def update_ui(self):
         uindex = self.datamanager.get_underlying_index(self.index)
 
+        self.suspend_observed_changes = True
+
         for dw in self.datamanager.get_all():
             dw.update_ui(uindex)
+
+        self.suspend_observed_changes = False
 
         self.prevbtn.disabled = self.index <= 0
         self.nextbtn.disabled = self.index >= self.datamanager.get_data_len()-1
 
     def update_data(self, change):
+        if self.suspend_observed_changes:
+            return
+
         uindex = self.datamanager.get_underlying_index(self.index)
         # Find the Innotation that contains the widget that observed the change
         widg = change['owner']
         for dw in self.datamanager.get_targets():
-            if widg == dw.get_widget():
+            if dw.contains_widget(widg):
                 dw.update_data(uindex)

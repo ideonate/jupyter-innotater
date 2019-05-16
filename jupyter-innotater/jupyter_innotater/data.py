@@ -7,6 +7,7 @@ from pathlib import Path
 class Innotation:
 
     anonindex = 1
+    requires_data = True
 
     def __init__(self, *args, **kwargs):
 
@@ -24,7 +25,7 @@ class Innotation:
                 raise Exception('data supplied both as position and keyword argument')
         elif 'data' in kwargs:
             self.data = kwargs['data']
-        else:
+        elif self.requires_data:
             raise Exception('No data argument found')
 
         self.widget = None
@@ -55,11 +56,17 @@ class Innotation:
     def _get_widget_value(self):
         return self.get_widget().value
 
+    def widget_observe(self, fn, names):
+        self.get_widget().observe(fn, names=names)
+
     def update_ui(self, uindex):
         raise Exception('Do not call update_ui on base class')
 
     def update_data(self, uindex):
         raise Exception('Do not call update_data on an input-only class')
+
+    def contains_widget(self, widget):
+        return self.get_widget() == widget
 
 
 class ImageInnotation(Innotation):
@@ -140,7 +147,7 @@ class BoundingBoxInnotation(Innotation):
     def post_widget_create(self, datamanager):
         if self.sourcedw is not None:
             self.sourcedw.get_widget().is_bb_source = True
-            self.sourcedw.get_widget().observe(self.rectChanged, names='rect')
+            self.sourcedw.widget_observe(self.rectChanged, names='rect')
 
     def _create_widget(self):
         return Text(layout=self.layout, disabled=self.disabled)
