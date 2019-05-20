@@ -109,7 +109,18 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				if (self.rectY + self.rectH > self.imgel.height) { self.rectH = self.imgel.height - self.rectY; }
 
 				// Sync to backend
-				self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
+				var rects = self.model.get('rects');
+				var rect_index = self.model.get('rect_index');
+				while (rects.length < (rect_index+1)*4) {
+					rects.push(0);
+				}
+
+				rects[rect_index*4] = self.rectX;
+				rects[rect_index*4+1] = self.rectY;
+				rects[rect_index*4+2] = self.rectW;
+				rects[rect_index*4+3] = self.rectH;
+				self.model.set({'rects': rects}); //  'rect_index': rect_index+1
+				// self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
 				self.model.save_changes();
 				self.isSelecting = false;
 
@@ -161,11 +172,17 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		// Get bounding box from model
 
-		var r = this.model.get('rect');
-		this.rectX = r[0];
-		this.rectY = r[1];
-		this.rectW = r[2];
-		this.rectH = r[3];
+		var rect_index = this.model.get('rect_index');
+		var r = this.model.get('rects');
+
+		while (r.length < (rect_index+1)*4) {
+			r.push(0);
+		}
+
+		this.rectX = r[rect_index*4];
+		this.rectY = r[rect_index*4+1];
+		this.rectW = r[rect_index*4+2];
+		this.rectH = r[rect_index*4+3];
 
 		this.usewidth = 0;
 		this.useheight = 0;

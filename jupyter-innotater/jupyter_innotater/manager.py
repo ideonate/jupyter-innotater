@@ -15,19 +15,9 @@ class DataManager:
         l = -1
 
         for dw in self.inputs+self.targets:
-            name = dw.get_name()
-            if name in self.alldws:
-                raise Exception(f'Duplicate Innotation {name}')
+            l = self._add_to_alldws(dw, l)
 
-            self.alldws[name] = dw
-
-            # Check number of rows is the same and not zero
-            if l == -1:
-                l = len(dw)
-                if l == 0:
-                    raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
-            elif l != len(dw):
-                raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
+        self.underlying_len = l
 
         self.indexes = indexes
         if indexes is not None:
@@ -44,6 +34,23 @@ class DataManager:
 
         for dw in self.alldws.values():
             dw.post_register(self)
+
+    def _add_to_alldws(self, dw, l):
+        name = dw.get_name()
+        if name in self.alldws:
+            raise Exception(f'Duplicate Innotation {name}')
+
+        self.alldws[name] = dw
+
+        # Check number of rows is the same and not zero
+        if l == -1:
+            l = len(dw)
+            if l == 0:
+                raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
+        elif l != len(dw):
+            raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
+
+        return l
 
     def get_data_wrapper_by_name(self, name):
         if name in self.alldws:
@@ -76,3 +83,13 @@ class DataManager:
 
     def is_input(self, dw):
         return dw in self.inputs
+
+    def dynamic_add_innotations(self, inputs, targets):
+        self.inputs.extend(inputs)
+        self.targets.extend(targets)
+
+        for dw in inputs+targets:
+            self._add_to_alldws(dw, self.underlying_len)
+
+        for dw in inputs+targets:
+            dw.post_register(self)

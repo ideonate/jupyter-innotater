@@ -8,6 +8,7 @@ class Innotation:
 
     anonindex = 1
     requires_data = True
+    has_children_changed_notifier = False
 
     def __init__(self, *args, **kwargs):
 
@@ -27,6 +28,8 @@ class Innotation:
             self.data = kwargs['data']
         elif self.requires_data:
             raise Exception('No data argument found')
+
+        self.repeat_index = kwargs.get('repeat_index', -1)
 
         self.widget = None
 
@@ -68,6 +71,25 @@ class Innotation:
     def contains_widget(self, widget):
         return self.get_widget() == widget
 
+    def _get_data(self, uindex):
+        if self.repeat_index == -1:
+            return self.data[uindex]
+        return self.data[uindex][self.repeat_index]
+
+    def _set_data(self, uindex, *args):
+        if len(args) < 1 or len(args) > 2:
+            raise("_set_data must have exactly one or two args")
+
+        if self.repeat_index != -1:
+            if len(args) == 2:
+                self.data[uindex][self.repeat_index][args[0]] = args[-1]
+            else:
+                self.data[uindex][self.repeat_index] = args[-1]
+        else:
+            if len(args) == 2:
+                self.data[uindex][args[0]] = args[-1]
+            else:
+                self.data[uindex] = args[-1]
 
 class ImageInnotation(Innotation):
 
@@ -86,11 +108,11 @@ class ImageInnotation(Innotation):
 
     def update_ui(self, uindex):
         if self.transform is None:
-            it = self.data[uindex]
+            it = self._get_data(uindex)
         else:
-            it = self.transform(self.data[uindex])
+            it = self.transform(self._get_data(uindex))
 
-        if hasattr(self.data[uindex], '__fspath__') or isinstance(self.data[uindex], str):
+        if hasattr(self._get_data(uindex), '__fspath__') or isinstance(self._get_data(uindex), str):
             # Path-like
             p = Path(it)
             if self.path != '':
@@ -110,8 +132,8 @@ class ImageInnotation(Innotation):
             # Actual raw image data
             self.get_widget().value = it
 
-    def setRect(self, x,y,w,h):
-        self.get_widget().setRect(x,y,w,h)
+    def setRect(self, repeat_index, x,y,w,h):
+        self.get_widget().setRect(repeat_index, x,y,w,h)
 
 
 class BoundingBoxInnotation(Innotation):
@@ -147,36 +169,45 @@ class BoundingBoxInnotation(Innotation):
     def post_widget_create(self, datamanager):
         if self.sourcedw is not None:
             self.sourcedw.get_widget().is_bb_source = True
-            self.sourcedw.widget_observe(self.rectChanged, names='rect')
+            self.sourcedw.widget_observe(self.rectChanged, names='rects')
 
     def _create_widget(self):
         return Text(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
-        self.get_widget().value = self._value_to_str(self.data[uindex])
+        self.get_widget().value = self._value_to_str(self._get_data(uindex))
         self._sync_to_image(uindex)
 
     def _sync_to_image(self, uindex):
         if self.sourcedw is not None:
-            (x,y,w,h) = self.data[uindex][:4]
-            self.sourcedw.setRect(x,y,w,h)
+            (x,y,w,h) = self._get_data(uindex)[:4]
+            self.sourcedw.setRect(self.repeat_index, x,y,w,h)
 
     def _value_to_str(self, r):
         return ', '.join([str(int(a)) for a in r])
 
     def update_data(self, uindex):
         newval = self.get_widget().value
-        if newval != self._value_to_str(self.data[uindex]):
+        if newval != self._value_to_str(self._get_data(uindex)):
             try:
-                self.data[uindex] = [int(float(s)) for s in re.split('[ ,]+', newval)]
+                if self.repeat_index == -1:
+                    self.data[uindex] = [int(float(s)) for s in re.split('[ ,]+', newval)]
+                else:
+                    self.data[uindex][self.repeat_index] = [int(float(s)) for s in re.split('[ ,]+', newval)]
                 self._sync_to_image(uindex)
             except ValueError:
                 pass
 
     def rectChanged(self, change):
+        print('rectChanged', self.repeat_index)
         if self.sourcedw is not None:
-            r = self.sourcedw.get_widget().rect
-            self.get_widget().value = self._value_to_str(r)
+            r = self.sourcedw.get_widget().rects
+            ri = self.repeat_index
+            if ri == -1:
+                ri = 0
+            v = self._value_to_str(r[ri*4:ri*4+4])
+            print(ri, v)
+            self.get_widget().value = v
 
 
 class MultiClassInnotation(Innotation):
@@ -189,11 +220,11 @@ class MultiClassInnotation(Innotation):
         self.datadepth = 'simple'
 
         self.dims = 1
-        if hasattr(self.data[0], '__len__'):
+        if hasattr(self._get_data(0), '__len__'):
             self.dims = 2
 
         if self.dims > 1:
-            if len(self.data[0]) == 1:
+            if len(self._get_data(0)) == 1:
                 self.datadepth = 'colvector' # A column vector corresponding to class numbers directly
             else:
                 self.datadepth = 'onehot' # One-hot encoding
@@ -211,11 +242,11 @@ class MultiClassInnotation(Innotation):
 
     def _guess_classes(self):
         if self.datadepth == 'onehot':
-            m = len(self.data[0])-1
+            m = len(self._get_data(0))-1
         elif self.datadepth == 'simple':
-            m = max(self.data)
+            m = max(self.data)  # TODO - use NumPy in case of repeat_index
         else: # colvector
-            m = max(self.data)[0]
+            m = max(self.data)[0]  # TODO
 
         if m == 0:
             raise Exception(f'MultiClassInnotation {self.name} only has one class value in use so cannot infer class count - please specify a classes array')
@@ -229,11 +260,11 @@ class MultiClassInnotation(Innotation):
 
     def _calc_class_index(self, uindex):
         if self.datadepth == 'onehot':
-            return int(max(range(len(self.data[uindex])), key=lambda x: self.data[uindex][x], default=0))
+            return int(max(range(len(self._get_data(uindex))), key=lambda x: self._get_data(uindex)[x], default=0))
         if self.datadepth == 'simple':
-            return int(self.data[uindex])
+            return int(self._get_data(uindex))
         # colvector
-        return int(self.data[uindex][0])
+        return int(self._get_data(uindex)[0])
 
     def update_ui(self, uindex):
         self.get_widget().value = self.classes[self._calc_class_index(uindex)]
@@ -244,13 +275,13 @@ class MultiClassInnotation(Innotation):
         if newval != self.classes[old_class_index]:
             class_index = self.classes.index(newval)
             if self.datadepth == 'onehot':
-                self.data[uindex][old_class_index] = 0
-                self.data[uindex][class_index] = 1
+                self._set_data(uindex, old_class_index, 0)
+                self._set_data(uindex, class_index, 1)
             elif self.datadepth == 'simple':
-                self.data[uindex] = class_index
+                self._set_data(uindex, class_index)
             else:
                 # colvector
-                self.data[uindex][0] = class_index
+                self._set_data(uindex, 0, class_index)
 
 
 class BinaryClassInnotation(MultiClassInnotation):
@@ -274,12 +305,12 @@ class TextInnotation(Innotation):
         return Textarea(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
-        self.get_widget().value = str(self.data[uindex])
+        self.get_widget().value = str(self._get_data(uindex))
 
     def update_data(self, uindex):
         newval = str(self._get_widget_value())
-        if newval != str(self.data[uindex]):
-            self.data[uindex] = newval
+        if newval != str(self._get_data(uindex)):
+            self._set_data(uindex,  newval)
 
 
 class _WidgetInnotation(Innotation):
