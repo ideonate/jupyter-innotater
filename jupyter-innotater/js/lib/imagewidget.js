@@ -109,8 +109,9 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				if (self.rectY + self.rectH > self.imgel.height) { self.rectH = self.imgel.height - self.rectY; }
 
 				// Sync to backend
-				var rects = self.model.get('rects');
+				var rects = _.clone(self.model.get('rects'));
 				var rect_index = self.model.get('rect_index');
+				var max_repeats = self.model.get('max_repeats');
 				while (rects.length < (rect_index+1)*4) {
 					rects.push(0);
 				}
@@ -119,7 +120,8 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 				rects[rect_index*4+1] = self.rectY;
 				rects[rect_index*4+2] = self.rectW;
 				rects[rect_index*4+3] = self.rectH;
-				self.model.set({'rects': rects}); //  'rect_index': rect_index+1
+				rect_index = (rect_index + 1) % max_repeats;
+				self.model.set({'rects': rects,  'rect_index': rect_index});
 				// self.model.set({'rect': [self.rectX, self.rectY, self.rectW, self.rectH]});
 				self.model.save_changes();
 				self.isSelecting = false;
@@ -172,8 +174,8 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 
 		// Get bounding box from model
 
-		var rect_index = this.model.get('rect_index');
-		var r = this.model.get('rects');
+		/*var rect_index = this.model.get('rect_index');
+		var r = _.clone(this.model.get('rects'));
 
 		while (r.length < (rect_index+1)*4) {
 			r.push(0);
@@ -182,7 +184,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		this.rectX = r[rect_index*4];
 		this.rectY = r[rect_index*4+1];
 		this.rectW = r[rect_index*4+2];
-		this.rectH = r[rect_index*4+3];
+		this.rectH = r[rect_index*4+3]; */
 
 		this.usewidth = 0;
 		this.useheight = 0;
@@ -254,22 +256,38 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		ctx.drawImage(this.imgel, 0, 0, self.usewidth, self.useheight);
 
 		if (self.is_bb_source) {
-			ctx.save();
-			ctx.globalAlpha = 0.9;
+			var rect_index = this.model.get('rect_index');
+			var r = _.clone(this.model.get('rects'));
+			var max_repeats = this.model.get('max_repeats');
 
-			ctx.beginPath();
-			ctx.strokeStyle = "#FFFFFF";
-			ctx.rect(this.rectX*this.zoom, this.rectY*this.zoom, this.rectW*this.zoom, this.rectH*this.zoom);
-			ctx.stroke();
+			for (var ri=0; ri < max_repeats; ri++) {
+				if (ri != rect_index || !self.isSelecting) {
+					self.drawBox(ctx, r[ri * 4], r[ri * 4 + 1], r[ri * 4 + 2], r[ri * 4 + 3], ri == rect_index);
+				}
+			}
 
-			ctx.beginPath();
-			ctx.strokeStyle = "#000000";
-			ctx.setLineDash([5]);
-			ctx.rect(this.rectX*this.zoom, this.rectY*this.zoom, this.rectW*this.zoom, this.rectH*this.zoom);
-			ctx.stroke();
-
-			ctx.restore();
+			if (self.isSelecting) {
+				self.drawBox(ctx, self.rectX, self.rectY, self.rectW, self.rectH, true);
+			}
 		}
+	},
+
+	drawBox: function(ctx, x,y,w,h, isdrawing) {
+		ctx.save();
+		ctx.globalAlpha = 0.9;
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#FFFFFF";
+		ctx.rect(x*this.zoom, y*this.zoom, w*this.zoom, h*this.zoom);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#000000";
+		ctx.setLineDash([isdrawing ? 2 : 5]);
+		ctx.rect(x*this.zoom, y*this.zoom, w*this.zoom, h*this.zoom);
+		ctx.stroke();
+
+		ctx.restore();
 	},
 
 	remove: function() {

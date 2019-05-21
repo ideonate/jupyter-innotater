@@ -14,6 +14,7 @@ class ImagePad(widgets.Image):
     # rect = List(trait=Int).tag(sync=True)
     rects = List(trait=Int).tag(sync=True)
     rect_index = Int(0).tag(sync=True)
+    max_repeats = Int(0).tag(sync=True)
 
     wantwidth = Int(0).tag(sync=True)
     wantheight = Int(0).tag(sync=True)
@@ -21,9 +22,7 @@ class ImagePad(widgets.Image):
     is_bb_source = Bool(False).tag(sync=True)
 
     def setRect(self, repeat_index, x,y,w,h):
-        if repeat_index != -1:
-            self.rect_index = repeat_index
-        else:
+        if repeat_index == -1:
             repeat_index = 0
 
         while len(self.rects) < (repeat_index+1)*4:
@@ -32,3 +31,7 @@ class ImagePad(widgets.Image):
         self.rects[repeat_index*4+1] = int(y)
         self.rects[repeat_index*4+2] = int(w)
         self.rects[repeat_index*4+3] = int(h)
+
+    def set_max_repeats(self, max_repeats):
+        self.max_repeats = max_repeats
+        self.is_bb_source = True

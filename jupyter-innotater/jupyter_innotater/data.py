@@ -78,7 +78,7 @@ class Innotation:
 
     def _set_data(self, uindex, *args):
         if len(args) < 1 or len(args) > 2:
-            raise("_set_data must have exactly one or two args")
+            raise Exception("_set_data must have exactly one or two args")
 
         if self.repeat_index != -1:
             if len(args) == 2:
@@ -102,6 +102,8 @@ class ImageInnotation(Innotation):
         self.path = kwargs.get('path', '')
 
         self.transform = kwargs.get('transform', None)
+
+        self.max_repeats = 0
 
     def _create_widget(self):
         return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled)
@@ -134,6 +136,10 @@ class ImageInnotation(Innotation):
 
     def setRect(self, repeat_index, x,y,w,h):
         self.get_widget().setRect(repeat_index, x,y,w,h)
+
+    def register_bbox_watcher(self, repeat_index):
+        self.max_repeats += 1
+        self.get_widget().set_max_repeats(self.max_repeats)
 
 
 class BoundingBoxInnotation(Innotation):
@@ -168,7 +174,7 @@ class BoundingBoxInnotation(Innotation):
 
     def post_widget_create(self, datamanager):
         if self.sourcedw is not None:
-            self.sourcedw.get_widget().is_bb_source = True
+            self.sourcedw.register_bbox_watcher(self.repeat_index)
             self.sourcedw.widget_observe(self.rectChanged, names='rects')
 
     def _create_widget(self):
@@ -199,14 +205,12 @@ class BoundingBoxInnotation(Innotation):
                 pass
 
     def rectChanged(self, change):
-        print('rectChanged', self.repeat_index)
         if self.sourcedw is not None:
             r = self.sourcedw.get_widget().rects
             ri = self.repeat_index
             if ri == -1:
                 ri = 0
             v = self._value_to_str(r[ri*4:ri*4+4])
-            print(ri, v)
             self.get_widget().value = v
 
 

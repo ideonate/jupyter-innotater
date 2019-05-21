@@ -61,6 +61,10 @@ class RepeatInnotation(Innotation):
         else:
             self.childinnotationconfigs = args[1:] # data must have been first param
 
+        self.childinnotations = []
+
+        self.max_repeats = kwargs.get('max_repeats', 10)
+
         self._children_changed_handlers = CallbackDispatcher()
 
     def _create_widget(self):
@@ -86,13 +90,18 @@ class RepeatInnotation(Innotation):
         self.get_widget().children = tuple(list(self.get_widget().children)+[HBox([c.get_widget() for c in newchildren])])
         self.rows_count += 1
 
+        self.childinnotations.extend(newchildren)
 
+        if self.max_repeats == self.rows_count:
+            self.addbtn.disabled = True
 
     def update_ui(self, uindex):
-        pass
+        for innot in self.childinnotations:
+            innot.update_ui(uindex)
 
     def update_data(self, uindex):
-        pass
+        for innot in self.childinnotations:
+            innot.update_data(uindex)
 
     def on_children_changed(self, callback, remove=False):
         """Register a callback to execute when the children are changed.
