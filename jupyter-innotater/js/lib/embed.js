@@ -11,4 +11,5 @@ var _ = require('lodash');
 
 module.exports = require('./innotaterwidget.js');
 _.extend( module.exports, require('./imagewidget.js') );
+_.extend( module.exports, require('./customwidgets.js') );
 module.exports['version'] = require('../package.json').version;

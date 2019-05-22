@@ -1,5 +1,6 @@
 from .imagewidget import ImagePad
-from ipywidgets import Checkbox, Select, Text, Textarea, Dropdown
+from .customwidgets import FocusText
+from ipywidgets import Checkbox, Select, Textarea, Dropdown
 import re
 from pathlib import Path
 
@@ -176,9 +177,11 @@ class BoundingBoxInnotation(Innotation):
         if self.sourcedw is not None:
             self.sourcedw.register_bbox_watcher(self.repeat_index)
             self.sourcedw.widget_observe(self.rectChanged, names='rects')
+            self.sourcedw.widget_observe(self.rectIndexChanged, names='rect_index')
+        self.get_widget().on_click(self.widget_clicked)
 
     def _create_widget(self):
-        return Text(layout=self.layout, disabled=self.disabled)
+        return FocusText(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         self.get_widget().value = self._value_to_str(self._get_data(uindex))
@@ -212,6 +215,17 @@ class BoundingBoxInnotation(Innotation):
                 ri = 0
             v = self._value_to_str(r[ri*4:ri*4+4])
             self.get_widget().value = v
+
+    def rectIndexChanged(self, change):
+        if self.sourcedw is not None:
+            if self.sourcedw.get_widget().rect_index == self.repeat_index:
+                self.get_widget().add_class('bounding-box-active')
+            else:
+                self.get_widget().remove_class('bounding-box-active')
+
+    def widget_clicked(self, w):
+        if self.sourcedw is not None:
+            self.sourcedw.get_widget().rect_index = self.repeat_index
 
 
 class MultiClassInnotation(Innotation):

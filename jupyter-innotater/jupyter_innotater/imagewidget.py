@@ -25,12 +25,17 @@ class ImagePad(widgets.Image):
         if repeat_index == -1:
             repeat_index = 0
 
-        while len(self.rects) < (repeat_index+1)*4:
-            self.rects.extend([0,0,0,0])
-        self.rects[repeat_index*4] = int(x)
-        self.rects[repeat_index*4+1] = int(y)
-        self.rects[repeat_index*4+2] = int(w)
-        self.rects[repeat_index*4+3] = int(h)
+        r = [int(a) for a in self.rects]
+
+        while len(r) < (repeat_index+1)*4:
+            r.extend([0,0,0,0])
+
+        r[repeat_index*4] = int(x)
+        r[repeat_index*4+1] = int(y)
+        r[repeat_index*4+2] = int(w)
+        r[repeat_index*4+3] = int(h)
+
+        self.rects  = r
 
     def set_max_repeats(self, max_repeats):
         self.max_repeats = max_repeats

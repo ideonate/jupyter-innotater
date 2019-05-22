@@ -277,7 +277,7 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 		ctx.globalAlpha = 0.9;
 
 		ctx.beginPath();
-		ctx.strokeStyle = "#FFFFFF";
+		ctx.strokeStyle = isdrawing ? "#008000" : "#FFFFFF";
 		ctx.rect(x*this.zoom, y*this.zoom, w*this.zoom, h*this.zoom);
 		ctx.stroke();
 
