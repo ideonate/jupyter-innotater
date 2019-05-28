@@ -44,12 +44,15 @@ class DataManager:
         self.alldws[name] = dw
 
         # Check number of rows is the same and not zero
-        if l == -1:
-            l = len(dw)
-            if l == 0:
-                raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
-        elif l != len(dw):
-            raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
+
+        if dw.requires_data:
+            this_len = len(dw)
+            if l == -1:
+                if this_len == 0:
+                    raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
+                l = this_len
+            elif l != this_len:
+                raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
 
         return l
 

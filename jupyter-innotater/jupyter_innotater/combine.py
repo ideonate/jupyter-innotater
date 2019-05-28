@@ -49,6 +49,7 @@ class GroupedInnotation(Innotation):
 class RepeatInnotation(Innotation):
 
     has_children_changed_notifier = True
+    requires_data = False
 
     def __init__(self, *args, **kwargs):
 
@@ -56,10 +57,7 @@ class RepeatInnotation(Innotation):
 
         self.rows_count = 0
 
-        if 'data' in kwargs:
-            self.childinnotationconfigs = args
-        else:
-            self.childinnotationconfigs = args[1:] # data must have been first param
+        self.childinnotationconfigs = args
 
         self.childinnotations = []
 

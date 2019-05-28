@@ -22,14 +22,17 @@ class Innotation:
 
         self.desc = kwargs.get('desc', self.name)
 
-        if len(args) > 0:
-            self.data = args[0]
-            if 'data' in kwargs:
-                raise Exception('data supplied both as position and keyword argument')
-        elif 'data' in kwargs:
-            self.data = kwargs['data']
-        elif self.requires_data:
-            raise Exception('No data argument found')
+        if self.requires_data:
+            if len(args) > 0:
+                self.data = args[0]
+                if 'data' in kwargs:
+                    raise Exception('data supplied both as position and keyword argument')
+            elif 'data' in kwargs:
+                self.data = kwargs['data']
+            else:
+                raise Exception('No data argument found')
+        else:
+            self.data = None
 
         self.repeat_index = kwargs.get('repeat_index', -1)
 
@@ -51,6 +54,8 @@ class Innotation:
         pass
 
     def __len__(self):
+        if self.data is None:
+            return 0
         return len(self.data)
 
     def get_widget(self):
