@@ -1,5 +1,6 @@
 from .imagewidget import ImagePad
 from .customwidgets import FocusText
+from .watchlist import Watcher, WatchList
 from ipywidgets import Checkbox, Select, Textarea, Dropdown
 import re
 from pathlib import Path
@@ -106,6 +107,8 @@ class ImageInnotation(Innotation):
 
         self.max_repeats = 0
 
+        self.watchlist = WatchList()
+
     def _create_widget(self):
         return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled)
 
@@ -135,12 +138,24 @@ class ImageInnotation(Innotation):
             # Actual raw image data
             self.get_widget().value = it
 
-    def setRect(self, repeat_index, x,y,w,h):
-        self.get_widget().setRect(repeat_index, x,y,w,h)
+    def setRect(self, name, repeat_index, x,y,w,h):
+        watcher_index = self.watchlist.get_watcher_index(name, repeat_index)
+        self.get_widget().setRect(watcher_index, x,y,w,h)
 
-    def register_bbox_watcher(self, repeat_index):
+    def register_bbox_watcher(self, name, repeat_index):
         self.max_repeats += 1
         self.get_widget().set_max_repeats(self.max_repeats)
+        self.watchlist.add(Watcher(name=name, repeat_index=repeat_index))
+
+    def get_current_watcher(self):
+        return self.watchlist[self.get_widget().rect_index]
+
+    def set_current_watcher(self, name, repeat_index):
+        self.get_widget().rect_index = self.watchlist.get_watcher_index(name, repeat_index)
+
+    def get_rect_for_watcher(self, name, repeat_index):
+        watcher_index = self.watchlist.get_watcher_index(name, repeat_index)
+        return self.get_widget().rects[watcher_index*4:(watcher_index+1)*4]
 
 
 class BoundingBoxInnotation(Innotation):
@@ -175,7 +190,7 @@ class BoundingBoxInnotation(Innotation):
 
     def post_widget_create(self, datamanager):
         if self.sourcedw is not None:
-            self.sourcedw.register_bbox_watcher(self.repeat_index)
+            self.sourcedw.register_bbox_watcher(self.name, self.repeat_index)
             self.sourcedw.widget_observe(self.rectChanged, names='rects')
             self.sourcedw.widget_observe(self.rectIndexChanged, names='rect_index')
         self.get_widget().on_click(self.widget_clicked)
@@ -190,7 +205,7 @@ class BoundingBoxInnotation(Innotation):
     def _sync_to_image(self, uindex):
         if self.sourcedw is not None:
             (x,y,w,h) = self._get_data(uindex)[:4]
-            self.sourcedw.setRect(self.repeat_index, x,y,w,h)
+            self.sourcedw.setRect(self.name, self.repeat_index, x,y,w,h)
 
     def _value_to_str(self, r):
         return ', '.join([str(int(a)) for a in r])
@@ -209,23 +224,27 @@ class BoundingBoxInnotation(Innotation):
 
     def rectChanged(self, change):
         if self.sourcedw is not None:
-            r = self.sourcedw.get_widget().rects
-            ri = self.repeat_index
-            if ri == -1:
-                ri = 0
-            v = self._value_to_str(r[ri*4:ri*4+4])
+            r = self.sourcedw.get_rect_for_watcher(self.name, self.repeat_index)
+            #r = self.sourcedw.get_widget().rects
+            #ri = self.repeat_index
+            #if ri == -1:
+            #    ri = 0
+            #v = self._value_to_str(r[ri*4:ri*4+4])
+            v = self._value_to_str(r)
             self.get_widget().value = v
 
     def rectIndexChanged(self, change):
         if self.sourcedw is not None:
-            if self.sourcedw.get_widget().rect_index == self.repeat_index:
+            #if self.sourcedw.get_widget().rect_index == self.repeat_index:
+            watcher = self.sourcedw.get_current_watcher()
+            if watcher.name == self.name and watcher.repeat_index == self.repeat_index:
                 self.get_widget().add_class('bounding-box-active')
             else:
                 self.get_widget().remove_class('bounding-box-active')
 
     def widget_clicked(self, w):
         if self.sourcedw is not None:
-            self.sourcedw.get_widget().rect_index = self.repeat_index
+            self.sourcedw.set_current_watcher(self.name, self.repeat_index)
 
 
 class MultiClassInnotation(Innotation):
