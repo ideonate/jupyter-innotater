@@ -11,7 +11,6 @@ var $ = require('jquery');
 var FocusTextView = widgets.TextView.extend({
 
     events: function () {
-        console.log("EVENTS !!!");
         var d = FocusTextView.__super__.events(this, arguments);
         d['click input'] = 'handleFocus';
         return d;

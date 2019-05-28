@@ -63,16 +63,29 @@ class RepeatInnotation(Innotation):
 
         self.childinnotations = []
 
+        self.min_repeats = kwargs.get('min_repeats', 0)
         self.max_repeats = kwargs.get('max_repeats', 10)
+
+        if self.max_repeats < self.min_repeats:
+            raise Exception("min_repeats is greater than max_repeats")
 
         self._children_changed_handlers = CallbackDispatcher()
 
+    def post_widget_create(self, datamanager):
+        while self.rows_count < self.min_repeats:
+            self.add_row()
+
     def _create_widget(self):
         self.addbtn = Button(description='Add')
-        self.addbtn.on_click(self.add_row)
-        return VBox([self.addbtn])
+        self.addbtn.on_click(self.add_row_handler)
+        vbox = VBox([self.addbtn])
+        vbox.add_class('repeat-innotation')
+        return vbox
 
-    def add_row(self, btn):
+    def add_row_handler(self, btn):
+        self.add_row()
+
+    def add_row(self):
         newchildren = []
         for c in self.childinnotationconfigs:
             if isinstance(c, tuple) or isinstance(c, list):
@@ -85,10 +98,11 @@ class RepeatInnotation(Innotation):
             else:
                 newchildren.append(c(self.data))
 
+        self.rows_count += 1
         self.children_changed(newchildren)
 
         self.get_widget().children = tuple(list(self.get_widget().children)+[HBox([c.get_widget() for c in newchildren])])
-        self.rows_count += 1
+
 
         self.childinnotations.extend(newchildren)
 

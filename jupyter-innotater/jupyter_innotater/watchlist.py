@@ -21,4 +21,4 @@ class WatchList:
         for i in range(len(self.wl)):
             if self.wl[i].name == name and self.wl[i].repeat_index == repeat_index:
                 return i
-
+        return -1

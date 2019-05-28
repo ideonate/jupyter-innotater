@@ -93,6 +93,7 @@ class Innotation:
             else:
                 self.data[uindex] = args[-1]
 
+
 class ImageInnotation(Innotation):
 
     def __init__(self, *args, **kwargs):
@@ -140,7 +141,8 @@ class ImageInnotation(Innotation):
 
     def setRect(self, name, repeat_index, x,y,w,h):
         watcher_index = self.watchlist.get_watcher_index(name, repeat_index)
-        self.get_widget().setRect(watcher_index, x,y,w,h)
+        if watcher_index >= 0:
+            self.get_widget().setRect(watcher_index, x,y,w,h)
 
     def register_bbox_watcher(self, name, repeat_index):
         self.max_repeats += 1

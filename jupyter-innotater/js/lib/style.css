@@ -27,6 +27,10 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
     border: green 1px solid;
 }
 
+.innotater-base .repeat-innotation {
+    padding: 10px 2px;
+}
+
 /* Kaggle Overrides */
 
 .innotater-kaggle .widget-hbox {

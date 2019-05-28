@@ -1,5 +1,6 @@
 from .data import Innotation
 
+
 class DataManager:
 
     def __init__(self, inputs, targets, indexes=None):
@@ -32,7 +33,7 @@ class DataManager:
                 if len(self.indexes) == 0:
                     raise Exception("indexes as a boolean mask must have some True values")
 
-        for dw in self.alldws.values():
+        for dw in list(self.alldws.values()):
             dw.post_register(self)
 
     def _add_to_alldws(self, dw, l):
