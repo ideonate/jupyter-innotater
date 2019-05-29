@@ -65,7 +65,7 @@ The widget is currently in ALPHA development phase, and I appreciate all
 feedback on any problems including details on how the current code works
 or fails to work for the structure of your particular projects.
 
-.. figure:: /_static/screenshots/ImageAndBBoxesFull.png
+.. figure:: _static/screenshots/ImageAndBBoxesFull.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter

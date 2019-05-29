@@ -22,7 +22,7 @@ bounding boxes directly.
 
     Innotater( ImageInnotation(images, path='./foods'), BoundingBoxInnotation(targets) )
 
-.. figure:: /_static/screenshots/ImageAndBBoxesInnotater.png
+.. figure:: ../_static/screenshots/ImageAndBBoxesInnotater.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -63,7 +63,7 @@ Then set up Innotater to display the images so you can mark the classes.
 
     Innotater( ImageInnotation(foods), MultiClassInnotation(targets, classes=classes) )
 
-.. figure:: /_static/screenshots/ImageAndMultiClassifier.png
+.. figure:: ../_static/screenshots/ImageAndMultiClassifier.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -95,7 +95,7 @@ object you are trying to detect, and draw bounding boxes if so.
               BoundingBoxInnotation(bboxes, name='bbs', source='Food', desc='Food Type') ]
     )
 
-.. figure:: /_static/screenshots/MultiClassifierAndBBoxes.png
+.. figure:: ../_static/screenshots/MultiClassifierAndBBoxes.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -140,7 +140,7 @@ as positive, negative, or neutral.
 
     Innotater(TextInnotation(reviews), MultiClassInnotation(sentiments, classes=sentiment_classes))
 
-.. figure:: /_static/screenshots/TextAndMultiClassifier.png
+.. figure:: ../_static/screenshots/TextAndMultiClassifier.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
