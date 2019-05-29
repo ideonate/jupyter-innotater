@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'innotater'
+project = 'jupyter-innotater'
 copyright = '2019, Ideonate'
 author = 'Ideonate'
 
