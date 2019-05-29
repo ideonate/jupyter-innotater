@@ -23,6 +23,14 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
     opacity: 1.0; /* Disabled TextInnotations still want to be highly readable */
 }
 
+.innotater-base .bounding-box-active {
+    border: green 1px solid;
+}
+
+.innotater-base .repeat-innotation {
+    padding: 10px 2px;
+}
+
 /* Kaggle Overrides */
 
 .innotater-kaggle .widget-hbox {

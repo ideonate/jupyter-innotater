@@ -44,8 +44,10 @@ class Innotater(VBox):
 
         for dw in self.datamanager.get_targets():
             dw.widget_observe(self.update_data, names='value')
+            if dw.has_children_changed_notifier:
+                dw.on_children_changed(self.new_children_handler)
 
-        for dw in self.datamanager.get_all():
+        for dw in list(self.datamanager.get_all()):
             dw.post_widget_create(self.datamanager)
 
         self.prevbtn.on_click(lambda c: self.move_slider(-1))
@@ -107,3 +109,18 @@ class Innotater(VBox):
         for dw in self.datamanager.get_targets():
             if dw.contains_widget(widg):
                 dw.update_data(uindex)
+
+    def add_innotations(self, inputs, targets):
+        self.datamanager.dynamic_add_innotations(inputs, targets)
+
+        for dw in targets:
+            dw.widget_observe(self.update_data, names='value')
+            if dw.has_children_changed_notifier:
+                dw.on_children_changed(self.new_children_handler)
+
+        for dw in inputs+targets:
+            dw.post_widget_create(self.datamanager)
+
+    def new_children_handler(self, parent, newchildren):
+        self.add_innotations([], newchildren)  # Assume always targets
+        self.update_ui()
