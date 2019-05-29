@@ -16,7 +16,7 @@ The Innotater widget is designed with a flexible API making it quick and easy to
 
 The widget is currently in ALPHA development phase, and I appreciate all feedback on any problems including details on how the current code works or fails to work for the structure of your particular projects.
 
-![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesFull.png)
+![Screenshot of Innotater widget in Jupyter](docs/_static/screenshots/ImageAndBBoxesFull.png)
 
 ## 2 - Examples
 
@@ -38,7 +38,7 @@ targets = np.zeros((len(images), 4)) # Initialise bounding boxes as x,y = 0,0, w
 Innotater( ImageInnotation(images, path='./foods'), BoundingBoxInnotation(targets) )
 ```
 
-![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndBBoxesInnotater.png)
+![Screenshot of Innotater widget in Jupyter](docs/_static/screenshots/ImageAndBBoxesInnotater.png)
 
 The widget allows you to interactively draw bounding boxes for any of the images, and the `targets` variable is always kept in sync with your changes.
 
@@ -71,7 +71,7 @@ targets = [0] * len(foods)
 Innotater( ImageInnotation(foods), MultiClassInnotation(targets, classes=classes) )
 ```
 
-![Screenshot of Innotater widget in Jupyter](./screenshots/ImageAndMultiClassifier.png)
+![Screenshot of Innotater widget in Jupyter](docs/_static/screenshots/ImageAndMultiClassifier.png)
 
 The widget allows you to interactively step through the images selecting the classification, and the `targets` variable is always kept in sync with your changes.
 
@@ -97,7 +97,7 @@ Innotater(
 
 ```
 
-![Screenshot of Innotater widget in Jupyter](./screenshots/MultiClassifierAndBBoxes.png)
+![Screenshot of Innotater widget in Jupyter](docs/_static/screenshots/MultiClassifierAndBBoxes.png)
 
 The widget allows you to interactively step through the images selecting the classification, and both `isfruits` and `bboxes` are always kept in sync with your changes.
 
@@ -135,7 +135,7 @@ sentiment_classes = ['0 - Positive', '1 - Neutral', '2 - Negative']
 Innotater(TextInnotation(reviews), MultiClassInnotation(sentiments, classes=sentiment_classes))
 ```
 
-![Screenshot of Innotater widget in Jupyter](./screenshots/TextAndMultiClassifier.png)
+![Screenshot of Innotater widget in Jupyter](docs/_static/screenshots/TextAndMultiClassifier.png)
 
 The widget allows you to interactively step through the reviews selecting the classification, and the `sentiments` variable is always kept in sync.
 
