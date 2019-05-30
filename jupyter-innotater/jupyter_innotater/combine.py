@@ -1,3 +1,5 @@
+__all__ = ['GroupedInnotation', 'RepeatInnotation']
+
 from .data import Innotation
 from ipywidgets import HBox, VBox, Button
 from ipywidgets.widgets import CallbackDispatcher

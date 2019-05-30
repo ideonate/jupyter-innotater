@@ -1,7 +1,9 @@
+__all__ = ['ImageInnotation', 'BoundingBoxInnotation', 'MultiClassInnotation', 'BinaryClassInnotation', 'TextInnotation']
+
 from .imagewidget import ImagePad
 from .customwidgets import FocusText
 from .watchlist import Watcher, WatchList
-from ipywidgets import Checkbox, Select, Textarea, Dropdown
+from ipywidgets import Checkbox, Select, Textarea, Dropdown, Text
 import re
 from pathlib import Path
 
@@ -345,8 +347,16 @@ class BinaryClassInnotation(MultiClassInnotation):
 
 class TextInnotation(Innotation):
 
+    def __init__(self, *args, **kwargs):
+
+        self.multiline = kwargs.get('multiline', True)
+
+        super().__init__(*args, **kwargs)
+
     def _create_widget(self):
-        return Textarea(layout=self.layout, disabled=self.disabled)
+        if self.multiline:
+            return Textarea(layout=self.layout, disabled=self.disabled)
+        return Text(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
         self.get_widget().value = str(self._get_data(uindex))

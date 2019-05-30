@@ -19,7 +19,7 @@ canvas.jupyter-innotater-imagepad.is_bb_source {
     border: 1px solid lightgray;
 }
 
-.innotater-base .widget-textarea textarea {
+.innotater-base .widget-textarea textarea, .innotater-base .widget-text input[type="text"] {
     opacity: 1.0; /* Disabled TextInnotations still want to be highly readable */
 }
 
