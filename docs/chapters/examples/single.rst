@@ -1,8 +1,17 @@
-Examples
---------
+.. _single:
+
+
+Single Examples
+~~~~~~~~~~~~~~~
+
+See `Example/Examples.ipynb <https://github.com/ideonate/jupyter-innotater/blob/master/Example/Examples.ipynb>`__
+to run similar examples interactively. Try running
+`Examples.ipynb on
+Binder <https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb>`__
+for free with no setup required!
 
 Images and Bounding Boxes
-~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++
 
 Load some images from filenames in an array, initialise empty bounding
 boxes.
@@ -12,8 +21,7 @@ bounding boxes directly.
 
 ::
 
-    from jupyter_innotater import Innotater
-    from jupyter_innotater.data import ImageInnotation, BoundingBoxInnotation
+    from jupyter_innotater import *
 
     import numpy as np, os
 
@@ -22,7 +30,7 @@ bounding boxes directly.
 
     Innotater( ImageInnotation(images, path='./foods'), BoundingBoxInnotation(targets) )
 
-.. figure:: ../_static/screenshots/ImageAndBBoxesInnotater.png
+.. figure:: ../../_static/screenshots/ImageAndBBoxesInnotater.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -44,7 +52,7 @@ The above saves your work - the bounding boxes you've drawn - as a CSV
 file. Without saving, your numbers will be lost if the kernel restarts.
 
 Multi-Classification of Images
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++
 
 Load some images from filenames in an array, initialise empty targets.
 
@@ -52,8 +60,7 @@ Then set up Innotater to display the images so you can mark the classes.
 
 ::
 
-    from jupyter_innotater import Innotater
-    from jupyter_innotater.data import ImageInnotation, MultiClassInnotation
+    from jupyter_innotater import *
 
     import numpy as np, os, cv2
 
@@ -63,7 +70,7 @@ Then set up Innotater to display the images so you can mark the classes.
 
     Innotater( ImageInnotation(foods), MultiClassInnotation(targets, classes=classes) )
 
-.. figure:: ../_static/screenshots/ImageAndMultiClassifier.png
+.. figure:: ../../_static/screenshots/ImageAndMultiClassifier.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -73,15 +80,14 @@ the classification, and the ``targets`` variable is always kept in sync
 with your changes.
 
 Binary-Classification with Bounding Boxes for Images
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Set up Innotater to display the images so you can mark whether it is the
 object you are trying to detect, and draw bounding boxes if so.
 
 ::
 
-    from jupyter_innotater import Innotater
-    from jupyter_innotater.data import ImageInnotation, BoundingBoxInnotation, BinaryClassInnotation
+    from jupyter_innotater import *
 
     import numpy as np, os
 
@@ -95,7 +101,7 @@ object you are trying to detect, and draw bounding boxes if so.
               BoundingBoxInnotation(bboxes, name='bbs', source='Food', desc='Food Type') ]
     )
 
-.. figure:: ../_static/screenshots/MultiClassifierAndBBoxes.png
+.. figure:: ../../_static/screenshots/MultiClassifierAndBBoxes.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -122,7 +128,7 @@ Output:
            [  0,   0,   0,   0,   0]])
 
 Multi-Classification of Text Strings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++
 
 Load some text strings e.g. of movie reviews
 
@@ -131,8 +137,7 @@ as positive, negative, or neutral.
 
 ::
 
-    from jupyter_innotater import Innotater
-    from jupyter_innotater.data import TextInnotation, MultiClassInnotation
+    from jupyter_innotater import *
 
     reviews = ['I really liked this movie', 'It was OK', 'Do not watch!']
     sentiments = [1] * len(reviews)
@@ -140,7 +145,7 @@ as positive, negative, or neutral.
 
     Innotater(TextInnotation(reviews), MultiClassInnotation(sentiments, classes=sentiment_classes))
 
-.. figure:: ../_static/screenshots/TextAndMultiClassifier.png
+.. figure:: ../../_static/screenshots/TextAndMultiClassifier.png
    :alt: Screenshot of Innotater widget in Jupyter
 
    Screenshot of Innotater widget in Jupyter
@@ -149,30 +154,4 @@ The widget allows you to interactively step through the reviews
 selecting the classification, and the ``sentiments`` variable is always
 kept in sync.
 
-Jupyter Notebook Example
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The file Example/Examples.ipynb contains many examples you can run
-directly in Jupyter notebook. You can try it out for free in a
-`Binder <https://mybinder.org/>`__ environment by clicking here:
-`Examples.ipynb on
-Binder <https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb>`__
-
-For the full effect in your own environment, you may need to install
-opencv2 and pandas packages (or just ignore those parts of the
-notebook):
-
-::
-
-    pip install jupyter_innotater
-    pip install opencv-python
-    pip install pandas
-
-Full Tutorial of an example project
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-An example machine learning project for butterfly species classification
-using bounding boxes to improve the model by zooming in: `Clean Up your
-own Model Data without leaving
-Jupyter <https://towardsdatascience.com/clean-up-your-own-model-data-without-leaving-jupyter-bdbcc9001734>`__
 

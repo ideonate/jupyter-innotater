@@ -154,3 +154,56 @@ TextInnotation
 data is expected to be an array of text strings.
 
 Displays a textarea showing the text.
+
+
+Repeats and Grouping
+~~~~~~~~~~~~~~~~~~~~
+
+There are two special Innotations that control grouping or repeating of multiple other ordinary Innotations.
+
+RepeatInnotation
+^^^^^^^^^^^^^^^^
+
+Specify an arbitrary number of repeats of a series of Innotation types. The constructor is:
+
+::
+
+    RepeatInnotation( *configuration_tuples, [min_repeats=0,] [max_repeats=10] )
+
+Where `configuration_tuples` is an array of one or more tuples of length 2 or 3 and of the following form:
+
+::
+
+    ( InnotationSubclass, data [, construction_kwargs] )
+
+Where:
+
+ * `InnotationSubclass` is a subclass of `Innotation` (e.g. BoundingBoxInnotation), NOT an instance of the subclass.
+ * `data` is a matrix that can be used by `InnotationSubclass` to store the data as normal, except this should have an
+   extra dimension (typically of size `max_repeats`) inserted as the second dimension compared to the same Innotation
+   subclass if used directly without RepeatInnotation.
+ * `construction_kwargs` is an optional dict that will be passed as \*\*kwargs when each InnotationSubclass is
+   instantiated by the RepeatInnotation.
+
+So for each row of Innotations to be added, for each tuple in `configuration_tuples`, each subclass will be
+instantiated by RepeatInnotation itself as follows:
+
+::
+
+    InnotationSubclass( data, \*\*construction_kwargs )
+
+The :ref:`multiple` are the best way to understand how this works!
+
+GroupedInnotation
+^^^^^^^^^^^^^^^^^
+
+Group two or more Innotations together horizontally so they appear side-by-side instead of vertically.
+
+::
+
+    GroupedInnotation( *innotation_list )
+
+Where `innotation_list` is just an '\*args' list of ordinary Innotation objects, e.g. a BoundingBoxInnotation and a
+MultiClassInnotation so that the bounding box textbox appears side-by-side with a dropdown.
+
+

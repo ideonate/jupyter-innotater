@@ -19,11 +19,11 @@ Easy local :ref:`installation` using pip.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Documentation Contents:
 
    chapters/overview
-   chapters/examples
+   chapters/examples/examples
    chapters/usage
    chapters/installation
    chapters/requirements
@@ -35,5 +35,5 @@ Innotater source code can be found on `GitHub here <https://github.com/ideonate/
 
 
 .. |Binder| image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master?filepath=Example%2FExamples.ipynb
+   :target: https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master
 
