@@ -122,7 +122,7 @@ Also display the filename in a textbox, for information only.
             TextInnotation(animalfns, multiline=False) # Display the image filename
         ],
         [
-            BinaryClassInnotation(targets_type, name='Exclude'), # Checkbox
+            BinaryClassInnotation(targets_exclude, name='Exclude'), # Checkbox
             RepeatInnotation(
                 (BoundingBoxInnotation, targets_bboxes), # Individual animal bounding box
                 (MultiClassInnotation, targets_breed,
