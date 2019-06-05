@@ -1,3 +1,6 @@
+import sys
+assert sys.version_info[0] >= 3, "Innotater requires Python 3.3 or above. Current Python version: " + sys.version.split(' ')[0]
+
 from .innotaterwidget import *
 from .__meta__ import __version__
 
