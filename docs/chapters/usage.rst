@@ -63,11 +63,12 @@ ImageInnotation
 ^^^^^^^^^^^^^^^
 
 data is expected to be an array of filenames, blobs, or numpy arrays
-containing image data directly (RGB format).
+(or similar, e.g. PyTorch Tensor) containing image data directly.
 
 Extra optional parameters:
 
-``path`` - a path to be prefixed to all filenames provided in data.
+``path`` - a path to be prefixed to all filenames provided in ``data``
+(this parameter is ignored if ``data`` does not contain filenames).
 
 ``width`` and/or ``height`` to specify the maximum size of image to
 display as an integer number of pixels. For example, if you specify only
@@ -83,6 +84,18 @@ to the original image dimensions.
 before it is processed to be displayed on the screen. For example, you
 might set ``transform`` to a denormalization function because all images
 in data have been normalized for training purposes.
+
+``colorspace`` is a string containing either 'RGB' or 'BGR' (default is
+'BGR'). This only has an effect if you pass numpy arrays or similar as
+the ``data`` attribute. It specifies the meaning of the color channels
+of the input data. For example, if you load images using Open CV2
+(cv2.imread) then the default of 'BGR' will normally be correct; if you
+load images via matplotlib imread, you will likely need colorspace to be
+'RGB'.
+
+Note that if a numpy array is provided channel-first, the Innotater
+should detect this and automatically switch the channel to be the last
+axis internally.
 
 BoundingBoxInnotation
 ^^^^^^^^^^^^^^^^^^^^^

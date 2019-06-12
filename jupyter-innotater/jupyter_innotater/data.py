@@ -6,6 +6,13 @@ from .watchlist import Watcher, WatchList
 from ipywidgets import Checkbox, Select, Textarea, Dropdown, Text
 import re
 from pathlib import Path
+import numpy as np # Required to manipulate numpy or pytorch image matrix
+try:
+    import cv2 # Prefer Open CV2 but don't put in requirements.txt because it can be difficult to install
+    usecv2 = True
+except ImportError:
+    import png, io # PyPNG is a pure-Python PNG manipulator
+    usecv2 = False
 
 
 class Innotation:
@@ -113,6 +120,12 @@ class ImageInnotation(Innotation):
 
         self.transform = kwargs.get('transform', None)
 
+        self.colorspace = 'BGR'
+        if 'colorspace' in kwargs:
+            self.colorspace = kwargs['colorspace']
+            if self.colorspace not in ('BGR', 'RGB'):
+                raise Exception("Parameter colorspace must be either 'RGB' or 'BGR'")
+
         self.max_repeats = 0
 
         self.watchlist = WatchList()
@@ -133,7 +146,6 @@ class ImageInnotation(Innotation):
                 p = Path(self.path) / p
             self.get_widget().set_value_from_file(p)
         elif 'numpy' in str(type(it)) or 'Tensor' in str(type(it)):
-            import cv2, numpy as np # Required to manipulate numpy or pytorch image matrix
             npim = it.numpy() if hasattr(it, 'numpy') else it
             if len(npim.shape) == 3 and npim.shape[2] not in (1,3,4):
                 # Channels dim needs to be moved to back
@@ -141,7 +153,28 @@ class ImageInnotation(Innotation):
             if not np.issubdtype(npim.dtype, np.integer):
                 # Float so scale
                 npim = (npim * 255).astype('int')
-            self.get_widget().value = cv2.imencode('.png', npim)[1].tostring()
+
+            if usecv2 and self.colorspace == 'RGB':
+                npim = cv2.cvtColor(npim, cv2.COLOR_RGB2BGR)
+            elif not usecv2 and self.colorspace == 'BGR' and len(npim.shape) == 3:
+                npim = np.flip(npim, axis=2)
+
+            if usecv2:
+                self.get_widget().value = cv2.imencode('.png', npim)[1].tostring()
+            else:
+                pngbytes = io.BytesIO()
+                pngmode = 'L' # Greyscale
+                if len(npim.shape) == 3:
+                    if npim.shape[2] > 4:
+                        raise Exception("Image numpy array appears to have more than 4 channels")
+                    pngmode = ('L','LA','RGB','RGBA')[npim.shape[2]-1]
+                else:
+                    npim = np.expand_dims(npim, axis=-1) # Need a third axis for channel
+                pngim = png.from_array(npim, mode=pngmode) # Don't have BGR available so flipped to RGB above
+                pngim.write(pngbytes) if hasattr(pngim, 'write') else pngim.save(pngbytes) # PyPNG API due to change after v0.0.19
+                self.get_widget().value = pngbytes.getvalue()
+                pngbytes.close()
+
         else:
             # Actual raw image data
             self.get_widget().value = it
