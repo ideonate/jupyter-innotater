@@ -19,7 +19,7 @@ The Innotater widget is designed with a flexible API making it quick and easy to
 
 The project is currently in ALPHA development phase, and I appreciate all feedback on any problems including details on how the current code works or fails to work for the structure of your particular projects.
 
-**Full documentation is [now on ReadTheDocs](https://jupyter-innotater.readthedocs.io/en/latest/index.html)**
+**Full documentation is [now on ReadTheDocs](https://jupyter-innotater.readthedocs.io/)**
 
 ## 2 - Examples
 
@@ -151,4 +151,6 @@ This code is released under an MIT license.
 
 ## 6 - Documentation
 
-Full documentation is [now on ReadTheDocs](https://jupyter-innotater.readthedocs.io/en/latest/index.html).
+Full documentation is now on ReadTheDocs:
+* [Stable version as installed through pip](https://jupyter-innotater.readthedocs.io/en/stable/index.html)
+* [Latest version in development](https://jupyter-innotater.readthedocs.io/en/latest/index.html)
