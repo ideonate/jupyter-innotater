@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from traitlets import Unicode, Int, List, Bool
+from traitlets import Unicode, Int, List, Bool, Dict
 
 
 @widgets.register
@@ -18,6 +18,8 @@ class ImagePad(widgets.Image):
 
     wantwidth = Int(0).tag(sync=True)
     wantheight = Int(0).tag(sync=True)
+
+    annotation_styles = Dict({}).tag(sync=True)
 
     is_bb_source = Bool(False).tag(sync=True)
 

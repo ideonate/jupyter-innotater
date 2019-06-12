@@ -260,34 +260,54 @@ var InnotaterImagePadView = widgets.DOMWidgetView.extend({
 			var r = _.clone(this.model.get('rects'));
 			var max_repeats = this.model.get('max_repeats');
 
+			var ann_styles = this.getAnnotationStyles();
+
 			for (var ri=0; ri < max_repeats; ri++) {
 				if (ri != rect_index || !self.isSelecting) {
-					self.drawBox(ctx, r[ri * 4], r[ri * 4 + 1], r[ri * 4 + 2], r[ri * 4 + 3], ri == rect_index);
+					self.drawBox(ctx, r[ri * 4], r[ri * 4 + 1], r[ri * 4 + 2], r[ri * 4 + 3], ann_styles, ri == rect_index);
 				}
 			}
 
 			if (self.isSelecting) {
-				self.drawBox(ctx, self.rectX, self.rectY, self.rectW, self.rectH, true);
+				self.drawBox(ctx, self.rectX, self.rectY, self.rectW, self.rectH, ann_styles, true);
 			}
 		}
 	},
 
-	drawBox: function(ctx, x,y,w,h, isdrawing) {
+	drawBox: function(ctx, x,y,w,h, ann_styles, isdrawing) {
+
 		ctx.save();
 		ctx.globalAlpha = 0.9;
 
 		ctx.beginPath();
-		ctx.strokeStyle = isdrawing ? "#008000" : "#FFFFFF";
+		ctx.strokeStyle = ann_styles[isdrawing ? 'selected_color1' : 'color1'];
+		ctx.lineWidth = ann_styles['lineWidth'];
 		ctx.rect(x*this.zoom, y*this.zoom, w*this.zoom, h*this.zoom);
 		ctx.stroke();
 
 		ctx.beginPath();
-		ctx.strokeStyle = "#000000";
-		ctx.setLineDash([isdrawing ? 2 : 5]);
+		ctx.strokeStyle = ann_styles[isdrawing ? 'selected_color2' : 'color2'];
+		ctx.lineWidth = ann_styles['lineWidth'];
+		var ld = ann_styles['lineDash'];
+		if (typeof ld == 'number') {
+			ld = [ld];
+		}
+		ctx.setLineDash(ld);
 		ctx.rect(x*this.zoom, y*this.zoom, w*this.zoom, h*this.zoom);
 		ctx.stroke();
 
 		ctx.restore();
+	},
+
+	getAnnotationStyles : function() {
+		return _.defaults(this.model.get('annotation_styles'), {
+			'color1': '#FFFFFF',
+			'color2': '#000000',
+			'lineDash': [2],
+			'lineWidth': 1,
+			'selected_color1': '#FFFFFF',
+			'selected_color2': '#008000',
+		});
 	},
 
 	remove: function() {

@@ -97,6 +97,22 @@ Note that if a numpy array is provided channel-first, the Innotater
 should detect this and automatically switch the channel to be the last
 axis internally.
 
+``annotation_styles`` is an optional dict to control how bounding
+boxes are displayed to the user. Defaults will be used for any keys
+omitted. For example:
+
+::
+
+  ImageInnotation( images, annotation_styles = {
+        'color1': '#FF0000', /* strokeStyle in Javascript context */
+        'color2': '#00FF00', /* For second color of the dashed line */
+        'lineWidth': 5, /* lineWidth in JS context */
+        'lineDash': [10, 1, 5], /* Passed to setLineDash, can take one int instead of array */
+        'selected_color2': '#FFFFFF', /* color1 but for currently-selected box */
+        'selected_color2': '#0000AA', /* color2 for currently-selected box */
+  } )
+
+
 BoundingBoxInnotation
 ^^^^^^^^^^^^^^^^^^^^^
 

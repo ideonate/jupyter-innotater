@@ -24,8 +24,6 @@ nb/*.html
 nb/*.sh
 nb/*.js
 
-Example/bounding_boxes.csv
-
 .idea
 innotater-private
 nodb-innotater-private

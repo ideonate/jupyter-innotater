@@ -120,6 +120,8 @@ class ImageInnotation(Innotation):
 
         self.transform = kwargs.get('transform', None)
 
+        self.annotation_styles = kwargs.get('annotation_styles', {})
+
         self.colorspace = 'BGR'
         if 'colorspace' in kwargs:
             self.colorspace = kwargs['colorspace']
@@ -131,7 +133,8 @@ class ImageInnotation(Innotation):
         self.watchlist = WatchList()
 
     def _create_widget(self):
-        return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled)
+        return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled,
+                        annotation_styles=self.annotation_styles)
 
     def update_ui(self, uindex):
         if self.transform is None:
