@@ -19,15 +19,16 @@ var $ = require('jquery');
 //
 //  when different from the base class.
 
+var version = require('../package.json').version;
 
 var InnotaterModel = controls.VBoxModel.extend({
     defaults: _.extend(controls.VBoxModel.prototype.defaults(), {
-    /*    _model_name: 'InnotaterModel',
+        _model_name: 'InnotaterModel',
         _view_name: 'InnotaterView',
         _model_module: 'jupyter-innotater',
         _view_module: 'jupyter-innotater',
-        _model_module_version: '0.1.0',
-        _view_module_version: '0.1.0' */
+        _model_module_version: version,
+        _view_module_version: version
     })
 });
 

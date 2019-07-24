@@ -1,6 +1,6 @@
 {
   "name": "jupyter-innotater",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "An Inline Data Annotator for Jupyter",
   "author": "danlester",
   "license": "MIT",
@@ -15,15 +15,16 @@
     "ipython",
     "ipywidgets"
   ],
-  "files": [
-    "dist/*.js"
-  ],
   "scripts": {
     "clean": "rimraf dist/ && rimraf ../jupyter_innotater/static/",
     "cleanall": "npm run clean && rimraf node_modules/",
-    "prepare": "webpack",
+    "build": "webpack --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "watch 'npm run prepare' lib/"
+    "watch": "watch 'npm run build' lib/",
+    "watch:nbextension": "webpack --watch --mode=development lib/"
+  },
+  "jupyterlab": {
+    "extension": "lib/labplugin"
   },
   "devDependencies": {
     "css-loader": "^0.28.7",
@@ -31,8 +32,10 @@
     "less-loader": "^4.0.5",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
+    "source-map-loader": "^0.2.4",
     "watch": "^1.0.2",
-    "webpack": "^3.5.5",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
     "webpack-build-notifier": "^0.1.30"
   },
   "dependencies": {
@@ -40,8 +43,5 @@
     "@jupyter-widgets/controls": "^1.0.0",
     "d3": "^4.10.2",
     "lodash": "^4.17.4"
-  },
-  "jupyterlab": {
-    "extension": "lib/labplugin"
   }
 }

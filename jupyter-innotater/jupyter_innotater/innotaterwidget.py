@@ -10,8 +10,8 @@ class Innotater(VBox):
     _model_name = Unicode('InnotaterModel').tag(sync=True)
     _view_module = Unicode('jupyter-innotater').tag(sync=True)
     _model_module = Unicode('jupyter-innotater').tag(sync=True)
-    _view_module_version = Unicode('~0.1.0').tag(sync=True)
-    _model_module_version = Unicode('~0.1.0').tag(sync=True)
+    _view_module_version = Unicode('~0.1.6').tag(sync=True)
+    _model_module_version = Unicode('~0.1.6').tag(sync=True)
 
     index = Int().tag(sync=True)
     keyboard_shortcuts = Bool(False).tag(sync=True)

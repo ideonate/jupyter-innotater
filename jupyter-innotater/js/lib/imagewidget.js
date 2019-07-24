@@ -24,15 +24,16 @@ var $ = require('jquery');
 // When serialiazing the entire widget state for embedding, only values that
 // differ from the defaults will be specified.
 
+var version = require('../package.json').version;
 
 var InnotaterImagePadModel = controls.ImageModel.extend({
 	defaults: _.extend(controls.ImageModel.prototype.defaults(), {
-		/*_model_name: 'InnotaterImagePadModel',
+		_model_name: 'InnotaterImagePadModel',
 		_view_name: 'InnotaterImagePadView',
 		_model_module: 'jupyter-innotater',
 		_view_module: 'jupyter-innotater',
-		_model_module_version: '0.1.0',
-		_view_module_version: '0.1.0', */
+		_model_module_version: version,
+		_view_module_version: version
 		/*rect: [0,0,0,0],
 		is_bb_source: false */
 	})

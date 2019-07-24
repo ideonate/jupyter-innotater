@@ -6,9 +6,17 @@ var WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 // stored in a separate local variable.
 var rules = [
 	{ test: /\.css$/, use: ['style-loader', 'css-loader'] },
-	{ test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] }
+	{ test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] },
+	{
+		test: /\.(js|ts)$/,
+		use: ['source-map-loader'],
+		enforce: 'pre'
+	}
 ];
 
+var resolve = {
+	extensions: ['.js']
+};
 
 module.exports = [
 	{// Notebook extension
@@ -20,6 +28,7 @@ module.exports = [
 		// extension.
 		//
 		entry: './lib/extension.js',
+		resolve: resolve,
 		output: {
 			filename: 'extension.js',
 			path: path.resolve(__dirname, '..', 'jupyter_innotater', 'static'),
@@ -34,6 +43,7 @@ module.exports = [
 		// It must be an amd module
 		//
 		entry: './lib/index.js',
+		resolve: resolve,
 		output: {
 			filename: 'index.js',
 			path: path.resolve(__dirname, '..', 'jupyter_innotater', 'static'),
@@ -67,6 +77,7 @@ module.exports = [
 		// by the custom widget embedder.
 		//
 		entry: './lib/embed.js',
+		resolve: resolve,
 		output: {
 			filename: 'index.js',
 			path: path.resolve(__dirname, 'dist'),

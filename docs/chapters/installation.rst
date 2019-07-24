@@ -25,3 +25,9 @@ Development install
 
     jupyter nbextension install --py --symlink --sys-prefix jupyter_innotater
     jupyter nbextension enable --py --sys-prefix jupyter_innotater
+
+
+    # Maybe also:
+    pip install ipywidgets
+    jupyter nbextension install --py widgetsnbextension
+    jupyter nbextension enable widgetsnbextension --py

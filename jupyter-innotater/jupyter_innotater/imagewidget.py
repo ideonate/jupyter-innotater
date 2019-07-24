@@ -8,8 +8,8 @@ class ImagePad(widgets.Image):
     _model_name = Unicode('InnotaterImagePadModel').tag(sync=True)
     _view_module = Unicode('jupyter-innotater').tag(sync=True)
     _model_module = Unicode('jupyter-innotater').tag(sync=True)
-    _view_module_version = Unicode('~0.1.0').tag(sync=True)
-    _model_module_version = Unicode('~0.1.0').tag(sync=True)
+    _view_module_version = Unicode('~0.1.6').tag(sync=True)
+    _model_module_version = Unicode('~0.1.6').tag(sync=True)
 
     # rect = List(trait=Int).tag(sync=True)
     rects = List(trait=Int).tag(sync=True)

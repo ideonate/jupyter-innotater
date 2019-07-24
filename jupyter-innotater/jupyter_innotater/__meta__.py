@@ -13,5 +13,5 @@ def _get_version(version_info):
 # meta data - change alpha/dev to final for release
 # also change in package.json
 
-version_info = (0, 1, 5, 'final', 0)
+version_info = (0, 1, 6, 'final', 0)
 __version__ = _get_version(version_info)
