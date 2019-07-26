@@ -15,3 +15,5 @@ def _get_version(version_info):
 
 version_info = (0, 1, 6, 'final', 0)
 __version__ = _get_version(version_info)
+
+semver_range = '~%s.%s.%s' % (version_info[:3])

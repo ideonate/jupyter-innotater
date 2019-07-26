@@ -8,7 +8,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 
-var FocusTextView = widgets.TextView.extend({
+var FocusTextView = controls.TextView.extend({
 
     events: function () {
         var d = FocusTextView.__super__.events(this, arguments);

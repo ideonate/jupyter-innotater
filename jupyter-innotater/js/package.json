@@ -39,8 +39,8 @@
     "webpack-build-notifier": "^0.1.30"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.0.0",
-    "@jupyter-widgets/controls": "^1.0.0",
+    "@jupyter-widgets/base": "^1.1 || ^2",
+    "@jupyter-widgets/controls": "^1.5",
     "d3": "^4.10.2",
     "lodash": "^4.17.4"
   }

@@ -1,24 +1,26 @@
-"use strict";
-//Object.defineProperty(exports, "__esModule", { value: true });
 
 var innotater = require('./embed.js');
 
+//     "@jupyter-widgets/controls": "^1.5.0",
+
+//     "@jupyter-widgets/base": "^2.0",
+
 var base = require('@jupyter-widgets/base');
 
-const innotaterPlugin = {
+module.exports = [{
     id: 'jupyter-innotater',
     requires: [base.IJupyterWidgetRegistry],
+    autoStart: true,
     activate: function(app, widgets) {
         console.log("JL Innotater activated");
-        console.log(innotater.version);
 
         widgets.registerWidget({
-            name: 'jupyter-innotater',
+            name: 'jupyterinnotater',
             version: innotater.version,
             exports: innotater
         });
-    },
-    autoStart: true
-};
 
-exports.default = innotaterPlugin;
+    }
+}];
+
+console.log("JL Innotater loaded");

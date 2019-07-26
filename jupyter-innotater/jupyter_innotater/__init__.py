@@ -4,12 +4,14 @@ assert sys.version_info[0] >= 3, "Innotater requires Python 3.3 or above. Curren
 from .innotaterwidget import *
 from .__meta__ import __version__
 
-from .data import *
-from .combine import *
+#from .data import *
+#from .combine import *
 
-__all__ = ['GroupedInnotation', 'RepeatInnotation'] \
-          + ['ImageInnotation', 'BoundingBoxInnotation', 'MultiClassInnotation', 'BinaryClassInnotation', 'TextInnotation'] \
-          + ['Innotater']
+# __all__ = ['GroupedInnotation', 'RepeatInnotation'] \
+          # + ['ImageInnotation', 'BoundingBoxInnotation', 'MultiClassInnotation', 'BinaryClassInnotation', 'TextInnotation'] \
+          # + ['Innotater']
+
+__all__ = ['Innotater']
 
 def _jupyter_nbextension_paths():
     return [{

@@ -19,21 +19,22 @@ var $ = require('jquery');
 //
 //  when different from the base class.
 
-var version = require('../package.json').version;
+let version = require('../package.json').version;
+let semver_range = '~' + version;
 
-var InnotaterModel = controls.VBoxModel.extend({
+/*var InnotaterModel = controls.VBoxModel.extend({
     defaults: _.extend(controls.VBoxModel.prototype.defaults(), {
-        _model_name: 'InnotaterModel',
+        ****_model_name: 'InnotaterModel',
         _view_name: 'InnotaterView',
-        _model_module: 'jupyter-innotater',
-        _view_module: 'jupyter-innotater',
-        _model_module_version: version,
-        _view_module_version: version
+        _model_module: 'jupyter_innotater',
+        _view_module: 'jupyter_innotater',
+        _model_module_version: semver_range,
+        _view_module_version: semver_range ****
     })
-});
+});*/
 
 
-// Custom View. Renders the widget model.
+// Custom View. Renders the widget model. -- //controls.VBoxView or widgets.DOMWidgetView
 var InnotaterView = controls.VBoxView.extend({
 
     initialize: function() {
@@ -48,7 +49,9 @@ var InnotaterView = controls.VBoxView.extend({
         var self = this;
         InnotaterView.__super__.render.apply(this, arguments);
 
-        self.el.setAttribute('tabindex', '0');
+        console.log("RENDER JI");
+
+/*        self.el.setAttribute('tabindex', '0');
 
         if (window.location.hostname == "www.kaggleusercontent.com") {
             this.el.classList.add('innotater-kaggle');
@@ -59,7 +62,7 @@ var InnotaterView = controls.VBoxView.extend({
             self.el.addEventListener('keypress', function(e) {
                  self.handle_keypress(e);
             });
-        }
+        } */
     },
 
     handle_keypress: function(event) {
@@ -72,9 +75,11 @@ var InnotaterView = controls.VBoxView.extend({
 });
 
 module.exports = {
-    InnotaterView: InnotaterView,
-    InnotaterModel: InnotaterModel
+    InnotaterView: InnotaterView
+    //InnotaterModel: InnotaterModel
 };
+
+
 
 
 

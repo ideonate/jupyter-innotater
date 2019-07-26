@@ -1,6 +1,6 @@
 # This requirements.txt is only really for binder
-ipywidgets==7.4.2
-widgetsnbextension==3.4.2
+ipywidgets==7.5.0
+widgetsnbextension==3.5.0
 notebook==5.7.8
 numpy==1.16.2
 pandas==0.24.2

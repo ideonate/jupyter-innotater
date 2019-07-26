@@ -1,20 +1,23 @@
 import ipywidgets as widgets
-from ipywidgets import HBox, VBox, IntSlider, Button, Checkbox
+from ipywidgets import DOMWidget, HBox, VBox, IntSlider, Button, Checkbox
 from traitlets import Int, observe, Unicode, Bool
 from .manager import DataManager
+from .__meta__ import semver_range
 
 
 @widgets.register
-class Innotater(VBox):
+class Innotater(VBox):  #VBox
     _view_name = Unicode('InnotaterView').tag(sync=True)
-    _model_name = Unicode('InnotaterModel').tag(sync=True)
-    _view_module = Unicode('jupyter-innotater').tag(sync=True)
-    _model_module = Unicode('jupyter-innotater').tag(sync=True)
-    _view_module_version = Unicode('~0.1.6').tag(sync=True)
-    _model_module_version = Unicode('~0.1.6').tag(sync=True)
+    #_model_name = Unicode('InnotaterModel').tag(sync=True)
+    _view_module = Unicode('jupyterinnotater').tag(sync=True)
+    #_model_module = Unicode('jupyterinnotater').tag(sync=True)
+    _view_module_version = Unicode(semver_range).tag(sync=True)
+    #_model_module_version = Unicode(semver_range).tag(sync=True)
 
     index = Int().tag(sync=True)
     keyboard_shortcuts = Bool(False).tag(sync=True)
+
+class nothing:
 
     def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True):
 

@@ -7,9 +7,9 @@
 // This file is currently being required by index.js entry point too
 
 // Export widget models and views, and the npm package version number.
-var _ = require('lodash');
+// var _ = require('lodash');
 
 module.exports = require('./innotaterwidget.js');
-_.extend( module.exports, require('./imagewidget.js') );
-_.extend( module.exports, require('./customwidgets.js') );
+// _.extend( module.exports, require('./imagewidget.js') );
+// _.extend( module.exports, require('./customwidgets.js') );
 module.exports['version'] = require('../package.json').version;
