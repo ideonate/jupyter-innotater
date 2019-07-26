@@ -9,8 +9,8 @@ from .__meta__ import semver_range
 class Innotater(VBox):  #VBox
     _view_name = Unicode('InnotaterView').tag(sync=True)
     #_model_name = Unicode('InnotaterModel').tag(sync=True)
-    _view_module = Unicode('jupyterinnotater').tag(sync=True)
-    #_model_module = Unicode('jupyterinnotater').tag(sync=True)
+    _view_module = Unicode('jupyter-innotater').tag(sync=True)
+    #_model_module = Unicode('jupyter-innotater').tag(sync=True)
     _view_module_version = Unicode(semver_range).tag(sync=True)
     #_model_module_version = Unicode(semver_range).tag(sync=True)
 

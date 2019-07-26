@@ -15,7 +15,7 @@ module.exports = [{
         console.log("JL Innotater activated");
 
         widgets.registerWidget({
-            name: 'jupyterinnotater',
+            name: 'jupyter-innotater',
             version: innotater.version,
             exports: innotater
         });
