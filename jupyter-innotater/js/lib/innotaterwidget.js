@@ -1,5 +1,5 @@
 var widgets = require('@jupyter-widgets/base');
-//var controls = require('@jupyter-widgets/controls');
+var controls = require('@jupyter-widgets/controls');
 
 require("./style.css");
 
@@ -35,7 +35,7 @@ let semver_range = '~' + version;
 
 
 // Custom View. Renders the widget model. -- //controls.VBoxView or widgets.DOMWidgetView
-var InnotaterView = widgets.DOMWidgetView.extend({
+var InnotaterView = controls.VBoxView.extend({
 
     initialize: function() {
         InnotaterView.__super__.initialize.apply(this, arguments);
