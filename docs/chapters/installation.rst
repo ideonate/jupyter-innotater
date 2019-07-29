@@ -27,7 +27,8 @@ Development install
     jupyter nbextension enable --py --sys-prefix jupyter_innotater
 
     # Optional
-    ln -s ./githooks/pre-commit .git/hooks
+    cd ..
+    ln -s ./githooks/pre-commit .git/hooks/pre-commit
 
     # Maybe also:
     pip install ipywidgets
