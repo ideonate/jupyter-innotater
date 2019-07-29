@@ -13,7 +13,9 @@
     "jupyter",
     "widgets",
     "ipython",
-    "ipywidgets"
+    "ipywidgets",
+    "jupyterlab",
+    "jupyterlab-extension"
   ],
   "scripts": {
     "clean": "rimraf dist/ && rimraf ../jupyter_innotater/static/",
@@ -24,7 +26,22 @@
     "watch:nbextension": "webpack --watch --mode=development lib/"
   },
   "jupyterlab": {
-    "extension": "lib/labplugin"
+    "extension": "lib/labplugin",
+    "discovery": {
+      "kernel": [
+        {
+          "kernel_spec": {
+            "language": "^python"
+          },
+          "base": {
+            "name": "jupyter-innotater"
+          },
+          "managers": [
+            "pip"
+          ]
+        }
+      ]
+    }
   },
   "devDependencies": {
     "css-loader": "^0.28.7",
