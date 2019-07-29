@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Redirect output to stderr.
+exec 1>&2
+
+echo 'Removing output cells from Example notebooks'
+for filename in ./Example/*.ipynb ; do
+   [ -e "$filename" ] || continue
+   if [[ ! $filename =~ "Copy" ]]
+   then
+      jupyter nbconvert "$filename" --ClearOutputPreprocessor.enabled=True --inplace
+      git add "$filename"
+   fi
+done
+
+
+
+

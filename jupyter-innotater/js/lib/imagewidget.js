@@ -28,14 +28,6 @@ var version = require('../package.json').version;
 
 var InnotaterImagePadModel = controls.ImageModel.extend({
 	defaults: _.extend(controls.ImageModel.prototype.defaults(), {
-		_model_name: 'InnotaterImagePadModel',
-		_view_name: 'InnotaterImagePadView',
-		_model_module: 'jupyter-innotater',
-		_view_module: 'jupyter-innotater',
-		_model_module_version: version,
-		_view_module_version: version
-		/*rect: [0,0,0,0],
-		is_bb_source: false */
 	})
 });
 

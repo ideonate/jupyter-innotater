@@ -53,7 +53,7 @@ module.exports = [
 		module: {
 			rules: rules
 		},
-		externals: ['@jupyter-widgets/base'],
+		externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls'],
 		plugins: [
 			new WebpackBuildNotifierPlugin({
 				title: "Webpack notebook build of Innotater",
@@ -88,6 +88,6 @@ module.exports = [
 		module: {
 			rules: rules
 		},
-		externals: ['@jupyter-widgets/base']
+		externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls']
 	}
 ];

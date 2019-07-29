@@ -1,5 +1,6 @@
 import ipywidgets as widgets
 from traitlets import Unicode, Int, List, Bool, Dict
+from .__meta__ import semver_range
 
 
 @widgets.register
@@ -8,10 +9,9 @@ class ImagePad(widgets.Image):
     _model_name = Unicode('InnotaterImagePadModel').tag(sync=True)
     _view_module = Unicode('jupyter-innotater').tag(sync=True)
     _model_module = Unicode('jupyter-innotater').tag(sync=True)
-    _view_module_version = Unicode('~0.1.6').tag(sync=True)
-    _model_module_version = Unicode('~0.1.6').tag(sync=True)
+    _view_module_version = Unicode(semver_range).tag(sync=True)
+    _model_module_version = Unicode(semver_range).tag(sync=True)
 
-    # rect = List(trait=Int).tag(sync=True)
     rects = List(trait=Int).tag(sync=True)
     rect_index = Int(0).tag(sync=True)
     max_repeats = Int(0).tag(sync=True)

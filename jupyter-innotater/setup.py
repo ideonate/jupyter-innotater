@@ -45,6 +45,7 @@ download_url = 'https://github.com/{}/{}/tarball/{}'.format(author,
                                                             name_url,
                                                             version)
 keywords = ['jupyter-widget',
+            'jupyterlab-extension',
             'javascript',
             'innotater',
             'jupyter_innotater',

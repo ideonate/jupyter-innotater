@@ -19,21 +19,14 @@ var $ = require('jquery');
 //
 //  when different from the base class.
 
-var version = require('../package.json').version;
+let version = require('../package.json').version;
+let semver_range = '~' + version;
 
 var InnotaterModel = controls.VBoxModel.extend({
-    defaults: _.extend(controls.VBoxModel.prototype.defaults(), {
-        _model_name: 'InnotaterModel',
-        _view_name: 'InnotaterView',
-        _model_module: 'jupyter-innotater',
-        _view_module: 'jupyter-innotater',
-        _model_module_version: version,
-        _view_module_version: version
-    })
 });
 
 
-// Custom View. Renders the widget model.
+// Custom View. Renders the widget model. -- //controls.VBoxView or widgets.DOMWidgetView
 var InnotaterView = controls.VBoxView.extend({
 
     initialize: function() {
@@ -75,6 +68,8 @@ module.exports = {
     InnotaterView: InnotaterView,
     InnotaterModel: InnotaterModel
 };
+
+
 
 
 
