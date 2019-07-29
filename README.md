@@ -2,10 +2,11 @@
 
 Annotate data including image bounding boxes inline within your [Jupyter notebook](https://jupyter.org/) in Python. Innotater's flexible API allows easy selection of interactive controls to suit your datasets exactly. 
 
+Now works with Jupyter Lab (1.0+)
+
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ideonate/jupyter-innotater/master)
 
 [![Documentation Status](https://readthedocs.org/projects/jupyter-innotater/badge/?version=latest)](https://jupyter-innotater.readthedocs.io/en/latest/?badge=latest)
-
 
 ## 1 - Overview
 

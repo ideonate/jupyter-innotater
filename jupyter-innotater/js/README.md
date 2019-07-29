@@ -4,8 +4,16 @@ Annotate data including image bounding boxes inline within your [Jupyter noteboo
 
 Now works with Jupyter Lab.
 
+Full [documentation here](https://jupyter-innotater.readthedocs.io)
+
 ## Installation
 
 ```
 pip install jupyter_innotater
+
+# For Jupyter Lab (requires 1.0+):
+
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install jupyter-innotater
+
 ```
