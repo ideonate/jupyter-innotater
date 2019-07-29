@@ -1,6 +1,6 @@
 {
   "name": "jupyter-innotater",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "An Inline Data Annotator for Jupyter",
   "author": "danlester",
   "license": "MIT",
@@ -58,7 +58,6 @@
   "dependencies": {
     "@jupyter-widgets/base": "^1.1 || ^2",
     "@jupyter-widgets/controls": "^1.5",
-    "d3": "^4.10.2",
     "lodash": "^4.17.4"
   }
 }
