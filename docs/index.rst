@@ -11,6 +11,8 @@ Innotater is a Jupyter notebook extension (widget) for machine learning practiti
 training and test data, then interactively annotate the data by drawing bounding boxes, selecting
 classes from a drop-down, or through other Javascript widgets.
 
+Now works in Jupyter Lab (1.0+).
+
 Read a full description in :ref:`overview` or try out example Jupyter notebooks in Binder:
 
 |Binder|
