@@ -23,9 +23,9 @@ Development install
 
 ::
 
-    git clone https://github.com/ideonate/innotater
+    git clone https://github.com/ideonate/jupyter-innotater
 
-    cd innotater/jupyter-innotater/js
+    cd jupyter-innotater/jupyter-innotater/js
     npm install
     npm run build
 
