@@ -44,20 +44,20 @@
     }
   },
   "devDependencies": {
-    "css-loader": "^0.28.7",
-    "less": "^2.7.2",
+    "css-loader": "^3.4.2",
+    "less": "^3.10.3",
     "less-loader": "^4.0.5",
-    "rimraf": "^2.6.1",
-    "style-loader": "^0.18.2",
+    "rimraf": "^2.7.1",
     "source-map-loader": "^0.2.4",
+    "style-loader": "^0.18.2",
     "watch": "^1.0.2",
-    "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3",
-    "webpack-build-notifier": "^0.1.30"
+    "webpack": "^4.41.5",
+    "webpack-build-notifier": "^0.1.30",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.1 || ^2",
-    "@jupyter-widgets/controls": "^1.5",
+    "@jupyter-widgets/base": "^2.0.2",
+    "@jupyter-widgets/controls": "^1.5.3",
     "lodash": "^4.17.4"
   }
 }

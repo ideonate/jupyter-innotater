@@ -49,7 +49,7 @@ var InnotaterView = controls.VBoxView.extend({
 
         // Keyboard shortcuts still need a lot of work - should be bound correctly to InnotaterView
         if (self.model.get('keyboard_shortcuts')) {
-            self.el.addEventListener('keypress', function(e) {
+            self.el.addEventListener('keydown', function(e) {
                  self.handle_keypress(e);
             });
         }
@@ -57,7 +57,7 @@ var InnotaterView = controls.VBoxView.extend({
 
     handle_keypress: function(event) {
         this.send({
-            event: 'keypress',
+            event: 'keydown',
             code: event.which
         });
     },

@@ -16,10 +16,15 @@ class Innotater(VBox):  #VBox
 
     index = Int().tag(sync=True)
     keyboard_shortcuts = Bool(False).tag(sync=True)
+    is_dirty = Bool(False).tag(sync=True)
 
-    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True):
+    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None):
 
         self.path = ''
+
+        self.dirty_uindexes = set()
+
+        self.save_hook = save_hook
 
         self.datamanager = DataManager(inputs, targets, indexes)
 
@@ -35,7 +40,12 @@ class Innotater(VBox):  #VBox
 
         self.add_class('innotater-base')
 
-        controlbar_widget = HBox([self.prevbtn, slider, self.nextbtn])
+        cbar_widgets = [self.prevbtn, slider, self.nextbtn]
+        if self.save_hook:
+            self.savebtn = Button(description='Save', disabled=True)
+            cbar_widgets.append(self.savebtn)
+
+        controlbar_widget = HBox(cbar_widgets)
         controlbar_widget.add_class('innotater-controlbar')
 
         super().__init__([HBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
@@ -53,6 +63,9 @@ class Innotater(VBox):  #VBox
 
         self.prevbtn.on_click(lambda c: self.move_slider(-1))
         self.nextbtn.on_click(lambda c: self.move_slider(1))
+
+        if self.save_hook:
+            self.savebtn.on_click(lambda c: self.save_hook_fire())
 
         self.slider.max = self.datamanager.get_data_len()-1
 
@@ -75,17 +88,19 @@ class Innotater(VBox):  #VBox
             self.index += 1
 
     def handle_message(self, _, content, buffers):
-        if content['event'] == 'keypress':
+        if content['event'] == 'keydown':
             code = content['code']
             self.handle_keypress(code)
 
     def handle_keypress(self, code):
         if self.suspend_observed_changes:
             return
-        if code == 110: # n
+        if code == 78: # n was 110
             self.move_slider(1)
-        elif code == 112: # p
+        elif code == 80: # p was 112
             self.move_slider(-1)
+        elif code == 83: # s
+            self.save_hook_fire()
 
     def update_ui(self):
         uindex = self.datamanager.get_underlying_index(self.index)
@@ -111,6 +126,19 @@ class Innotater(VBox):  #VBox
             if dw.contains_widget(widg):
                 dw.update_data(uindex)
 
+        self.dirty_uindexes.add(uindex)
+
+        if self.save_hook and not self.is_dirty:
+            self.is_dirty = True
+            self.savebtn.disabled = not self.is_dirty
+
+    def save_hook_fire(self):
+        if self.save_hook:
+            self.is_dirty = False
+            self.savebtn.disabled = not self.is_dirty
+            self.save_hook(list(self.dirty_uindexes))
+            self.dirty_uindexes.clear()
+            
     def add_innotations(self, inputs, targets):
         self.datamanager.dynamic_add_innotations(inputs, targets)
 
