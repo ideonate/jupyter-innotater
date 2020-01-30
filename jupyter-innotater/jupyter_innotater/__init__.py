@@ -6,10 +6,11 @@ from .__meta__ import __version__
 
 from .data import *
 from .combine import *
+from .uiinnotations import *
 
 __all__ = ['GroupedInnotation', 'RepeatInnotation',
            'ImageInnotation', 'BoundingBoxInnotation', 'MultiClassInnotation',
-           'BinaryClassInnotation', 'TextInnotation',
+           'BinaryClassInnotation', 'TextInnotation', 'ButtonInnotation',
            'Innotater', '__version__']
 
 def _jupyter_nbextension_paths():

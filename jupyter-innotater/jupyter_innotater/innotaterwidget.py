@@ -53,10 +53,7 @@ class Innotater(VBox):  #VBox
 
         widgets.jslink((slider, 'value'), (self, 'index'))
 
-        for dw in self.datamanager.get_targets():
-            dw.widget_observe(self.update_data, names='value')
-            if dw.has_children_changed_notifier:
-                dw.on_children_changed(self.new_children_handler)
+        self._observe_targets(self.datamanager.get_targets())
 
         for dw in list(self.datamanager.get_all()):
             dw.post_widget_create(self.datamanager)
@@ -134,22 +131,33 @@ class Innotater(VBox):  #VBox
 
     def save_hook_fire(self):
         if self.save_hook:
-            self.is_dirty = False
+            self.savebtn.disabled = True # Disable during save
+            has_saved = self.save_hook(list(self.dirty_uindexes))
+            if has_saved:
+                self.is_dirty = False
+                self.dirty_uindexes.clear()
             self.savebtn.disabled = not self.is_dirty
-            self.save_hook(list(self.dirty_uindexes))
-            self.dirty_uindexes.clear()
-            
+
+
     def add_innotations(self, inputs, targets):
         self.datamanager.dynamic_add_innotations(inputs, targets)
 
-        for dw in targets:
-            dw.widget_observe(self.update_data, names='value')
-            if dw.has_children_changed_notifier:
-                dw.on_children_changed(self.new_children_handler)
+        self._observe_targets(targets)
 
         for dw in inputs+targets:
             dw.post_widget_create(self.datamanager)
 
+    def _observe_targets(self, targets):
+        for dw in targets:
+            dw.widget_observe(self.update_data, names='value')
+            if dw.has_children_changed_notifier:
+                dw.on_children_changed(self.new_children_handler)
+            if dw.has_data_changed_notifier:
+                dw.on_data_changed(self.updated_data_handler)
+
     def new_children_handler(self, parent, newchildren):
         self.add_innotations([], newchildren)  # Assume always targets
+        self.update_ui()
+
+    def updated_data_handler(self, widget):
         self.update_ui()

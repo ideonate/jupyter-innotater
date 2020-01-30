@@ -37,7 +37,7 @@ class DataManager:
             dw.post_register(self)
 
     def _add_to_alldws(self, dw, l):
-        name = dw.get_name()
+        name = dw.name
         if name in self.alldws:
             raise Exception(f'Duplicate Innotation {name}')
 

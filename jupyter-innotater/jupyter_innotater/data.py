@@ -20,6 +20,7 @@ class Innotation:
     anonindex = 1
     requires_data = True
     has_children_changed_notifier = False
+    has_data_changed_notifier = False
 
     def __init__(self, *args, **kwargs):
 
@@ -51,9 +52,6 @@ class Innotation:
 
         if 'disabled' in kwargs:
             self.disabled = kwargs['disabled']
-
-    def get_name(self):
-        return self.name
 
     def post_register(self, datamanager):
         if not hasattr(self, 'disabled'):
@@ -401,26 +399,3 @@ class TextInnotation(Innotation):
         newval = str(self._get_widget_value())
         if newval != str(self._get_data(uindex)):
             self._set_data(uindex,  newval)
-
-
-class _WidgetInnotation(Innotation):
-    """
-    Allow embeding of an arbitrary widget object, e.g. for text display
-    Must still have a data attribute of correct len, even if dummy values
-    """
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-        if 'widget' not in kwargs:
-            raise Exception(f'{self.__class__} requires a widget argument')
-        self.widget = kwargs['widget']
-
-    def _create_widget(self):
-        return self.widget
-
-    def update_ui(self, uindex):
-        pass
-
-    def update_data(self, uindex):
-        pass

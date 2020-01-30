@@ -103,7 +103,6 @@ class RepeatInnotation(Innotation):
 
         self.get_widget().children = tuple(list(self.get_widget().children)+[HBox([c.get_widget() for c in newchildren])])
 
-
         self.childinnotations.extend(newchildren)
 
         if self.max_repeats == self.rows_count:
