@@ -202,7 +202,7 @@ This displays a button where you can supply custom functionality.
 
 data must be supplied but can be None since it is ignored.
 
-The button will be given the label supplied in the ``desc`` field. 
+The button will be given the label supplied in the ``desc`` field.
 
 ``on_click`` parameter is a Python function that will be called when the button is clicked. It should be of
 the form ``my_click_handler(uindex, repeat_index, **kwargs)`` where ``uindex`` is the underlying index of the

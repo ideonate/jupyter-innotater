@@ -2,6 +2,7 @@
 
 Update __meta__.py (set release version, remove 'dev')
 Also change version number in package.json
+And in requirements.txt
 git add the __meta__.py file and git commit
 delete dist folder
 
