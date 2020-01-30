@@ -123,6 +123,9 @@ class Innotater(VBox):  #VBox
             if dw.contains_widget(widg):
                 dw.update_data(uindex)
 
+        self._make_dirty(uindex)
+
+    def _make_dirty(self, uindex):
         self.dirty_uindexes.add(uindex)
 
         if self.save_hook and not self.is_dirty:
@@ -160,4 +163,6 @@ class Innotater(VBox):  #VBox
         self.update_ui()
 
     def updated_data_handler(self, widget):
+        uindex = self.datamanager.get_underlying_index(self.index)
+        self._make_dirty(uindex)
         self.update_ui()
