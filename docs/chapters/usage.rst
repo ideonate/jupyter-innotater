@@ -6,7 +6,7 @@ Innotater
 
 ::
 
-    Innotater( inputs, targets, indexes=None, keyboard_shortcuts=True )
+    Innotater( inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None )
 
 Instantiates the Jupyter widget. Each of ``inputs`` and ``targets`` is
 an Innotation subclass or array of Innotation subclasses.
@@ -32,8 +32,19 @@ widget to show only 3 possible data samples - the 1st, 4th, and 6th of
 the original data source. If ``indexes`` is a boolean mask array it must
 have the same length as the original data source, and the widget will
 only show those data samples corresponding to True in the indexes array.
+
 The flag ``keyboard_shortcuts`` can be set to False to disable keyboard
-shortcuts - namely 'n' and 'p' for next/previous.
+shortcuts - namely 'n' and 'p' for next/previous, and 's' for save if a
+save_hook is supplied.
+
+``save_hook`` is an optional Python function. If
+supplied, a Save button will appear in the Innotater, and your function
+will be called when it is clicked.
+Your function should be of the form ``my_save_hook(uindexes)`` where
+``uindexes`` is a list of indexes of data samples that have changed and
+need to be saved to permanent storage. The function should return True
+if the data is saved successfully.
+See Example/Hooks.ipynb for an example save hook.
 
 Innotation subclasses
 ~~~~~~~~~~~~~~~~~~~~~
@@ -184,6 +195,23 @@ data is expected to be an array of text strings.
 
 Displays a textarea showing the text.
 
+ButtonInnotation
+^^^^^^^^^^^^^^^^
+
+This displays a button where you can supply custom functionality.
+
+data must be supplied but can be None since it is ignored.
+
+The button will be given the label supplied in the ``desc`` field.
+
+``on_click`` parameter is a Python function that will be called when the button is clicked. It should be of
+the form ``my_click_handler(uindex, repeat_index, **kwargs)`` where ``uindex`` is the underlying index of the
+data sample where the button was clicked, and ``repeat_index`` is the row within a ``RepeatInnotation`` (see below) or
+-1 if not within any repeat row. ``kwargs`` will contain ``desc`` and ``name`` values.
+Your function should return True if the data sample at ``uindex`` has been changed so needs be updated in the
+Innotater's display; False otherwise,
+
+See the example notebook in Example/Hooks.ipynb for typical usage of ``ButtonInnotation``.
 
 Repeats and Grouping
 ~~~~~~~~~~~~~~~~~~~~
