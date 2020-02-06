@@ -1,12 +1,15 @@
 __all__ = ['ImageInnotation', 'BoundingBoxInnotation', 'MultiClassInnotation', 'BinaryClassInnotation', 'TextInnotation']
 
-from .imagewidget import ImagePad
-from .customwidgets import FocusText
-from .watchlist import Watcher, WatchList
 from ipywidgets import Checkbox, Select, Textarea, Dropdown, Text
 import re
 from pathlib import Path
 import numpy as np # Required to manipulate numpy or pytorch image matrix
+
+from .imagewidget import ImagePad
+from .customwidgets import FocusText
+from .watchlist import Watcher, WatchList
+from .mixins import DataMixin
+
 try:
     import cv2 # Prefer Open CV2 but don't put in requirements.txt because it can be difficult to install
     usecv2 = True
@@ -18,11 +21,9 @@ except ImportError:
 class Innotation:
 
     anonindex = 1
-    requires_data = True
-    has_children_changed_notifier = False
-    has_data_changed_notifier = False
 
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         if 'name' in kwargs:
             self.name = kwargs['name']
@@ -31,25 +32,8 @@ class Innotation:
             Innotation.anonindex += 1
 
         self.desc = kwargs.get('desc', self.name)
-
-        if self.requires_data:
-            if len(args) > 0:
-                self.data = args[0]
-                if 'data' in kwargs:
-                    raise Exception('data supplied both as position and keyword argument')
-            elif 'data' in kwargs:
-                self.data = kwargs['data']
-            else:
-                raise Exception('No data argument found')
-        else:
-            self.data = None
-
-        self.repeat_index = kwargs.get('repeat_index', -1)
-
         self.widget = None
-
         self.layout = kwargs.get('layout', {})
-
         if 'disabled' in kwargs:
             self.disabled = kwargs['disabled']
 
@@ -59,11 +43,6 @@ class Innotation:
 
     def post_widget_create(self, datamanager):
         pass
-
-    def __len__(self):
-        if self.data is None:
-            return 0
-        return len(self.data)
 
     def get_widget(self):
         if self.widget is None:
@@ -85,28 +64,8 @@ class Innotation:
     def contains_widget(self, widget):
         return self.get_widget() == widget
 
-    def _get_data(self, uindex):
-        if self.repeat_index == -1:
-            return self.data[uindex]
-        return self.data[uindex][self.repeat_index]
 
-    def _set_data(self, uindex, *args):
-        if len(args) < 1 or len(args) > 2:
-            raise Exception("_set_data must have exactly one or two args")
-
-        if self.repeat_index != -1:
-            if len(args) == 2:
-                self.data[uindex][self.repeat_index][args[0]] = args[-1]
-            else:
-                self.data[uindex][self.repeat_index] = args[-1]
-        else:
-            if len(args) == 2:
-                self.data[uindex][args[0]] = args[-1]
-            else:
-                self.data[uindex] = args[-1]
-
-
-class ImageInnotation(Innotation):
+class ImageInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
 
@@ -201,7 +160,7 @@ class ImageInnotation(Innotation):
         return self.get_widget().rects[watcher_index*4:(watcher_index+1)*4]
 
 
-class BoundingBoxInnotation(Innotation):
+class BoundingBoxInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
 
@@ -290,7 +249,7 @@ class BoundingBoxInnotation(Innotation):
             self.sourcedw.set_current_watcher(self.name, self.repeat_index)
 
 
-class MultiClassInnotation(Innotation):
+class MultiClassInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
 
@@ -379,7 +338,7 @@ class BinaryClassInnotation(MultiClassInnotation):
         return self.classes[self.get_widget().value and 1 or 0]
 
 
-class TextInnotation(Innotation):
+class TextInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
 
