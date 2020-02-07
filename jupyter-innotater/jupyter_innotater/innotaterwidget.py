@@ -1,9 +1,10 @@
 import ipywidgets as widgets
 from ipywidgets import HBox, VBox, IntSlider, Button
 from traitlets import Int, observe, Unicode, Bool
+
 from .manager import DataManager
 from .__meta__ import semver_range
-
+from .mixins import ChildrenChangeNotifierMixin, DataChangeNotifierMixin
 
 @widgets.register
 class Innotater(VBox):  #VBox
@@ -141,21 +142,18 @@ class Innotater(VBox):  #VBox
                 self.dirty_uindexes.clear()
             self.savebtn.disabled = not self.is_dirty
 
-
     def add_innotations(self, inputs, targets):
         self.datamanager.dynamic_add_innotations(inputs, targets)
-
         self._observe_targets(targets)
-
         for dw in inputs+targets:
             dw.post_widget_create(self.datamanager)
 
     def _observe_targets(self, targets):
         for dw in targets:
             dw.widget_observe(self.update_data, names='value')
-            if dw.has_children_changed_notifier:
+            if isinstance(dw, ChildrenChangeNotifierMixin):
                 dw.on_children_changed(self.new_children_handler)
-            if dw.has_data_changed_notifier:
+            if isinstance(dw, DataChangeNotifierMixin):
                 dw.on_data_changed(self.updated_data_handler)
 
     def new_children_handler(self, parent, newchildren):

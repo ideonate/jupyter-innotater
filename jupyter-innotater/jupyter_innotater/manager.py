@@ -1,4 +1,5 @@
 from .data import Innotation
+from .mixins import DataMixin
 
 
 class DataManager:
@@ -44,8 +45,7 @@ class DataManager:
         self.alldws[name] = dw
 
         # Check number of rows is the same and not zero
-
-        if dw.requires_data:
+        if isinstance(dw, DataMixin):
             this_len = len(dw)
             if l == -1:
                 if this_len == 0:

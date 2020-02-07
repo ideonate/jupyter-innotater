@@ -1,17 +1,16 @@
 __all__ = ['GroupedInnotation', 'RepeatInnotation']
 
-from .data import Innotation
 from ipywidgets import HBox, VBox, Button
-from ipywidgets.widgets import CallbackDispatcher
+
+from .data import Innotation
+from .mixins import ChildrenChangeNotifierMixin
 
 
 class GroupedInnotation(Innotation):
 
-    requires_data = False
-
     def __init__(self, *args, **kwargs):
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
         self.childinnotations = args
 
@@ -48,10 +47,7 @@ class GroupedInnotation(Innotation):
         return False
 
 
-class RepeatInnotation(Innotation):
-
-    has_children_changed_notifier = True
-    requires_data = False
+class RepeatInnotation(Innotation, ChildrenChangeNotifierMixin):
 
     def __init__(self, *args, **kwargs):
 
@@ -68,8 +64,6 @@ class RepeatInnotation(Innotation):
 
         if self.max_repeats < self.min_repeats:
             raise Exception("min_repeats is greater than max_repeats")
-
-        self._children_changed_handlers = CallbackDispatcher()
 
     def post_widget_create(self, datamanager):
         while self.rows_count < self.min_repeats:
@@ -115,24 +109,3 @@ class RepeatInnotation(Innotation):
     def update_data(self, uindex):
         for innot in self.childinnotations:
             innot.update_data(uindex)
-
-    def on_children_changed(self, callback, remove=False):
-        """Register a callback to execute when the children are changed.
-
-        The callback will be called with one argument, this Innotation
-        winstance.
-
-        Parameters
-        ----------
-        remove: bool (optional)
-            Set to true to remove the callback from the list of callbacks.
-        """
-        self._children_changed_handlers.register_callback(callback, remove=remove)
-
-    def children_changed(self, newchildren):
-        """Programmatically trigger a click event.
-
-        This will call the callbacks registered to the clicked button
-        widget instance.
-        """
-        self._children_changed_handlers(self, newchildren)
