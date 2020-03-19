@@ -6,6 +6,8 @@ build/
 *.egg-info/
 
 .vs_code/
+.vscode/
+
 js/lib/block/*
 
 node_modules/

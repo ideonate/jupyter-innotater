@@ -64,6 +64,9 @@ class Innotation:
     def contains_widget(self, widget):
         return self.get_widget() == widget
 
+    def list_innotations_tree(self):
+        return [self]
+
 
 class ImageInnotation(Innotation, DataMixin):
 

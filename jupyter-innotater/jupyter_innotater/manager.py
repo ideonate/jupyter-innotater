@@ -38,11 +38,12 @@ class DataManager:
             dw.post_register(self)
 
     def _add_to_alldws(self, dw, l):
-        name = dw.name
-        if name in self.alldws:
-            raise Exception(f'Duplicate Innotation {name}')
+        for onedw in dw.list_innotations_tree():
+            name = onedw.name
+            if name in self.alldws:
+                raise Exception(f'Duplicate Innotation {name}')
 
-        self.alldws[name] = dw
+            self.alldws[name] = onedw
 
         # Check number of rows is the same and not zero
         if isinstance(dw, DataMixin):

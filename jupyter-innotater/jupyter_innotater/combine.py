@@ -46,6 +46,14 @@ class GroupedInnotation(Innotation):
                 return True
         return False
 
+    def list_innotations_tree(self):
+        return [self, *self.childinnotations]
+
+    def __len__(self):
+        if len(self.childinnotations) > 0:
+            return len(self.childinnotations[0])
+        return 0
+
 
 class RepeatInnotation(Innotation, ChildrenChangeNotifierMixin):
 
