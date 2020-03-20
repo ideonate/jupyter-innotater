@@ -56,10 +56,10 @@ class Innotation:
         self.get_widget().observe(fn, names=names)
 
     def update_ui(self, uindex):
-        raise Exception('Do not call update_ui on base class')
+        raise Exception('Do not call update_ui on base class, Innotation {} with name {}'.format(type(self), self.name))
 
     def update_data(self, uindex):
-        raise Exception('Do not call update_data on an input-only class')
+        raise Exception('Do not call update_data on an input-only class, Innotation {} with name {}'.format(type(self), self.name))
 
     def contains_widget(self, widget):
         return self.get_widget() == widget
