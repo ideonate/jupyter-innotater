@@ -141,11 +141,10 @@ The notebooks in the Example folder contain many examples you can run directly i
 pip install jupyter_innotater
 ```
 
-To enable in JupyterLab (version 1.0+ required):
+To enable in JupyterLab (version 2.0+ recommended):
 
 ```
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-jupyter labextension install jupyter-innotater
+jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-innotater
 ```
    
 ## 4 - Contact for Feedback

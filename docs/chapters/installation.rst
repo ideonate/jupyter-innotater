@@ -14,8 +14,7 @@ To enable in JupyterLab (version 1.0+ required):
 
 ::
 
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager
-    jupyter labextension install jupyter-innotater
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-innotater
 
 
 Development install
@@ -36,7 +35,7 @@ Development install
     jupyter nbextension enable --py --sys-prefix jupyter_innotater
 
     # To enable in Jupyter Lab (requires Jupyter Lab 1.0+):
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
     jupyter labextension install js
 
     # Maybe also:

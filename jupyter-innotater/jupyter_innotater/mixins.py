@@ -41,6 +41,7 @@ class DataMixin:
 class DataChangeNotifierMixin:
 
   def __init__(self, *args, **kwargs):
+    self.repeat_index = kwargs.get('repeat_index', -1)
     self._data_changed_handlers = CallbackDispatcher()
 
   def on_data_changed(self, callback, remove=False):
