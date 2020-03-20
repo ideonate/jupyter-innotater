@@ -1,13 +1,14 @@
 import ipywidgets as widgets
 from ipywidgets.widgets import CallbackDispatcher
 from traitlets import Unicode
+from .__meta__ import semver_range
 
 
 @widgets.register
 class FocusText(widgets.Text):
     _view_name = Unicode('FocusTextView').tag(sync=True)
     _view_module = Unicode('jupyter-innotater').tag(sync=True)
-    _view_module_version = Unicode('~0.1.0').tag(sync=True)
+    _view_module_version = Unicode(semver_range).tag(sync=True)
 
     def __init__(self, **kwargs):
         super(FocusText, self).__init__(**kwargs)

@@ -10,7 +10,7 @@ Install from PyPi (recommended)
 
     pip install jupyter_innotater
 
-To enable in JupyterLab (version 1.0+ required):
+To enable in JupyterLab (version 2.0+ recommended):
 
 ::
 
@@ -34,7 +34,7 @@ Development install
     jupyter nbextension install --py --symlink --sys-prefix jupyter_innotater
     jupyter nbextension enable --py --sys-prefix jupyter_innotater
 
-    # To enable in Jupyter Lab (requires Jupyter Lab 1.0+):
+    # To enable in JupyterLab (JupyterLab 2.0+ recommended):
     jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
     jupyter labextension install js
 
