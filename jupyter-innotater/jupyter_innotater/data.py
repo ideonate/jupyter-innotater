@@ -177,17 +177,17 @@ class BoundingBoxInnotation(Innotation, DataMixin):
             self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
 
             if self.sourcedw is None:
-                raise Exception(f'ImageInnotation named {self.source} not found but specified as source attribute for BoundingBoxInnotation')
+                raise Exception('ImageInnotation named {} not found but specified as source attribute for BoundingBoxInnotation'.format(self.source))
 
             if not isinstance(self.sourcedw, ImageInnotation):
-                raise Exception(f'Innotation named {self.source} is not an ImageInnotation but is specified as source attribute for BoundingBoxInnotation')
+                raise Exception('Innotation named {} is not an ImageInnotation but is specified as source attribute for BoundingBoxInnotation'.format(self.source))
 
         else:
             # Find by type
             dws = datamanager.get_data_wrappers_by_type(ImageInnotation)
             if len(dws) != 1:
                 # Raises exception if 0 or >1 of these is found
-                raise Exception(f'ImageInnotation not found uniquely')
+                raise Exception('ImageInnotation not found uniquely')
 
             self.sourcedw = dws[0]
 
@@ -291,7 +291,7 @@ class MultiClassInnotation(Innotation, DataMixin):
             m = max(self.data)[0]  # TODO
 
         if m == 0:
-            raise Exception(f'MultiClassInnotation {self.name} only has one class value in use so cannot infer class count - please specify a classes array')
+            raise Exception('MultiClassInnotation {} only has one class value in use so cannot infer class count - please specify a classes array'.format(self.name))
 
         self.classes = [str(i) for i in range(m+1)]
 

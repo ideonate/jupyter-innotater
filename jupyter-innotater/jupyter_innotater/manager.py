@@ -41,7 +41,7 @@ class DataManager:
         for onedw in dw.list_innotations_tree():
             name = onedw.name
             if name in self.alldws:
-                raise Exception(f'Duplicate Innotation {name}')
+                raise Exception('Duplicate Innotation {}'.format(name))
 
             self.alldws[name] = onedw
 
@@ -50,10 +50,10 @@ class DataManager:
             this_len = len(dw)
             if l == -1:
                 if this_len == 0:
-                    raise Exception(f'Innotation {type(dw)} {name} has 0 data rows')
+                    raise Exception('Innotation {} {} has 0 data rows'.format(type(dw), name))
                 l = this_len
             elif l != this_len:
-                raise Exception(f'Innotations must all have same number of rows: {type(dw)} {name} has a different number of data rows than previous Innotations')
+                raise Exception('Innotations must all have same number of rows: {} {} has a different number of data rows than previous Innotations'.format(type(dw), name))
 
         return l
 
