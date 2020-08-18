@@ -6,7 +6,7 @@ Innotater
 
 ::
 
-    Innotater( inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None )
+    Innotater( inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None, vertical=False )
 
 Instantiates the Jupyter widget. Each of ``inputs`` and ``targets`` is
 an Innotation subclass or array of Innotation subclasses.
@@ -45,6 +45,11 @@ Your function should be of the form ``my_save_hook(uindexes)`` where
 need to be saved to permanent storage. The function should return True
 if the data is saved successfully.
 See Example/Hooks.ipynb for an example save hook.
+
+``vertical`` is a boolean flag indicating whether to stack the inputs / 
+outputs user interface components next to each other (horizontally, 
+default) or vertically (when vertical=True). Vertical stacking allows 
+space for larger components such as wider images.
 
 Innotation subclasses
 ~~~~~~~~~~~~~~~~~~~~~

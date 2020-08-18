@@ -19,7 +19,7 @@ class Innotater(VBox):  #VBox
     keyboard_shortcuts = Bool(False).tag(sync=True)
     is_dirty = Bool(False).tag(sync=True)
 
-    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None):
+    def __init__(self, inputs, targets, indexes=None, keyboard_shortcuts=True, save_hook=None, vertical=False):
 
         self.path = ''
 
@@ -49,7 +49,12 @@ class Innotater(VBox):  #VBox
         controlbar_widget = HBox(cbar_widgets)
         controlbar_widget.add_class('innotater-controlbar')
 
-        super().__init__([HBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
+        InnotaterBox = HBox
+        if vertical:
+            InnotaterBox = VBox
+            self.add_class('innotater-base-vertical')
+
+        super().__init__([InnotaterBox([VBox(self.input_widgets), VBox(self.target_widgets)]),
                           controlbar_widget])
 
         widgets.jslink((slider, 'value'), (self, 'index'))
