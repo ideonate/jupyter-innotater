@@ -5,6 +5,6 @@ notebook==5.7.8
 numpy==1.16.2
 pandas==0.24.2
 opencv-python==4.1.0.25
-pillow==7.0.0
+pillow==7.1.0
 matplotlib==3.1.1
 jupyter_innotater==0.2.0
