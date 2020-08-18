@@ -6,7 +6,7 @@ And in .binder/requirements.txt
 git add the __meta__.py file and git commit
 delete dist folder
 
-`python setup.py sdist`
+`python setup.py sdist bdist_wheel`
 
 `twine upload dist/*`
 
