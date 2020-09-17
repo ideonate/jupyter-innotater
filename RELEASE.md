@@ -1,3 +1,16 @@
+NEED TO RELEASE ON NPM AND PYPI
+
+- To release a new version of jupyter-innotater on NPM:
+
+```
+# clean out the `dist` and `node_modules` directories
+git clean -fdx
+npm install
+npm run build
+npm publish
+```
+
+
 - To release a new version of jupyter_innotater on PyPI:
 
 Update __meta__.py (set release version, remove 'dev')
@@ -18,12 +31,3 @@ git add and git commit
 
 `git push --tags`
 
-
-- To release a new version of jupyter-innotater on NPM:
-
-```
-# clean out the `dist` and `node_modules` directories
-git clean -fdx
-npm install
-npm publish
-```
