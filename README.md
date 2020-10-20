@@ -105,7 +105,7 @@ targets_exclude = np.zeros((len(animalfns), 1), dtype='int') # Binary flag to in
 
 # Repeats within each photo
 breeds = ['Cat - Shorthair tabby', 'Cat - Shorthair ginger', 'Dog - Labrador', 'Dog - Beagle', 'Dog - Terrier']
-targets_breed = np.zeros((len(animalfns), len(classes)), dtype='int')
+targets_breed = np.zeros((len(animalfns), len(breeds)), dtype='int')
 targets_bboxes = np.zeros((len(animalfns), repeats, 4), dtype='int') # (x,y,w,h) for each animal
 
 Innotater(
@@ -114,7 +114,7 @@ Innotater(
         TextInnotation(animalfns, multiline=False) # Display the image filename
     ],
     [
-        BinaryClassInnotation(targets_type, name='Exclude'), # Checkbox
+        BinaryClassInnotation(targets_exclude, name='Exclude'), # Checkbox
         RepeatInnotation(
             (BoundingBoxInnotation, targets_bboxes), # Individual animal bounding box
             (MultiClassInnotation, targets_breed,
