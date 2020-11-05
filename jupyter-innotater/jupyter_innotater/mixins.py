@@ -3,6 +3,12 @@ from ipywidgets.widgets import CallbackDispatcher
 
 class DataMixin:
   def __init__(self, *args, **kwargs):
+      """
+      Initialize data
+
+      Args:
+          self: (todo): write your description
+      """
     self.repeat_index = kwargs.get('repeat_index', -1)
 
     if len(args) > 0:
@@ -15,11 +21,25 @@ class DataMixin:
       raise Exception('No data argument found')
 
   def _get_data(self, uindex):
+      """
+      Return the index of the task
+
+      Args:
+          self: (todo): write your description
+          uindex: (int): write your description
+      """
     if self.repeat_index == -1:
       return self.data[uindex]
     return self.data[uindex][self.repeat_index]
 
   def _set_data(self, uindex, *args):
+      """
+      Set the index of the item.
+
+      Args:
+          self: (todo): write your description
+          uindex: (array): write your description
+      """
     if len(args) < 1 or len(args) > 2:
       raise Exception("_set_data must have exactly one or two args")
 
@@ -35,12 +55,24 @@ class DataMixin:
         self.data[uindex] = args[-1]
 
   def __len__(self):
+      """
+      Returns the length of the data.
+
+      Args:
+          self: (todo): write your description
+      """
     return len(self.data)
 
 
 class DataChangeNotifierMixin:
 
   def __init__(self, *args, **kwargs):
+      """
+      Initialize the data.
+
+      Args:
+          self: (todo): write your description
+      """
     self.repeat_index = kwargs.get('repeat_index', -1)
     self._data_changed_handlers = CallbackDispatcher()
 
@@ -71,6 +103,12 @@ class DataChangeNotifierMixin:
 class ChildrenChangeNotifierMixin:
 
   def __init__(self, *args, **kwargs):
+      """
+      Initializes all the handler to the handler.
+
+      Args:
+          self: (todo): write your description
+      """
     self._children_changed_handlers = CallbackDispatcher()
 
   def on_children_changed(self, callback, remove=False):

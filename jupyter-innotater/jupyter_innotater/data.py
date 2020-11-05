@@ -23,6 +23,12 @@ class Innotation:
     anonindex = 1
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize widget.
+
+        Args:
+            self: (todo): write your description
+        """
         super().__init__(*args, **kwargs)
 
         if 'name' in kwargs:
@@ -38,39 +44,106 @@ class Innotation:
             self.disabled = kwargs['disabled']
 
     def post_register(self, datamanager):
+        """
+        Registers a datamanager.
+
+        Args:
+            self: (todo): write your description
+            datamanager: (todo): write your description
+        """
         if not hasattr(self, 'disabled'):
             self.disabled = datamanager.is_input(self)
 
     def post_widget_create(self, datamanager):
+        """
+        Post - process create widget widget.
+
+        Args:
+            self: (todo): write your description
+            datamanager: (todo): write your description
+        """
         pass
 
     def get_widget(self):
+        """
+        Return the underlying widget.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.widget is None:
             self.widget = self._create_widget() # on derived class
         return self.widget
 
     def _get_widget_value(self):
+        """
+        Returns the value of the widget.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.get_widget().value
 
     def widget_observe(self, fn, names):
+        """
+        Call the given function is called.
+
+        Args:
+            self: (todo): write your description
+            fn: (str): write your description
+            names: (str): write your description
+        """
         self.get_widget().observe(fn, names=names)
 
     def update_ui(self, uindex):
+        """
+        Update the widget.
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         raise Exception('Do not call update_ui on base class, Innotation {} with name {}'.format(type(self), self.name))
 
     def update_data(self, uindex):
+        """
+        Updates the data of an index.
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         raise Exception('Do not call update_data on an input-only class, Innotation {} with name {}'.format(type(self), self.name))
 
     def contains_widget(self, widget):
+        """
+        Returns true if the widget is contained widget.
+
+        Args:
+            self: (todo): write your description
+            widget: (todo): write your description
+        """
         return self.get_widget() == widget
 
     def list_innotations_tree(self):
+        """
+        Returns the list ofnotations nodes innotations
+
+        Args:
+            self: (todo): write your description
+        """
         return [self]
 
 
 class ImageInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the widget.
+
+        Args:
+            self: (todo): write your description
+        """
 
         super().__init__(*args, **kwargs)
 
@@ -93,10 +166,23 @@ class ImageInnotation(Innotation, DataMixin):
         self.watchlist = WatchList()
 
     def _create_widget(self):
+        """
+        Create a new : class.
+
+        Args:
+            self: (todo): write your description
+        """
         return ImagePad(wantwidth=self.width, wantheight=self.height, layout=self.layout, disabled=self.disabled,
                         annotation_styles=self.annotation_styles)
 
     def update_ui(self, uindex):
+        """
+        Update windex
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         if self.transform is None:
             it = self._get_data(uindex)
         else:
@@ -143,22 +229,64 @@ class ImageInnotation(Innotation, DataMixin):
             self.get_widget().value = it
 
     def setRect(self, name, repeat_index, x,y,w,h):
+        """
+        Sets the watcher of the watcher.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            repeat_index: (str): write your description
+            x: (todo): write your description
+            y: (todo): write your description
+            w: (todo): write your description
+            h: (todo): write your description
+        """
         watcher_index = self.watchlist.get_watcher_index(name, repeat_index)
         if watcher_index >= 0:
             self.get_widget().setRect(watcher_index, x,y,w,h)
 
     def register_bbox_watcher(self, name, repeat_index):
+        """
+        Register a watcher. watcher.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            repeat_index: (todo): write your description
+        """
         self.max_repeats += 1
         self.get_widget().set_max_repeats(self.max_repeats)
         self.watchlist.add(Watcher(name=name, repeat_index=repeat_index))
 
     def get_current_watcher(self):
+        """
+        Return the current watcher that watcher.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.watchlist[self.get_widget().rect_index]
 
     def set_current_watcher(self, name, repeat_index):
+        """
+        Set the watcher for the given name.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            repeat_index: (int): write your description
+        """
         self.get_widget().rect_index = self.watchlist.get_watcher_index(name, repeat_index)
 
     def get_rect_for_watcher(self, name, repeat_index):
+        """
+        Return a : class : watcher instance
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            repeat_index: (int): write your description
+        """
         watcher_index = self.watchlist.get_watcher_index(name, repeat_index)
         return self.get_widget().rects[watcher_index*4:(watcher_index+1)*4]
 
@@ -166,6 +294,12 @@ class ImageInnotation(Innotation, DataMixin):
 class BoundingBoxInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the source.
+
+        Args:
+            self: (todo): write your description
+        """
 
         super().__init__(*args, **kwargs)
 
@@ -173,6 +307,13 @@ class BoundingBoxInnotation(Innotation, DataMixin):
         self.sourcedw = None
 
     def post_register(self, datamanager):
+        """
+        Registers the source.
+
+        Args:
+            self: (todo): write your description
+            datamanager: (todo): write your description
+        """
         if self.source is not None:
             self.sourcedw = datamanager.get_data_wrapper_by_name(self.source)
 
@@ -194,6 +335,13 @@ class BoundingBoxInnotation(Innotation, DataMixin):
         super().post_register(datamanager)
 
     def post_widget_create(self, datamanager):
+        """
+        Post - up after plugin has been clicked.
+
+        Args:
+            self: (todo): write your description
+            datamanager: (todo): write your description
+        """
         if self.sourcedw is not None:
             self.sourcedw.register_bbox_watcher(self.name, self.repeat_index)
             self.sourcedw.widget_observe(self.rectChanged, names='rects')
@@ -201,21 +349,55 @@ class BoundingBoxInnotation(Innotation, DataMixin):
         self.get_widget().on_click(self.widget_clicked)
 
     def _create_widget(self):
+        """
+        Creates the layout
+
+        Args:
+            self: (todo): write your description
+        """
         return FocusText(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
+        """
+        Update ui
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         self.get_widget().value = self._value_to_str(self._get_data(uindex))
         self._sync_to_image(uindex)
 
     def _sync_to_image(self, uindex):
+        """
+        Syncs the image to_index
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         if self.sourcedw is not None:
             (x,y,w,h) = self._get_data(uindex)[:4]
             self.sourcedw.setRect(self.name, self.repeat_index, x,y,w,h)
 
     def _value_to_str(self, r):
+        """
+        Convert a string to a string.
+
+        Args:
+            self: (todo): write your description
+            r: (str): write your description
+        """
         return ', '.join([str(int(a)) for a in r])
 
     def update_data(self, uindex):
+        """
+        Update image data of an image
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         newval = self.get_widget().value
         if newval != self._value_to_str(self._get_data(uindex)):
             try:
@@ -228,6 +410,13 @@ class BoundingBoxInnotation(Innotation, DataMixin):
                 pass
 
     def rectChanged(self, change):
+        """
+        Updates the widget widget.
+
+        Args:
+            self: (todo): write your description
+            change: (todo): write your description
+        """
         if self.sourcedw is not None:
             r = self.sourcedw.get_rect_for_watcher(self.name, self.repeat_index)
             #r = self.sourcedw.get_widget().rects
@@ -239,6 +428,13 @@ class BoundingBoxInnotation(Innotation, DataMixin):
             self.get_widget().value = v
 
     def rectIndexChanged(self, change):
+        """
+        Handles the current index.
+
+        Args:
+            self: (todo): write your description
+            change: (todo): write your description
+        """
         if self.sourcedw is not None:
             #if self.sourcedw.get_widget().rect_index == self.repeat_index:
             watcher = self.sourcedw.get_current_watcher()
@@ -248,6 +444,13 @@ class BoundingBoxInnotation(Innotation, DataMixin):
                 self.get_widget().remove_class('bounding-box-active')
 
     def widget_clicked(self, w):
+        """
+        Set the current button clicked.
+
+        Args:
+            self: (todo): write your description
+            w: (str): write your description
+        """
         if self.sourcedw is not None:
             self.sourcedw.set_current_watcher(self.name, self.repeat_index)
 
@@ -255,6 +458,12 @@ class BoundingBoxInnotation(Innotation, DataMixin):
 class MultiClassInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the classes.
+
+        Args:
+            self: (todo): write your description
+        """
 
         super().__init__(*args, **kwargs)
 
@@ -283,6 +492,12 @@ class MultiClassInnotation(Innotation, DataMixin):
         self.dropdown = kwargs.get('dropdown', False)
 
     def _guess_classes(self):
+        """
+        Guess the classes of the dataset.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.datadepth == 'onehot':
             m = len(self._get_data(0))-1
         elif self.datadepth == 'simple':
@@ -296,11 +511,24 @@ class MultiClassInnotation(Innotation, DataMixin):
         self.classes = [str(i) for i in range(m+1)]
 
     def _create_widget(self):
+        """
+        Create the underlying widget.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.dropdown:
             return Dropdown(options=self.classes, layout=self.layout, disabled=self.disabled)
         return Select(options=self.classes, layout=self.layout, disabled=self.disabled)
 
     def _calc_class_index(self, uindex):
+        """
+        Calculate index of the index
+
+        Args:
+            self: (todo): write your description
+            uindex: (todo): write your description
+        """
         if self.datadepth == 'onehot':
             return int(max(range(len(self._get_data(uindex))), key=lambda x: self._get_data(uindex)[x], default=0))
         if self.datadepth == 'simple':
@@ -309,9 +537,23 @@ class MultiClassInnotation(Innotation, DataMixin):
         return int(self._get_data(uindex)[0])
 
     def update_ui(self, uindex):
+        """
+        Update the widget ui.
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         self.get_widget().value = self.classes[self._calc_class_index(uindex)]
 
     def update_data(self, uindex):
+        """
+        Update the index
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         newval = self._get_widget_value()
         old_class_index = self._calc_class_index(uindex)
         if newval != self.classes[old_class_index]:
@@ -329,35 +571,86 @@ class MultiClassInnotation(Innotation, DataMixin):
 class BinaryClassInnotation(MultiClassInnotation):
 
     def _guess_classes(self):
+        """
+        Guess classes.
+
+        Args:
+            self: (todo): write your description
+        """
         self.classes = ['False', 'True']
 
     def _create_widget(self):
+        """
+        Create a widget widget.
+
+        Args:
+            self: (todo): write your description
+        """
         return Checkbox(description=self.desc, layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
+        """
+        Update the widget widget.
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         self.get_widget().value = bool(self._calc_class_index(uindex) == 1)
 
     def _get_widget_value(self):
+        """
+        Return the value of the widget.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.classes[self.get_widget().value and 1 or 0]
 
 
 class TextInnotation(Innotation, DataMixin):
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize self. pkg.
+
+        Args:
+            self: (todo): write your description
+        """
 
         self.multiline = kwargs.get('multiline', True)
 
         super().__init__(*args, **kwargs)
 
     def _create_widget(self):
+        """
+        Create widget layout
+
+        Args:
+            self: (todo): write your description
+        """
         if self.multiline:
             return Textarea(layout=self.layout, disabled=self.disabled)
         return Text(layout=self.layout, disabled=self.disabled)
 
     def update_ui(self, uindex):
+        """
+        Update ui
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         self.get_widget().value = str(self._get_data(uindex))
 
     def update_data(self, uindex):
+        """
+        Update the value
+
+        Args:
+            self: (todo): write your description
+            uindex: (int): write your description
+        """
         newval = str(self._get_widget_value())
         if newval != str(self._get_data(uindex)):
             self._set_data(uindex,  newval)

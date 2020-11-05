@@ -14,6 +14,11 @@ __all__ = ['GroupedInnotation', 'RepeatInnotation',
            'Innotater', '__version__']
 
 def _jupyter_nbextension_paths():
+    """
+    Return a list of nbeension paths.
+
+    Args:
+    """
     return [{
         'section': 'notebook',
         'src': 'static',

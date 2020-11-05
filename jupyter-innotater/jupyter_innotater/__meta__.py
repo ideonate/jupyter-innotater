@@ -1,5 +1,11 @@
 
 def _get_version(version_info):
+    """
+    Returns a tuple.
+
+    Args:
+        version_info: (str): write your description
+    """
     dic = {'alpha': 'a',
            'beta': 'b',
            'candidate': 'rc',

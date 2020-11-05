@@ -24,6 +24,17 @@ class ImagePad(widgets.Image):
     is_bb_source = Bool(False).tag(sync=True)
 
     def setRect(self, repeat_index, x,y,w,h):
+        """
+        Set rectangles on the rectangle
+
+        Args:
+            self: (todo): write your description
+            repeat_index: (str): write your description
+            x: (todo): write your description
+            y: (todo): write your description
+            w: (todo): write your description
+            h: (todo): write your description
+        """
         if repeat_index == -1:
             repeat_index = 0
 
@@ -40,5 +51,12 @@ class ImagePad(widgets.Image):
         self.rects  = r
 
     def set_max_repeats(self, max_repeats):
+        """
+        Sets max_repeats.
+
+        Args:
+            self: (todo): write your description
+            max_repeats: (int): write your description
+        """
         self.max_repeats = max_repeats
         self.is_bb_source = True

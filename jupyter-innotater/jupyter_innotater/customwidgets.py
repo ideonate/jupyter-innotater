@@ -11,6 +11,12 @@ class FocusText(widgets.Text):
     _view_module_version = Unicode(semver_range).tag(sync=True)
 
     def __init__(self, **kwargs):
+        """
+        Initialize the text.
+
+        Args:
+            self: (todo): write your description
+        """
         super(FocusText, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_focustext_msg)
