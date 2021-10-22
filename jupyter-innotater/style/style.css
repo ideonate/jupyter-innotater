@@ -1,0 +1,53 @@
+
+canvas.jupyter-innotater-imagepad {
+    margin-left: auto; 
+    margin-right: auto; 
+    display: block;
+    cursor: default;
+    border: 1px solid black;
+}
+
+canvas.jupyter-innotater-imagepad.is_bb_source {
+    cursor: crosshair;
+}
+
+.innotater-base {
+    outline: none;
+    margin: 10px 0px;
+}
+
+.innotater-controlbar .widget-slider .widget-readout{
+    border: 1px solid lightgray;
+}
+
+.innotater-controlbar {
+    margin-top: 5px;
+}
+
+.innotater-base .widget-textarea textarea, .innotater-base .widget-text input[type="text"] {
+    opacity: 1.0; /* Disabled TextInnotations still want to be highly readable */
+}
+
+.innotater-base .bounding-box-active {
+    border: green 1px solid;
+}
+
+.innotater-base .repeat-innotation {
+    padding: 10px 2px;
+}
+
+.innotater-base-vertical > div.widget-box > div.widget-vbox {
+    /* A bit more space between inputs/targets when stacked vertically */
+    margin-bottom: 20px;
+}
+
+/* Kaggle Overrides */
+
+.innotater-kaggle .widget-hbox {
+    width: 90% !important;
+    display: flex !important;
+}
+
+.innotater-kaggle .widget-inline-hbox {
+    display: flex !important;
+}
