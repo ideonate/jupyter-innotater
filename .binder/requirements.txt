@@ -1,5 +1,4 @@
 # This requirements.txt is only really for binder
-ipywidgets==7.5.0
 numpy==1.16.2
 pandas==0.24.2
 opencv-python==4.2.0.32
