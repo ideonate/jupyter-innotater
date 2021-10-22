@@ -6,15 +6,11 @@ Installation
 Install from PyPi (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+With JupyterLab 3.0+ installed:
+
 ::
 
     pip install jupyter_innotater
-
-To enable in JupyterLab (version 3.0+):
-
-::
-
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-innotater
 
 
 Development install

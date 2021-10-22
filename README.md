@@ -137,19 +137,15 @@ The notebooks in the Example folder contain many examples you can run directly i
 
 ### Install from PyPi (recommended)
 
+JupyterLab (version 3.0+ required):
+
 ```
 pip install jupyter_innotater
-```
-
-To enable in JupyterLab (version 2.0+ recommended):
-
-```
-jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-innotater
 ```
    
 ## 4 - Contact for Feedback
 
-Please get in touch with any feedback or questions: [dan@ideonate.com](dan@ideonate.com). It will be especially useful to understand the structure of your project and what is needed to augment your data - e.g. extra shape types. There are many ideas on the roadmap, and your input is vital for prioritising these.
+Please get in touch with any feedback or questions: [support@ideonate.com](support@ideonate.com). It will be especially useful to understand the structure of your project and what is needed to augment your data - e.g. extra shape types. There are many ideas on the roadmap, and your input is vital for prioritising these.
 
 ## 5 - License
 

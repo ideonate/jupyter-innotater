@@ -14,7 +14,7 @@
   "license": "BSD-3-Clause",
   "author": {
     "name": "Dan Lester",
-    "email": "dan@ideonate.com"
+    "email": "support@ideonate.com"
   },
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
