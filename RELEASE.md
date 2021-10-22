@@ -23,11 +23,7 @@ git add and git commit
 - To release a new version of jupyter-innotater on NPM:
 
 ```
-# clean out the `dist` and `node_modules` directories
-git clean -fdx
-npm install
-npm run build
-npm publish
+yarn publish --new-version
 ```
 
 
