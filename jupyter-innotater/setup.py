@@ -1,26 +1,61 @@
-# necessary to push to PyPI
-# cf. https://tom-christie.github.io/articles/pypi/
-# cf. https://pythonhosted.org/setuptools/setuptools.html
+"""
+jupyter_innotater setup
+"""
+import json
+from pathlib import Path
 
-# commands:
-# python setup.py sdist upload -r testpypi
-# python setup.py sdist upload -r pypi
+from jupyter_packaging import (
+    create_cmdclass,
+    install_npm,
+    ensure_targets,
+    combine_commands,
+    skip_if_exists
+)
+import setuptools
 
+HERE = Path(__file__).parent.resolve()
 
-from distutils.util import convert_path
-from setuptools import setup, find_packages
+# The name of the project
+name = "jupyter_innotater"
 
+lab_path = (HERE / name / "labextension")
 
-##################################################
-module = 'jupyter_innotater'
-##################################################
+# Representative files that should exist after a successful build
+jstargets = [
+    str(lab_path / "package.json"),
+]
 
-# get version from __meta__
-meta_ns = {}
-path = convert_path(module + '/__meta__.py')
-with open(path) as meta_file:
-    exec(meta_file.read(), meta_ns)
+package_data_spec = {
+    name: ["*"],
+}
 
+labext_name = "jupyter-innotater"
+
+data_files_spec = [
+    ("share/jupyter/labextensions/%s" % labext_name, str(lab_path), "**"),
+    ("share/jupyter/labextensions/%s" % labext_name, str(HERE), "install.json")
+]
+
+cmdclass = create_cmdclass("jsdeps",
+    package_data_spec=package_data_spec,
+    data_files_spec=data_files_spec
+)
+
+js_command = combine_commands(
+    install_npm(HERE, build_cmd="build:prod", npm=["jlpm"]),
+    ensure_targets(jstargets),
+)
+
+is_repo = (HERE.parent / ".git").exists()
+if is_repo:
+    cmdclass["jsdeps"] = js_command
+else:
+    cmdclass["jsdeps"] = skip_if_exists(jstargets, js_command)
+
+long_description = (HERE / "README.md").read_text()
+
+# Get the package info from package.json
+pkg_json = json.loads((HERE / "package.json").read_bytes())
 
 # read requirements.txt
 with open('requirements.txt', 'r') as f:
@@ -28,68 +63,40 @@ with open('requirements.txt', 'r') as f:
 li_req = content.split('\n')
 install_requires = [e.strip() for e in li_req if len(e)]
 
-
-name = module
-name_url = name.replace('_', '-')
-
-packages = [module]
-version = meta_ns['__version__']
-description = 'Jupyter widget to edit data annotations inline.'
-long_description = 'Annotate data including image bounding boxes inline within your Jupyter notebook in python.'
-author = 'ideonate'
-author_email = 'dan@ideonate.com'
-# github template
-url = 'https://github.com/{}/{}'.format(author,
-                                        name_url)
-download_url = 'https://github.com/{}/{}/tarball/{}'.format(author,
-                                                            name_url,
-                                                            version)
-keywords = ['jupyter-widget',
-            'jupyterlab-extension',
-            'javascript',
-            'innotater',
-            'jupyter_innotater',
-            ]
-license = 'MIT'
-classifiers = ['Development Status :: 4 - Beta',
-               'License :: OSI Approved :: MIT License',
-               'Programming Language :: Python :: 3.5',
-               'Programming Language :: Python :: 3.6',
-               'Programming Language :: Python :: 3.7'
-               ]
-include_package_data = True
-data_files = [
-    ('share/jupyter/nbextensions/jupyter-innotater', [
-        'jupyter_innotater/static/extension.js',
-        'jupyter_innotater/static/extension.js.map',
-        'jupyter_innotater/static/index.js',
-        'jupyter_innotater/static/index.js.map',
-    ]),
-    ('etc/jupyter/nbconfig/notebook.d', [
-        'enable_jupyter_innotater.json'
-    ])
-
-]
-install_requires = install_requires
-zip_safe = False
-
-
-# ref https://packaging.python.org/tutorials/distributing-packages/
-setup(
+setup_args = dict(
     name=name,
-    version=version,
-    packages=packages,
-    author=author,
-    author_email=author_email,
-    description=description,
+    version=pkg_json["version"],
+    url=pkg_json["homepage"],
+    author=pkg_json["author"]["name"],
+    author_email=pkg_json["author"]["email"],
+    description=pkg_json["description"],
+    license=pkg_json["license"],
     long_description=long_description,
-    url=url,
-    download_url=download_url,
-    keywords=keywords,
-    license=license,
-    classifiers=classifiers,
-    include_package_data=include_package_data,
-    data_files=data_files,
+    long_description_content_type="text/markdown",
+    cmdclass=cmdclass,
+    packages=setuptools.find_packages(),
     install_requires=install_requires,
-    zip_safe=zip_safe,
+    zip_safe=False,
+    include_package_data=True,
+    python_requires=">=3.6",
+    platforms="Linux, Mac OS X, Windows",
+    keywords=["Jupyter", "JupyterLab", "JupyterLab3"],
+    classifiers=[
+        "License :: OSI Approved :: BSD License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Framework :: Jupyter",
+        "Framework :: Jupyter :: JupyterLab",
+        "Framework :: Jupyter :: JupyterLab :: 3",
+        "Framework :: Jupyter :: JupyterLab :: Extensions",
+        "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
+    ],
 )
+
+
+if __name__ == "__main__":
+    setuptools.setup(**setup_args)

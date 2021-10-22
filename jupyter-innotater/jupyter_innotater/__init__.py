@@ -1,4 +1,7 @@
 import sys
+from pathlib import Path
+import json
+
 assert sys.version_info[0] >= 3, "Innotater requires Python 3.3 or above. Current Python version: " + sys.version.split(' ')[0]
 
 from .innotaterwidget import *
@@ -13,10 +16,13 @@ __all__ = ['GroupedInnotation', 'RepeatInnotation',
            'BinaryClassInnotation', 'TextInnotation', 'ButtonInnotation',
            'Innotater', '__version__']
 
-def _jupyter_nbextension_paths():
+HERE = Path(__file__).parent.resolve()
+
+with (HERE / "labextension" / "package.json").open() as fid:
+    data = json.load(fid)
+
+def _jupyter_labextension_paths():
     return [{
-        'section': 'notebook',
-        'src': 'static',
-        'dest': 'jupyter-innotater',
-        'require': 'jupyter-innotater/extension'
+        "src": "labextension",
+        "dest": data["name"]
     }]

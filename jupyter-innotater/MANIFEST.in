@@ -1,8 +1,23 @@
-
-# js
-recursive-include jupyter_innotater/static *.*
-
-# Misc
-include requirements.txt
 include LICENSE
-global-exclude *.py[co]
+include README.md
+include pyproject.toml
+include jupyter-config/jupyter_innotater.json
+
+include package.json
+include install.json
+include ts*.json
+include yarn.lock
+
+graft jupyter_innotater/labextension
+
+# Javascript files
+graft lib
+graft style
+prune **/node_modules
+
+# Patterns to exclude from any directory
+global-exclude *~
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git
+global-exclude .ipynb_checkpoints

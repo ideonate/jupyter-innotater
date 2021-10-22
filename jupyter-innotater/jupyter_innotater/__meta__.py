@@ -1,19 +1,20 @@
+import json
+from pathlib import Path
 
-def _get_version(version_info):
-    dic = {'alpha': 'a',
-           'beta': 'b',
-           'candidate': 'rc',
-           'final': ''}
-    vi = version_info
-    specifier = '' if vi[3] == 'final' else dic[vi[3]] + str(vi[4])
-    version = '%s.%s.%s%s' % (vi[0], vi[1], vi[2], specifier)
-    return version
+__all__ = ["__version__"]
 
+def _fetchVersion():
+    HERE = Path(__file__).parent.resolve()
 
-# meta data - change alpha/dev to final for release
-# also change in package.json
+    for settings in HERE.rglob("package.json"): 
+        try:
+            with settings.open() as f:
+                return json.load(f)["version"]
+        except FileNotFoundError:
+            pass
 
-version_info = (0, 2, 2, 'final', 0)
-__version__ = _get_version(version_info)
+    raise FileNotFoundError(f"Could not find package.json under dir {HERE!s}")
 
-semver_range = '~%s.%s.%s' % (version_info[:3])
+__version__ = _fetchVersion()
+
+semver_range = f"~{__version__}"
