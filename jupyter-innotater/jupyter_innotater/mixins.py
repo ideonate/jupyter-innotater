@@ -3,6 +3,7 @@ from ipywidgets.widgets import CallbackDispatcher
 
 class DataMixin:
   def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
     self.repeat_index = kwargs.get('repeat_index', -1)
 
     if len(args) > 0:
@@ -41,6 +42,7 @@ class DataMixin:
 class DataChangeNotifierMixin:
 
   def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
     self.repeat_index = kwargs.get('repeat_index', -1)
     self._data_changed_handlers = CallbackDispatcher()
 
@@ -71,6 +73,7 @@ class DataChangeNotifierMixin:
 class ChildrenChangeNotifierMixin:
 
   def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
     self._children_changed_handlers = CallbackDispatcher()
 
   def on_children_changed(self, callback, remove=False):

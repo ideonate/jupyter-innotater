@@ -55,7 +55,7 @@ class GroupedInnotation(Innotation):
         return 0
 
 
-class RepeatInnotation(Innotation, ChildrenChangeNotifierMixin):
+class RepeatInnotation(ChildrenChangeNotifierMixin, Innotation):
 
     def __init__(self, *args, **kwargs):
 

@@ -23,7 +23,6 @@ class Innotation:
     anonindex = 1
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
         if 'name' in kwargs:
             self.name = kwargs['name']
@@ -68,7 +67,7 @@ class Innotation:
         return [self]
 
 
-class ImageInnotation(Innotation, DataMixin):
+class ImageInnotation(DataMixin, Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -163,7 +162,7 @@ class ImageInnotation(Innotation, DataMixin):
         return self.get_widget().rects[watcher_index*4:(watcher_index+1)*4]
 
 
-class BoundingBoxInnotation(Innotation, DataMixin):
+class BoundingBoxInnotation(DataMixin, Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -252,7 +251,7 @@ class BoundingBoxInnotation(Innotation, DataMixin):
             self.sourcedw.set_current_watcher(self.name, self.repeat_index)
 
 
-class MultiClassInnotation(Innotation, DataMixin):
+class MultiClassInnotation(DataMixin, Innotation):
 
     def __init__(self, *args, **kwargs):
 
@@ -341,7 +340,7 @@ class BinaryClassInnotation(MultiClassInnotation):
         return self.classes[self.get_widget().value and 1 or 0]
 
 
-class TextInnotation(Innotation, DataMixin):
+class TextInnotation(DataMixin, Innotation):
 
     def __init__(self, *args, **kwargs):
 
