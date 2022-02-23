@@ -1,6 +1,6 @@
 {
   "name": "jupyter-innotater",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An Inline Data Annotator for Jupyter",
   "keywords": [
     "jupyter",
