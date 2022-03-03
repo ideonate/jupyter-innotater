@@ -6,7 +6,7 @@ from .data import Innotation
 from .mixins import DataChangeNotifierMixin
 
 
-class ButtonInnotation(Innotation, DataChangeNotifierMixin):
+class ButtonInnotation(DataChangeNotifierMixin, Innotation):
     """
     Allow embedding of an arbitrary widget object, e.g. for text display
     Must still have a data attribute of correct len, even if dummy values
