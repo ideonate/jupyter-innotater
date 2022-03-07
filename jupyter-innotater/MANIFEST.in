@@ -2,6 +2,7 @@ include LICENSE
 include README.md
 include pyproject.toml
 include jupyter-config/jupyter_innotater.json
+include requirements.txt
 
 include package.json
 include install.json
